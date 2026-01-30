@@ -175,15 +175,52 @@ func (x *XAirClient) RequestStatus() error {
 	return x.SendMessage("/status")
 }
 
-// SetChannelGain sets gain for a specific channel (1-based indexing)
-func (x *XAirClient) SetChannelGain(channel int, gain float32) error {
-	address := fmt.Sprintf("/ch/%02d/mix/fader", channel)
+/* STRIP METHODS */
+
+// StripFader requests the current fader level for a strip
+func (x *XAirClient) StripFader(strip int) (float64, error) {
+	address := fmt.Sprintf("/ch/%02d/mix/fader", strip)
+	err := x.SendMessage(address)
+	if err != nil {
+		return 0, err
+	}
+
+	resp := <-x.respChan
+	val, ok := resp.Arguments[0].(float32)
+	if !ok {
+		return 0, fmt.Errorf("unexpected argument type for fader value")
+	}
+
+	return mustDbFrom(float64(val)), nil
+}
+
+// SetStripFader sets the fader level for a specific strip (1-based indexing)
+func (x *XAirClient) SetStripFader(strip int, level float64) error {
+	address := fmt.Sprintf("/ch/%02d/mix/fader", strip)
+	return x.SendMessage(address, float32(mustDbInto(level)))
+}
+
+// StripGain requests gain for a specific strip (1-based indexing)
+func (x *XAirClient) StripGain(strip int) error {
+	address := fmt.Sprintf("/ch/%02d/mix/fader", strip)
+	return x.SendMessage(address)
+}
+
+// SetStripGain sets gain for a specific strip (1-based indexing)
+func (x *XAirClient) SetStripGain(strip int, gain float32) error {
+	address := fmt.Sprintf("/ch/%02d/mix/fader", strip)
 	return x.SendMessage(address, gain)
 }
 
-// MuteChannel mutes/unmutes a specific channel (1-based indexing)
-func (x *XAirClient) MuteChannel(channel int, muted bool) error {
-	address := fmt.Sprintf("/ch/%02d/mix/on", channel)
+// StripMute gets mute state for a specific strip (1-based indexing)
+func (x *XAirClient) StripMute(strip int) error {
+	address := fmt.Sprintf("/ch/%02d/mix/on", strip)
+	return x.SendMessage(address)
+}
+
+// SetStripMute sets mute state for a specific strip (1-based indexing)
+func (x *XAirClient) SetStripMute(strip int, muted bool) error {
+	address := fmt.Sprintf("/ch/%02d/mix/on", strip)
 	var value int32 = 0
 	if !muted {
 		value = 1
@@ -191,8 +228,32 @@ func (x *XAirClient) MuteChannel(channel int, muted bool) error {
 	return x.SendMessage(address, value)
 }
 
-// GetMainLRFader requests the current main L/R fader level
-func (x *XAirClient) GetMainLRFader() (float64, error) {
+// StripName requests the name for a specific strip
+func (x *XAirClient) StripName(strip int) error {
+	address := fmt.Sprintf("/ch/%02d/config/name", strip)
+	return x.SendMessage(address)
+}
+
+// SetStripName sets the name for a specific strip
+func (x *XAirClient) SetStripName(strip int, name string) error {
+	address := fmt.Sprintf("/ch/%02d/config/name", strip)
+	return x.SendMessage(address, name)
+}
+
+// StripColor requests the color for a specific strip
+func (x *XAirClient) StripColor(strip int) error {
+	address := fmt.Sprintf("/ch/%02d/config/color", strip)
+	return x.SendMessage(address)
+}
+
+// SetStripColor sets the color for a specific strip (0-15)
+func (x *XAirClient) SetStripColor(strip int, color int32) error {
+	address := fmt.Sprintf("/ch/%02d/config/color", strip)
+	return x.SendMessage(address, color)
+}
+
+// MainLRFader requests the current main L/R fader level
+func (x *XAirClient) MainLRFader() (float64, error) {
 	err := x.SendMessage("/lr/mix/fader")
 	if err != nil {
 		return 0, err
@@ -211,66 +272,26 @@ func (x *XAirClient) SetMainLRFader(level float64) error {
 	return x.SendMessage("/lr/mix/fader", float32(mustDbInto(level)))
 }
 
-// GetChannelFader requests the current fader level for a channel
-func (x *XAirClient) GetChannelFader(channel int) (float64, error) {
-	address := fmt.Sprintf("/ch/%02d/mix/fader", channel)
-	err := x.SendMessage(address)
+// MainLRMute requests the current main L/R mute status
+func (x *XAirClient) MainLRMute() (bool, error) {
+	err := x.SendMessage("/lr/mix/on")
 	if err != nil {
-		return 0, err
+		return false, err
 	}
 
 	resp := <-x.respChan
-	val, ok := resp.Arguments[0].(float32)
+	val, ok := resp.Arguments[0].(int32)
 	if !ok {
-		return 0, fmt.Errorf("unexpected argument type for fader value")
+		return false, fmt.Errorf("unexpected argument type for main LR mute value")
 	}
-
-	return mustDbFrom(float64(val)), nil
+	return val == 0, nil // 0 = muted, 1 = unmuted
 }
 
-// GetChannelMute requests the current mute state for a channel
-func (x *XAirClient) GetChannelMute(channel int) error {
-	address := fmt.Sprintf("/ch/%02d/mix/on", channel)
-	return x.SendMessage(address)
-}
-
-// SetChannelName sets the name for a specific channel
-func (x *XAirClient) SetChannelName(channel int, name string) error {
-	address := fmt.Sprintf("/ch/%02d/config/name", channel)
-	return x.SendMessage(address, name)
-}
-
-// GetChannelName requests the name for a specific channel
-func (x *XAirClient) GetChannelName(channel int) error {
-	address := fmt.Sprintf("/ch/%02d/config/name", channel)
-	return x.SendMessage(address)
-}
-
-// GetChannelColor requests the color for a specific channel
-func (x *XAirClient) GetChannelColor(channel int) error {
-	address := fmt.Sprintf("/ch/%02d/config/color", channel)
-	return x.SendMessage(address)
-}
-
-// SetChannelColor sets the color for a specific channel (0-15)
-func (x *XAirClient) SetChannelColor(channel int, color int32) error {
-	address := fmt.Sprintf("/ch/%02d/config/color", channel)
-	return x.SendMessage(address, color)
-}
-
-// GetAllChannelInfo requests information for all channels
-func (x *XAirClient) GetAllChannelInfo(maxChannels int) error {
-	fmt.Printf("\n=== REQUESTING ALL CHANNEL INFO (1-%d) ===\n", maxChannels)
-	for ch := 1; ch <= maxChannels; ch++ {
-		fmt.Printf("Requesting info for channel %d...\n", ch)
-		x.GetChannelName(ch)
-		time.Sleep(100 * time.Millisecond)
-		x.GetChannelFader(ch)
-		time.Sleep(100 * time.Millisecond)
-		x.GetChannelMute(ch)
-		time.Sleep(100 * time.Millisecond)
-		x.GetChannelColor(ch)
-		time.Sleep(200 * time.Millisecond) // Longer pause between channels
+// SetMainLRMute sets the main L/R mute status
+func (x *XAirClient) SetMainLRMute(muted bool) error {
+	var value int32 = 0
+	if !muted {
+		value = 1
 	}
-	return nil
+	return x.SendMessage("/lr/mix/on", value)
 }
