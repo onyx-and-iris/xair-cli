@@ -1,5 +1,5 @@
 /*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
+LICENSE: https://github.com/onyx-and-iris/xair-cli/blob/main/LICENSE
 */
 package cmd
 

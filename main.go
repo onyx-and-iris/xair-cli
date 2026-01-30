@@ -1,5 +1,5 @@
 /*
-Copyright © 2026 onyx-and-iris <code@onyxandiris.online>
+LICENSE: https://github.com/onyx-and-iris/xair-cli/blob/main/LICENSE
 */
 package main
 
