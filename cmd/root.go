@@ -31,6 +31,10 @@ various commands to manage mixer settings directly from the terminal.`,
 		kind := viper.GetString("kind")
 		log.Debugf("Initializing client for mixer kind: %s", kind)
 
+		if kind == "x32" && !viper.IsSet("port") {
+			viper.Set("port", 10023)
+		}
+
 		client, err := xair.NewClient(
 			viper.GetString("host"),
 			viper.GetInt("port"),
