@@ -1,6 +1,3 @@
-/*
-LICENSE: https://github.com/onyx-and-iris/xair-cli/blob/main/LICENSE
-*/
 package cmd
 
 import (
@@ -9,16 +6,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// mainCmd represents the main command
+// mainCmd represents the main command.
 var mainCmd = &cobra.Command{
 	Use:   "main",
 	Short: "Commands to control the main output",
 	Long:  `Commands to control the main output of the XAir mixer, including fader level and mute status.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, _ []string) {
 		cmd.Help()
 	},
 }
 
+// mainMuteCmd represents the main mute command.
 var mainMuteCmd = &cobra.Command{
 	Use:   "mute",
 	Short: "Get or set the main LR mute status",
@@ -69,6 +67,7 @@ For example:
 	},
 }
 
+// mainFaderCmd represents the main fader command.
 var mainFaderCmd = &cobra.Command{
 	Use:   "fader",
 	Short: "Set or get the main LR fader level",
@@ -110,6 +109,7 @@ For example:
 	},
 }
 
+// mainFadeOutCmd represents the main fadeout command.
 var mainFadeOutCmd = &cobra.Command{
 	Use:   "fadeout [target_db]",
 	Short: "Fade out the main output",
@@ -169,6 +169,7 @@ This command will fade out the main output to the specified dB level.
 	},
 }
 
+// mainFadeInCmd represents the main fadein command.
 var mainFadeInCmd = &cobra.Command{
 	Use:   "fadein [target_db]",
 	Short: "Fade in the main output",

@@ -1,6 +1,3 @@
-/*
-LICENSE: https://github.com/onyx-and-iris/xair-cli/blob/main/LICENSE
-*/
 package cmd
 
 import (
@@ -14,14 +11,14 @@ import (
 	"github.com/onyx-and-iris/xair-cli/internal/xair"
 )
 
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "xair-cli",
 	Short: "A command-line utility to interact with Behringer X Air mixers via OSC",
 	Long: `xair-cli is a command-line tool that allows users to send OSC messages
 to Behringer X Air mixers for remote control and configuration. It supports
 various commands to manage mixer settings directly from the terminal.`,
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+	PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 		level, err := log.ParseLevel(viper.GetString("loglevel"))
 		if err != nil {
 			return err
@@ -29,7 +26,7 @@ various commands to manage mixer settings directly from the terminal.`,
 		log.SetLevel(level)
 
 		kind := viper.GetString("kind")
-		log.Debugf("Initializing client for mixer kind: %s", kind)
+		log.Debugf("Initialising client for mixer kind: %s", kind)
 
 		if kind == "x32" && !viper.IsSet("port") {
 			viper.Set("port", 10023)
@@ -55,18 +52,20 @@ various commands to manage mixer settings directly from the terminal.`,
 
 		return nil
 	},
-	PersistentPostRunE: func(cmd *cobra.Command, args []string) error {
+	PersistentPostRunE: func(cmd *cobra.Command, _ []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client != nil {
 			client.Stop()
 		}
 		return nil
 	},
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, _ []string) {
 		cmd.Help()
 	},
 }
 
+// Execute adds all child commands to the root command and sets flags appropriately.
+// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
