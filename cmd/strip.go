@@ -255,8 +255,8 @@ var stripFadeInCmd = &cobra.Command{
 
 // stripSendCmd represents the strip send command.
 var stripSendCmd = &cobra.Command{
-	Short: "Commands to get or set strip send levels",
-	Long:  "Commands to get or set the send levels for individual strips.",
+	Short: "Get or set the send levels for individual strips",
+	Long:  "Get or set the send level from a specific strip to a specific bus.",
 	Use:   "send [strip number] [bus number] [level in dB]",
 	Example: `  # Get the send level of strip 1 to bus 1
   xair-cli strip send 1 1
