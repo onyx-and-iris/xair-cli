@@ -17,18 +17,24 @@ type parser interface {
 	Parse(data []byte) (*osc.Message, error)
 }
 
-type XAirClient struct {
+type engine struct {
+	Kind      string
 	conn      *net.UDPConn
 	mixerAddr *net.UDPAddr
 
-	parser parser
+	parser     parser
+	addressMap map[string]string
 
 	done     chan bool
 	respChan chan *osc.Message
 }
 
+type Client struct {
+	engine
+}
+
 // NewClient creates a new XAirClient instance
-func NewClient(mixerIP string, mixerPort int) (*XAirClient, error) {
+func NewClient(mixerIP string, mixerPort int, opts ...Option) (*Client, error) {
 	localAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf(":%d", 0))
 	if err != nil {
 		return nil, fmt.Errorf("failed to resolve local address: %v", err)
@@ -47,23 +53,32 @@ func NewClient(mixerIP string, mixerPort int) (*XAirClient, error) {
 
 	log.Debugf("Local UDP connection: %s	", conn.LocalAddr().String())
 
-	return &XAirClient{
+	e := &engine{
+		Kind:      "xair",
 		conn:      conn,
 		mixerAddr: mixerAddr,
 		parser:    newParser(),
 		done:      make(chan bool),
-		respChan:  make(chan *osc.Message),
+		respChan:  make(chan *osc.Message, 100),
+	}
+
+	for _, opt := range opts {
+		opt(e)
+	}
+
+	return &Client{
+		engine: *e,
 	}, nil
 }
 
 // Start begins listening for messages in a goroutine
-func (x *XAirClient) StartListening() {
+func (x *Client) StartListening() {
 	go x.receiveLoop()
 	log.Debugf("Started listening on %s...", x.conn.LocalAddr().String())
 }
 
 // receiveLoop handles incoming OSC messages
-func (x *XAirClient) receiveLoop() {
+func (x *Client) receiveLoop() {
 	buffer := make([]byte, 4096)
 
 	for {
@@ -101,7 +116,7 @@ func (x *XAirClient) receiveLoop() {
 }
 
 // parseOSCMessage parses raw bytes into an OSC message with improved error handling
-func (x *XAirClient) parseOSCMessage(data []byte) (*osc.Message, error) {
+func (x *Client) parseOSCMessage(data []byte) (*osc.Message, error) {
 	msg, err := x.parser.Parse(data)
 	if err != nil {
 		return nil, err
@@ -111,7 +126,7 @@ func (x *XAirClient) parseOSCMessage(data []byte) (*osc.Message, error) {
 }
 
 // Stop stops the client and closes the connection
-func (x *XAirClient) Stop() {
+func (x *Client) Stop() {
 	close(x.done)
 	if x.conn != nil {
 		x.conn.Close()
@@ -119,12 +134,12 @@ func (x *XAirClient) Stop() {
 }
 
 // SendMessage sends an OSC message to the mixer using the unified connection
-func (x *XAirClient) SendMessage(address string, args ...any) error {
+func (x *Client) SendMessage(address string, args ...any) error {
 	return x.SendToAddress(x.mixerAddr, address, args...)
 }
 
 // SendToAddress sends an OSC message to a specific address (enables replying to different ports)
-func (x *XAirClient) SendToAddress(addr *net.UDPAddr, oscAddress string, args ...any) error {
+func (x *Client) SendToAddress(addr *net.UDPAddr, oscAddress string, args ...any) error {
 	msg := osc.NewMessage(oscAddress)
 	for _, arg := range args {
 		msg.Append(arg)
@@ -152,7 +167,7 @@ func (x *XAirClient) SendToAddress(addr *net.UDPAddr, oscAddress string, args ..
 }
 
 // RequestInfo requests mixer information
-func (x *XAirClient) RequestInfo() (error, InfoResponse) {
+func (x *Client) RequestInfo() (error, InfoResponse) {
 	err := x.SendMessage("/xinfo")
 	if err != nil {
 		return err, InfoResponse{}
@@ -169,19 +184,45 @@ func (x *XAirClient) RequestInfo() (error, InfoResponse) {
 }
 
 // KeepAlive sends keep-alive message (required for multi-client usage)
-func (x *XAirClient) KeepAlive() error {
+func (x *Client) KeepAlive() error {
 	return x.SendMessage("/xremote")
 }
 
 // RequestStatus requests mixer status
-func (x *XAirClient) RequestStatus() error {
+func (x *Client) RequestStatus() error {
 	return x.SendMessage("/status")
 }
 
 /* STRIP METHODS */
 
+// StripMute gets mute state for a specific strip (1-based indexing)
+func (x *Client) StripMute(strip int) (bool, error) {
+	address := fmt.Sprintf("/ch/%02d/mix/on", strip)
+	err := x.SendMessage(address)
+	if err != nil {
+		return false, err
+	}
+
+	resp := <-x.respChan
+	val, ok := resp.Arguments[0].(int32)
+	if !ok {
+		return false, fmt.Errorf("unexpected argument type for strip mute value")
+	}
+	return val == 0, nil
+}
+
+// SetStripMute sets mute state for a specific strip (1-based indexing)
+func (x *Client) SetStripMute(strip int, muted bool) error {
+	address := fmt.Sprintf("/ch/%02d/mix/on", strip)
+	var value int32 = 0
+	if !muted {
+		value = 1
+	}
+	return x.SendMessage(address, value)
+}
+
 // StripFader requests the current fader level for a strip
-func (x *XAirClient) StripFader(strip int) (float64, error) {
+func (x *Client) StripFader(strip int) (float64, error) {
 	address := fmt.Sprintf("/ch/%02d/mix/fader", strip)
 	err := x.SendMessage(address)
 	if err != nil {
@@ -198,32 +239,100 @@ func (x *XAirClient) StripFader(strip int) (float64, error) {
 }
 
 // SetStripFader sets the fader level for a specific strip (1-based indexing)
-func (x *XAirClient) SetStripFader(strip int, level float64) error {
+func (x *Client) SetStripFader(strip int, level float64) error {
 	address := fmt.Sprintf("/ch/%02d/mix/fader", strip)
 	return x.SendMessage(address, float32(mustDbInto(level)))
 }
 
-// StripGain requests gain for a specific strip (1-based indexing)
-func (x *XAirClient) StripGain(strip int) error {
-	address := fmt.Sprintf("/ch/%02d/mix/fader", strip)
-	return x.SendMessage(address)
+// StripMicGain requests the phantom gain for a specific strip
+func (x *Client) StripMicGain(strip int) (float64, error) {
+	address := fmt.Sprintf("/ch/%02d/mix/gain", strip)
+	err := x.SendMessage(address)
+	if err != nil {
+		return 0, fmt.Errorf("failed to send strip gain request: %v", err)
+	}
+
+	resp := <-x.respChan
+	val, ok := resp.Arguments[0].(float32)
+	if !ok {
+		return 0, fmt.Errorf("unexpected argument type for strip gain value")
+	}
+	return mustDbFrom(float64(val)), nil
 }
 
-// SetStripGain sets gain for a specific strip (1-based indexing)
-func (x *XAirClient) SetStripGain(strip int, gain float32) error {
-	address := fmt.Sprintf("/ch/%02d/mix/fader", strip)
+// SetStripMicGain sets the phantom gain for a specific strip (1-based indexing)
+func (x *Client) SetStripMicGain(strip int, gain float32) error {
+	address := fmt.Sprintf("/ch/%02d/mix/gain", strip)
 	return x.SendMessage(address, gain)
 }
 
-// StripMute gets mute state for a specific strip (1-based indexing)
-func (x *XAirClient) StripMute(strip int) error {
-	address := fmt.Sprintf("/ch/%02d/mix/on", strip)
-	return x.SendMessage(address)
+// StripName requests the name for a specific strip
+func (x *Client) StripName(strip int) (string, error) {
+	address := fmt.Sprintf("/ch/%02d/config/name", strip)
+	err := x.SendMessage(address)
+	if err != nil {
+		return "", fmt.Errorf("failed to send strip name request: %v", err)
+	}
+
+	resp := <-x.respChan
+	val, ok := resp.Arguments[0].(string)
+	if !ok {
+		return "", fmt.Errorf("unexpected argument type for strip name value")
+	}
+	return val, nil
 }
 
-// SetStripMute sets mute state for a specific strip (1-based indexing)
-func (x *XAirClient) SetStripMute(strip int, muted bool) error {
-	address := fmt.Sprintf("/ch/%02d/mix/on", strip)
+// SetStripName sets the name for a specific strip
+func (x *Client) SetStripName(strip int, name string) error {
+	address := fmt.Sprintf("/ch/%02d/config/name", strip)
+	return x.SendMessage(address, name)
+}
+
+// StripColor requests the color for a specific strip
+func (x *Client) StripColor(strip int) (int32, error) {
+	address := fmt.Sprintf("/ch/%02d/config/color", strip)
+	err := x.SendMessage(address)
+	if err != nil {
+		return 0, fmt.Errorf("failed to send strip color request: %v", err)
+	}
+
+	resp := <-x.respChan
+	val, ok := resp.Arguments[0].(int32)
+	if !ok {
+		return 0, fmt.Errorf("unexpected argument type for strip color value")
+	}
+	return val, nil
+}
+
+// SetStripColor sets the color for a specific strip (0-15)
+func (x *Client) SetStripColor(strip int, color int32) error {
+	address := fmt.Sprintf("/ch/%02d/config/color", strip)
+	return x.SendMessage(address, color)
+}
+
+/* BUS METHODS */
+
+// BusMute requests the current mute status for a bus
+func (x *Client) BusMute(bus int) (bool, error) {
+	formatter := x.addressMap["bus"]
+	address := fmt.Sprintf(formatter, bus) + "/mix/on"
+	err := x.SendMessage(address)
+	if err != nil {
+		return false, err
+	}
+
+	resp := <-x.respChan
+	val, ok := resp.Arguments[0].(int32)
+	if !ok {
+		return false, fmt.Errorf("unexpected argument type for bus mute value")
+	}
+	return val == 0, nil
+}
+
+// SetBusMute sets the mute status for a specific bus (1-based indexing)
+func (x *Client) SetBusMute(bus int, muted bool) error {
+	formatter := x.addressMap["bus"]
+	address := fmt.Sprintf(formatter, bus) + "/mix/on"
 	var value int32 = 0
 	if !muted {
 		value = 1
@@ -231,32 +340,33 @@ func (x *XAirClient) SetStripMute(strip int, muted bool) error {
 	return x.SendMessage(address, value)
 }
 
-// StripName requests the name for a specific strip
-func (x *XAirClient) StripName(strip int) error {
-	address := fmt.Sprintf("/ch/%02d/config/name", strip)
-	return x.SendMessage(address)
+// BusFader requests the current fader level for a bus
+func (x *Client) BusFader(bus int) (float64, error) {
+	address := fmt.Sprintf("/bus/%01d/mix/fader", bus)
+	err := x.SendMessage(address)
+	if err != nil {
+		return 0, err
+	}
+
+	resp := <-x.respChan
+	val, ok := resp.Arguments[0].(float32)
+	if !ok {
+		return 0, fmt.Errorf("unexpected argument type for bus fader value")
+	}
+
+	return mustDbFrom(float64(val)), nil
 }
 
-// SetStripName sets the name for a specific strip
-func (x *XAirClient) SetStripName(strip int, name string) error {
-	address := fmt.Sprintf("/ch/%02d/config/name", strip)
-	return x.SendMessage(address, name)
+// SetBusFader sets the fader level for a specific bus (1-based indexing)
+func (x *Client) SetBusFader(bus int, level float64) error {
+	address := fmt.Sprintf("/bus/%01d/mix/fader", bus)
+	return x.SendMessage(address, float32(mustDbInto(level)))
 }
 
-// StripColor requests the color for a specific strip
-func (x *XAirClient) StripColor(strip int) error {
-	address := fmt.Sprintf("/ch/%02d/config/color", strip)
-	return x.SendMessage(address)
-}
-
-// SetStripColor sets the color for a specific strip (0-15)
-func (x *XAirClient) SetStripColor(strip int, color int32) error {
-	address := fmt.Sprintf("/ch/%02d/config/color", strip)
-	return x.SendMessage(address, color)
-}
+/* MAIN LR METHODS */
 
 // MainLRFader requests the current main L/R fader level
-func (x *XAirClient) MainLRFader() (float64, error) {
+func (x *Client) MainLRFader() (float64, error) {
 	err := x.SendMessage("/lr/mix/fader")
 	if err != nil {
 		return 0, err
@@ -271,12 +381,12 @@ func (x *XAirClient) MainLRFader() (float64, error) {
 }
 
 // SetMainLRFader sets the main L/R fader level
-func (x *XAirClient) SetMainLRFader(level float64) error {
+func (x *Client) SetMainLRFader(level float64) error {
 	return x.SendMessage("/lr/mix/fader", float32(mustDbInto(level)))
 }
 
 // MainLRMute requests the current main L/R mute status
-func (x *XAirClient) MainLRMute() (bool, error) {
+func (x *Client) MainLRMute() (bool, error) {
 	err := x.SendMessage("/lr/mix/on")
 	if err != nil {
 		return false, err
@@ -287,11 +397,11 @@ func (x *XAirClient) MainLRMute() (bool, error) {
 	if !ok {
 		return false, fmt.Errorf("unexpected argument type for main LR mute value")
 	}
-	return val == 0, nil // 0 = muted, 1 = unmuted
+	return val == 0, nil
 }
 
 // SetMainLRMute sets the main L/R mute status
-func (x *XAirClient) SetMainLRMute(muted bool) error {
+func (x *Client) SetMainLRMute(muted bool) error {
 	var value int32 = 0
 	if !muted {
 		value = 1
