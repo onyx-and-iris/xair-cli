@@ -11,12 +11,12 @@ import (
 
 type clientKey string
 
-func WithContext(ctx context.Context, client *xair.XAirClient) context.Context {
+func WithContext(ctx context.Context, client *xair.Client) context.Context {
 	return context.WithValue(ctx, clientKey("oscClient"), client)
 }
 
-func ClientFromContext(ctx context.Context) *xair.XAirClient {
-	if client, ok := ctx.Value(clientKey("oscClient")).(*xair.XAirClient); ok {
+func ClientFromContext(ctx context.Context) *xair.Client {
+	if client, ok := ctx.Value(clientKey("oscClient")).(*xair.Client); ok {
 		return client
 	}
 	return nil

@@ -18,7 +18,7 @@ type parser interface {
 }
 
 type engine struct {
-	Kind      string
+	Kind      MixerKind
 	conn      *net.UDPConn
 	mixerAddr *net.UDPAddr
 
@@ -54,12 +54,13 @@ func NewClient(mixerIP string, mixerPort int, opts ...Option) (*Client, error) {
 	log.Debugf("Local UDP connection: %s	", conn.LocalAddr().String())
 
 	e := &engine{
-		Kind:      "xair",
-		conn:      conn,
-		mixerAddr: mixerAddr,
-		parser:    newParser(),
-		done:      make(chan bool),
-		respChan:  make(chan *osc.Message, 100),
+		Kind:       KindXAir,
+		conn:       conn,
+		mixerAddr:  mixerAddr,
+		parser:     newParser(),
+		addressMap: addressMapForMixerKind(KindXAir),
+		done:       make(chan bool),
+		respChan:   make(chan *osc.Message, 100),
 	}
 
 	for _, opt := range opts {
