@@ -45,7 +45,7 @@ var busMuteCmd = &cobra.Command{
 			return
 		}
 
-		err := client.SetBusMute(busNum, muted)
+		err := client.Bus.SetMute(busNum, muted)
 		if err != nil {
 			cmd.PrintErrln("Error setting bus mute status:", err)
 			return
@@ -79,7 +79,7 @@ For example:
 		busIndex := mustConvToInt(args[0])
 
 		if len(args) == 1 {
-			level, err := client.BusFader(busIndex)
+			level, err := client.Bus.Fader(busIndex)
 			if err != nil {
 				cmd.PrintErrln("Error getting bus fader level:", err)
 				return
@@ -95,7 +95,7 @@ For example:
 
 		level := mustConvToFloat64(args[1])
 
-		err := client.SetBusFader(busIndex, level)
+		err := client.Bus.SetFader(busIndex, level)
 		if err != nil {
 			cmd.PrintErrln("Error setting bus fader level:", err)
 			return
@@ -139,7 +139,7 @@ For example:
 			target = mustConvToFloat64(args[1])
 		}
 
-		currentFader, err := client.BusFader(busIndex)
+		currentFader, err := client.Bus.Fader(busIndex)
 		if err != nil {
 			cmd.PrintErrln("Error getting current bus fader level:", err)
 			return
@@ -156,7 +156,7 @@ For example:
 
 		for currentFader > target {
 			currentFader -= 1.0
-			err := client.SetBusFader(busIndex, currentFader)
+			err := client.Bus.SetFader(busIndex, currentFader)
 			if err != nil {
 				cmd.PrintErrln("Error setting bus fader level:", err)
 				return
@@ -203,7 +203,7 @@ For example:
 			target = mustConvToFloat64(args[1])
 		}
 
-		currentFader, err := client.BusFader(busIndex)
+		currentFader, err := client.Bus.Fader(busIndex)
 		if err != nil {
 			cmd.PrintErrln("Error getting current bus fader level:", err)
 			return
@@ -220,7 +220,7 @@ For example:
 
 		for currentFader < target {
 			currentFader += 1.0
-			err := client.SetBusFader(busIndex, currentFader)
+			err := client.Bus.SetFader(busIndex, currentFader)
 			if err != nil {
 				cmd.PrintErrln("Error setting bus fader level:", err)
 				return

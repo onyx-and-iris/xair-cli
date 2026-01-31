@@ -16,6 +16,7 @@ type parser interface {
 type Client struct {
 	engine
 	Strip *Strip
+	Bus   *Bus
 }
 
 // NewClient creates a new XAirClient instance
@@ -56,6 +57,7 @@ func NewClient(mixerIP string, mixerPort int, opts ...Option) (*Client, error) {
 		engine: *e,
 	}
 	c.Strip = NewStrip(*c)
+	c.Bus = NewBus(*c)
 
 	return c, nil
 }
@@ -104,61 +106,6 @@ func (c *Client) KeepAlive() error {
 // RequestStatus requests mixer status
 func (c *Client) RequestStatus() error {
 	return c.SendMessage("/status")
-}
-
-/* BUS METHODS */
-
-// BusMute requests the current mute status for a bus
-func (c *Client) BusMute(bus int) (bool, error) {
-	formatter := c.addressMap["bus"]
-	address := fmt.Sprintf(formatter, bus) + "/mix/on"
-	err := c.SendMessage(address)
-	if err != nil {
-		return false, err
-	}
-
-	resp := <-c.respChan
-	val, ok := resp.Arguments[0].(int32)
-	if !ok {
-		return false, fmt.Errorf("unexpected argument type for bus mute value")
-	}
-	return val == 0, nil
-}
-
-// SetBusMute sets the mute status for a specific bus (1-based indexing)
-func (c *Client) SetBusMute(bus int, muted bool) error {
-	formatter := c.addressMap["bus"]
-	address := fmt.Sprintf(formatter, bus) + "/mix/on"
-	var value int32
-	if !muted {
-		value = 1
-	}
-	return c.SendMessage(address, value)
-}
-
-// BusFader requests the current fader level for a bus
-func (c *Client) BusFader(bus int) (float64, error) {
-	formatter := c.addressMap["bus"]
-	address := fmt.Sprintf(formatter, bus) + "/mix/fader"
-	err := c.SendMessage(address)
-	if err != nil {
-		return 0, err
-	}
-
-	resp := <-c.respChan
-	val, ok := resp.Arguments[0].(float32)
-	if !ok {
-		return 0, fmt.Errorf("unexpected argument type for bus fader value")
-	}
-
-	return mustDbFrom(float64(val)), nil
-}
-
-// SetBusFader sets the fader level for a specific bus (1-based indexing)
-func (c *Client) SetBusFader(bus int, level float64) error {
-	formatter := c.addressMap["bus"]
-	address := fmt.Sprintf(formatter, bus) + "/mix/fader"
-	return c.SendMessage(address, float32(mustDbInto(level)))
 }
 
 /* MAIN LR METHODS */
