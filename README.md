@@ -12,16 +12,17 @@ Usage:
   xair-cli [command]
 
 Available Commands:
-  bus         A brief description of your command
+  bus         Commands to control individual buses
   completion  Generate the autocompletion script for the specified shell
   help        Help about any command
-  main        A brief description of your command
-  strip       A brief description of your command
+  main        Commands to control the main output
+  strip       Commands to control individual strips
 
 Flags:
   -h, --help              help for xair-cli
   -H, --host string       host address of the X Air mixer (default "mixer.local")
-  -l, --loglevel string   Log level (debug, info, warn, error, fatal, panic) (default "info")
+  -k, --kind string       Kind of mixer (xair, x32) (default "xair")
+  -l, --loglevel string   Log level (debug, info, warn, error, fatal, panic) (default "warn")
   -p, --port int          Port number of the X Air mixer (default 10024)
 
 Use "xair-cli [command] --help" for more information about a command.
