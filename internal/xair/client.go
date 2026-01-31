@@ -343,7 +343,8 @@ func (c *Client) SetBusMute(bus int, muted bool) error {
 
 // BusFader requests the current fader level for a bus
 func (c *Client) BusFader(bus int) (float64, error) {
-	address := fmt.Sprintf("/bus/%01d/mix/fader", bus)
+	formatter := c.addressMap["bus"]
+	address := fmt.Sprintf(formatter, bus) + "/mix/fader"
 	err := c.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -360,7 +361,8 @@ func (c *Client) BusFader(bus int) (float64, error) {
 
 // SetBusFader sets the fader level for a specific bus (1-based indexing)
 func (c *Client) SetBusFader(bus int, level float64) error {
-	address := fmt.Sprintf("/bus/%01d/mix/fader", bus)
+	formatter := c.addressMap["bus"]
+	address := fmt.Sprintf(formatter, bus) + "/mix/fader"
 	return c.SendMessage(address, float32(mustDbInto(level)))
 }
 
