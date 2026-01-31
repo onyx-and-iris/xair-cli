@@ -126,3 +126,25 @@ func (s *Strip) SetColor(strip int, color int32) error {
 	address := fmt.Sprintf("/ch/%02d/config/color", strip)
 	return s.client.SendMessage(address, color)
 }
+
+// Sends requests the sends level for a mixbus.
+func (s *Strip) SendLevel(strip int, bus int) (float64, error) {
+	address := fmt.Sprintf("/ch/%02d/mix/%02d/level", strip, bus)
+	err := s.client.SendMessage(address)
+	if err != nil {
+		return 0, fmt.Errorf("failed to send strip send level request: %v", err)
+	}
+
+	resp := <-s.client.respChan
+	val, ok := resp.Arguments[0].(float32)
+	if !ok {
+		return 0, fmt.Errorf("unexpected argument type for strip send level value")
+	}
+	return mustDbFrom(float64(val)), nil
+}
+
+// SetSendLevel sets the sends level for a mixbus.
+func (s *Strip) SetSendLevel(strip int, bus int, level float64) error {
+	address := fmt.Sprintf("/ch/%02d/mix/%02d/level", strip, bus)
+	return s.client.SendMessage(address, float32(mustDbInto(level)))
+}
