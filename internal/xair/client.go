@@ -15,6 +15,7 @@ type parser interface {
 
 type Client struct {
 	engine
+	Main  *Main
 	Strip *Strip
 	Bus   *Bus
 }
@@ -56,6 +57,7 @@ func NewClient(mixerIP string, mixerPort int, opts ...Option) (*Client, error) {
 	c := &Client{
 		engine: *e,
 	}
+	c.Main = newMain(*c)
 	c.Strip = NewStrip(*c)
 	c.Bus = NewBus(*c)
 
@@ -106,50 +108,4 @@ func (c *Client) KeepAlive() error {
 // RequestStatus requests mixer status
 func (c *Client) RequestStatus() error {
 	return c.SendMessage("/status")
-}
-
-/* MAIN LR METHODS */
-
-// MainLRFader requests the current main L/R fader level
-func (c *Client) MainLRFader() (float64, error) {
-	err := c.SendMessage("/lr/mix/fader")
-	if err != nil {
-		return 0, err
-	}
-
-	resp := <-c.respChan
-	val, ok := resp.Arguments[0].(float32)
-	if !ok {
-		return 0, fmt.Errorf("unexpected argument type for main LR fader value")
-	}
-	return mustDbFrom(float64(val)), nil
-}
-
-// SetMainLRFader sets the main L/R fader level
-func (c *Client) SetMainLRFader(level float64) error {
-	return c.SendMessage("/lr/mix/fader", float32(mustDbInto(level)))
-}
-
-// MainLRMute requests the current main L/R mute status
-func (c *Client) MainLRMute() (bool, error) {
-	err := c.SendMessage("/lr/mix/on")
-	if err != nil {
-		return false, err
-	}
-
-	resp := <-c.respChan
-	val, ok := resp.Arguments[0].(int32)
-	if !ok {
-		return false, fmt.Errorf("unexpected argument type for main LR mute value")
-	}
-	return val == 0, nil
-}
-
-// SetMainLRMute sets the main L/R mute status
-func (c *Client) SetMainLRMute(muted bool) error {
-	var value int32
-	if !muted {
-		value = 1
-	}
-	return c.SendMessage("/lr/mix/on", value)
 }

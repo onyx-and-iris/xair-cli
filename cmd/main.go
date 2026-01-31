@@ -44,7 +44,7 @@ For example:
 		}
 
 		if len(args) == 0 {
-			resp, err := client.MainLRMute()
+			resp, err := client.Main.Mute()
 			if err != nil {
 				cmd.PrintErrln("Error getting main LR mute status:", err)
 				return
@@ -58,7 +58,7 @@ For example:
 			muted = true
 		}
 
-		err := client.SetMainLRMute(muted)
+		err := client.Main.SetMute(muted)
 		if err != nil {
 			cmd.PrintErrln("Error setting main LR mute status:", err)
 			return
@@ -91,7 +91,7 @@ For example:
 		}
 
 		if len(args) == 0 {
-			resp, err := client.MainLRFader()
+			resp, err := client.Main.Fader()
 			if err != nil {
 				cmd.PrintErrln("Error getting main LR fader:", err)
 				return
@@ -100,7 +100,7 @@ For example:
 			return
 		}
 
-		err := client.SetMainLRFader(mustConvToFloat64(args[0]))
+		err := client.Main.SetFader(mustConvToFloat64(args[0]))
 		if err != nil {
 			cmd.PrintErrln("Error setting main LR fader:", err)
 			return
@@ -140,7 +140,7 @@ This command will fade out the main output to the specified dB level.
 			target = mustConvToFloat64(args[0])
 		}
 
-		currentFader, err := client.MainLRFader()
+		currentFader, err := client.Main.Fader()
 		if err != nil {
 			cmd.PrintErrln("Error getting current main LR fader:", err)
 			return
@@ -158,7 +158,7 @@ This command will fade out the main output to the specified dB level.
 
 		for currentFader > target {
 			currentFader -= 1.0
-			err = client.SetMainLRFader(currentFader)
+			err = client.Main.SetFader(currentFader)
 			if err != nil {
 				cmd.PrintErrln("Error setting main LR fader:", err)
 				return
@@ -200,7 +200,7 @@ This command will fade in the main output to the specified dB level.
 			target = mustConvToFloat64(args[0])
 		}
 
-		currentFader, err := client.MainLRFader()
+		currentFader, err := client.Main.Fader()
 		if err != nil {
 			cmd.PrintErrln("Error getting current main LR fader:", err)
 			return
@@ -218,7 +218,7 @@ This command will fade in the main output to the specified dB level.
 
 		for currentFader < target {
 			currentFader += 1.0
-			err = client.SetMainLRFader(currentFader)
+			err = client.Main.SetFader(currentFader)
 			if err != nil {
 				cmd.PrintErrln("Error setting main LR fader:", err)
 				return
