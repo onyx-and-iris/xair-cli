@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"os"
+	"runtime/debug"
 	"strings"
 
 	"github.com/charmbracelet/log"
@@ -11,6 +12,8 @@ import (
 	"github.com/onyx-and-iris/xair-cli/internal/xair"
 )
 
+var version string // Version of the CLI, set during build time
+
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "xair-cli",
@@ -18,6 +21,7 @@ var rootCmd = &cobra.Command{
 	Long: `xair-cli is a command-line tool that allows users to send OSC messages
 to Behringer X Air mixers for remote control and configuration. It supports
 various commands to manage mixer settings directly from the terminal.`,
+	Version: versionFromBuild(),
 	PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 		level, err := log.ParseLevel(viper.GetString("loglevel"))
 		if err != nil {
@@ -87,4 +91,16 @@ func init() {
 	viper.BindPFlag("port", rootCmd.PersistentFlags().Lookup("port"))
 	viper.BindPFlag("loglevel", rootCmd.PersistentFlags().Lookup("loglevel"))
 	viper.BindPFlag("kind", rootCmd.PersistentFlags().Lookup("kind"))
+}
+
+func versionFromBuild() string {
+	if version == "" {
+		info, ok := debug.ReadBuildInfo()
+		if !ok {
+			return "(unable to read version)"
+		}
+		version = strings.Split(info.Main.Version, "-")[0]
+	}
+
+	return version
 }
