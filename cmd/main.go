@@ -101,7 +101,7 @@ For example:
 			return
 		}
 
-		err := client.SetMainLRFader(mustConv(args[0]))
+		err := client.SetMainLRFader(mustConvToFloat64(args[0]))
 		if err != nil {
 			cmd.PrintErrln("Error setting main LR fader:", err)
 			return
@@ -137,7 +137,7 @@ This command will fade out the main output to the specified dB level.
 		// Default target for fadeout
 		target := -90.0
 		if len(args) > 0 {
-			target = mustConv(args[0])
+			target = mustConvToFloat64(args[0])
 		}
 
 		currentFader, err := client.MainLRFader()
@@ -158,7 +158,11 @@ This command will fade out the main output to the specified dB level.
 
 		for currentFader > target {
 			currentFader -= 1.0
-			client.SetMainLRFader(currentFader)
+			err = client.SetMainLRFader(currentFader)
+			if err != nil {
+				cmd.PrintErrln("Error setting main LR fader:", err)
+				return
+			}
 			time.Sleep(stepDelay)
 		}
 		cmd.Println("Main output faded out successfully")
@@ -192,7 +196,7 @@ This command will fade in the main output to the specified dB level.
 
 		target := 0.0
 		if len(args) > 0 {
-			target = mustConv(args[0])
+			target = mustConvToFloat64(args[0])
 		}
 
 		currentFader, err := client.MainLRFader()
@@ -213,7 +217,11 @@ This command will fade in the main output to the specified dB level.
 
 		for currentFader < target {
 			currentFader += 1.0
-			client.SetMainLRFader(currentFader)
+			err = client.SetMainLRFader(currentFader)
+			if err != nil {
+				cmd.PrintErrln("Error setting main LR fader:", err)
+				return
+			}
 			time.Sleep(stepDelay)
 		}
 		cmd.Println("Main output faded in successfully")
