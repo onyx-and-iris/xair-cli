@@ -128,7 +128,7 @@ This command will fade out the main output to the specified dB level.
 			return
 		}
 
-		duration, err := cmd.Flags().GetInt("duration")
+		duration, err := cmd.Flags().GetFloat64("duration")
 		if err != nil {
 			cmd.PrintErrln("Error getting duration flag:", err)
 			return
@@ -147,7 +147,7 @@ This command will fade out the main output to the specified dB level.
 		}
 
 		// Calculate total steps needed to reach target dB
-		totalSteps := int(currentFader - target)
+		totalSteps := float64(currentFader - target)
 		if totalSteps <= 0 {
 			cmd.Println("Main output is already faded out")
 			return
@@ -188,7 +188,7 @@ This command will fade in the main output to the specified dB level.
 			return
 		}
 
-		duration, err := cmd.Flags().GetInt("duration")
+		duration, err := cmd.Flags().GetFloat64("duration")
 		if err != nil {
 			cmd.PrintErrln("Error getting duration flag:", err)
 			return
@@ -206,7 +206,7 @@ This command will fade in the main output to the specified dB level.
 		}
 
 		// Calculate total steps needed to reach target dB
-		totalSteps := int(target - currentFader)
+		totalSteps := float64(target - currentFader)
 		if totalSteps <= 0 {
 			cmd.Println("Main output is already at or above target level")
 			return
@@ -230,11 +230,12 @@ This command will fade in the main output to the specified dB level.
 
 func init() {
 	rootCmd.AddCommand(mainCmd)
+
 	mainCmd.AddCommand(mainMuteCmd)
 
 	mainCmd.AddCommand(mainFaderCmd)
 	mainCmd.AddCommand(mainFadeOutCmd)
-	mainFadeOutCmd.Flags().IntP("duration", "d", 5, "Duration for fade out in seconds")
+	mainFadeOutCmd.Flags().Float64P("duration", "d", 5, "Duration for fade out in seconds")
 	mainCmd.AddCommand(mainFadeInCmd)
-	mainFadeInCmd.Flags().IntP("duration", "d", 5, "Duration for fade in in seconds")
+	mainFadeInCmd.Flags().Float64P("duration", "d", 5, "Duration for fade in in seconds")
 }
