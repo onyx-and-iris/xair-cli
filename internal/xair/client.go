@@ -28,6 +28,7 @@ type engine struct {
 
 type Client struct {
 	engine
+	Strip *Strip
 }
 
 // NewClient creates a new XAirClient instance
@@ -64,9 +65,12 @@ func NewClient(mixerIP string, mixerPort int, opts ...Option) (*Client, error) {
 		opt(e)
 	}
 
-	return &Client{
+	c := &Client{
 		engine: *e,
-	}, nil
+	}
+	c.Strip = NewStrip(*c)
+
+	return c, nil
 }
 
 // Start begins listening for messages in a goroutine
@@ -189,123 +193,6 @@ func (c *Client) KeepAlive() error {
 // RequestStatus requests mixer status
 func (c *Client) RequestStatus() error {
 	return c.SendMessage("/status")
-}
-
-/* STRIP METHODS */
-
-// StripMute gets mute state for a specific strip (1-based indexing)
-func (c *Client) StripMute(strip int) (bool, error) {
-	address := fmt.Sprintf("/ch/%02d/mix/on", strip)
-	err := c.SendMessage(address)
-	if err != nil {
-		return false, err
-	}
-
-	resp := <-c.respChan
-	val, ok := resp.Arguments[0].(int32)
-	if !ok {
-		return false, fmt.Errorf("unexpected argument type for strip mute value")
-	}
-	return val == 0, nil
-}
-
-// SetStripMute sets mute state for a specific strip (1-based indexing)
-func (c *Client) SetStripMute(strip int, muted bool) error {
-	address := fmt.Sprintf("/ch/%02d/mix/on", strip)
-	var value int32 = 0
-	if !muted {
-		value = 1
-	}
-	return c.SendMessage(address, value)
-}
-
-// StripFader requests the current fader level for a strip
-func (c *Client) StripFader(strip int) (float64, error) {
-	address := fmt.Sprintf("/ch/%02d/mix/fader", strip)
-	err := c.SendMessage(address)
-	if err != nil {
-		return 0, err
-	}
-
-	resp := <-c.respChan
-	val, ok := resp.Arguments[0].(float32)
-	if !ok {
-		return 0, fmt.Errorf("unexpected argument type for fader value")
-	}
-
-	return mustDbFrom(float64(val)), nil
-}
-
-// SetStripFader sets the fader level for a specific strip (1-based indexing)
-func (c *Client) SetStripFader(strip int, level float64) error {
-	address := fmt.Sprintf("/ch/%02d/mix/fader", strip)
-	return c.SendMessage(address, float32(mustDbInto(level)))
-}
-
-// StripMicGain requests the phantom gain for a specific strip
-func (c *Client) StripMicGain(strip int) (float64, error) {
-	address := fmt.Sprintf("/ch/%02d/mix/gain", strip)
-	err := c.SendMessage(address)
-	if err != nil {
-		return 0, fmt.Errorf("failed to send strip gain request: %v", err)
-	}
-
-	resp := <-c.respChan
-	val, ok := resp.Arguments[0].(float32)
-	if !ok {
-		return 0, fmt.Errorf("unexpected argument type for strip gain value")
-	}
-	return mustDbFrom(float64(val)), nil
-}
-
-// SetStripMicGain sets the phantom gain for a specific strip (1-based indexing)
-func (c *Client) SetStripMicGain(strip int, gain float32) error {
-	address := fmt.Sprintf("/ch/%02d/mix/gain", strip)
-	return c.SendMessage(address, gain)
-}
-
-// StripName requests the name for a specific strip
-func (c *Client) StripName(strip int) (string, error) {
-	address := fmt.Sprintf("/ch/%02d/config/name", strip)
-	err := c.SendMessage(address)
-	if err != nil {
-		return "", fmt.Errorf("failed to send strip name request: %v", err)
-	}
-
-	resp := <-c.respChan
-	val, ok := resp.Arguments[0].(string)
-	if !ok {
-		return "", fmt.Errorf("unexpected argument type for strip name value")
-	}
-	return val, nil
-}
-
-// SetStripName sets the name for a specific strip
-func (c *Client) SetStripName(strip int, name string) error {
-	address := fmt.Sprintf("/ch/%02d/config/name", strip)
-	return c.SendMessage(address, name)
-}
-
-// StripColor requests the color for a specific strip
-func (c *Client) StripColor(strip int) (int32, error) {
-	address := fmt.Sprintf("/ch/%02d/config/color", strip)
-	err := c.SendMessage(address)
-	if err != nil {
-		return 0, fmt.Errorf("failed to send strip color request: %v", err)
-	}
-
-	resp := <-c.respChan
-	val, ok := resp.Arguments[0].(int32)
-	if !ok {
-		return 0, fmt.Errorf("unexpected argument type for strip color value")
-	}
-	return val, nil
-}
-
-// SetStripColor sets the color for a specific strip (0-15)
-func (c *Client) SetStripColor(strip int, color int32) error {
-	address := fmt.Sprintf("/ch/%02d/config/color", strip)
-	return c.SendMessage(address, color)
 }
 
 /* BUS METHODS */

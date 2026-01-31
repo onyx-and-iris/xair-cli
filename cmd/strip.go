@@ -50,7 +50,7 @@ For example:
 		stripIndex := mustConvToInt(args[0])
 
 		if len(args) == 1 {
-			resp, err := client.StripMute(stripIndex)
+			resp, err := client.Strip.Mute(stripIndex)
 			if err != nil {
 				cmd.PrintErrln("Error getting strip mute status:", err)
 				return
@@ -70,7 +70,7 @@ For example:
 			return
 		}
 
-		err := client.SetStripMute(stripIndex, muted)
+		err := client.Strip.SetMute(stripIndex, muted)
 		if err != nil {
 			cmd.PrintErrln("Error setting strip mute status:", err)
 			return
@@ -114,7 +114,7 @@ For example:
 		stripIndex := mustConvToInt(args[0])
 
 		if len(args) == 1 {
-			level, err := client.StripFader(stripIndex)
+			level, err := client.Strip.Fader(stripIndex)
 			if err != nil {
 				cmd.PrintErrln("Error getting strip fader level:", err)
 				return
@@ -130,7 +130,7 @@ For example:
 
 		level := mustConvToFloat64(args[1])
 
-		err := client.SetStripFader(stripIndex, level)
+		err := client.Strip.SetFader(stripIndex, level)
 		if err != nil {
 			cmd.PrintErrln("Error setting strip fader level:", err)
 			return
@@ -174,7 +174,7 @@ For example:
 			target = mustConvToFloat64(args[1])
 		}
 
-		currentFader, err := client.StripFader(stripIndex)
+		currentFader, err := client.Strip.Fader(stripIndex)
 		if err != nil {
 			cmd.PrintErrln("Error getting current strip fader level:", err)
 			return
@@ -190,7 +190,7 @@ For example:
 
 		for currentFader > target {
 			currentFader -= 1.0
-			err := client.SetStripFader(stripIndex, currentFader)
+			err := client.Strip.SetFader(stripIndex, currentFader)
 			if err != nil {
 				cmd.PrintErrln("Error setting strip fader level:", err)
 				return
@@ -237,7 +237,7 @@ For example:
 			target = mustConvToFloat64(args[1])
 		}
 
-		currentFader, err := client.StripFader(stripIndex)
+		currentFader, err := client.Strip.Fader(stripIndex)
 		if err != nil {
 			cmd.PrintErrln("Error getting current strip fader level:", err)
 			return
@@ -253,7 +253,7 @@ For example:
 
 		for currentFader < target {
 			currentFader += 1.0
-			err := client.SetStripFader(stripIndex, currentFader)
+			err := client.Strip.SetFader(stripIndex, currentFader)
 			if err != nil {
 				cmd.PrintErrln("Error setting strip fader level:", err)
 				return
