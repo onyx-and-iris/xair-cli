@@ -70,6 +70,17 @@ var busFaderCmd = &cobra.Command{
 			return
 		}
 
+		if len(args) == 1 {
+			busNum := mustConvToInt(args[0])
+			level, err := client.BusFader(busNum)
+			if err != nil {
+				cmd.PrintErrln("Error getting bus fader level:", err)
+				return
+			}
+			cmd.Printf("Bus %d fader level: %.1f dB\n", busNum, level)
+			return
+		}
+
 		if len(args) < 2 {
 			cmd.PrintErrln("Please provide bus number and fader level (in dB)")
 			return
