@@ -1,26 +1,22 @@
-/*
-LICENSE: https://github.com/onyx-and-iris/xair-cli/blob/main/LICENSE
-*/
 package cmd
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/spf13/cobra"
 )
 
-// busCmd represents the bus command
+// busCmd represents the bus command.
 var busCmd = &cobra.Command{
 	Use:   "bus",
 	Short: "Commands to control individual buses",
 	Long:  `Commands to control individual buses of the XAir mixer, including mute status.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("bus called")
+	Run: func(cmd *cobra.Command, _ []string) {
+		cmd.Help()
 	},
 }
 
-// busMuteCmd represents the bus mute command
+// busMuteCmd represents the bus mute command.
 var busMuteCmd = &cobra.Command{
 	Use:   "mute",
 	Short: "Get or set the bus mute status",
@@ -58,11 +54,21 @@ var busMuteCmd = &cobra.Command{
 	},
 }
 
-// busFaderCmd represents the bus fader command
+// busFaderCmd represents the bus fader command.
 var busFaderCmd = &cobra.Command{
 	Use:   "fader",
 	Short: "Get or set the bus fader level",
-	Long:  `Get or set the fader level of a specific bus.`,
+	Long: `Get or set the fader level of a specific bus.
+If no level argument is provided, the current fader level is retrieved.
+If a level argument (in dB) is provided, the bus fader is set to that level.
+
+For example:
+	# Get the current fader level of bus 1
+	xair-cli bus fader 1
+	
+	# Set the fader level of bus 1 to -10.0 dB
+	xair-cli bus fader 1 -10.0
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -70,14 +76,15 @@ var busFaderCmd = &cobra.Command{
 			return
 		}
 
+		busIndex := mustConvToInt(args[0])
+
 		if len(args) == 1 {
-			busNum := mustConvToInt(args[0])
-			level, err := client.BusFader(busNum)
+			level, err := client.BusFader(busIndex)
 			if err != nil {
 				cmd.PrintErrln("Error getting bus fader level:", err)
 				return
 			}
-			cmd.Printf("Bus %d fader level: %.1f dB\n", busNum, level)
+			cmd.Printf("Bus %d fader level: %.1f dB\n", busIndex, level)
 			return
 		}
 
@@ -86,19 +93,18 @@ var busFaderCmd = &cobra.Command{
 			return
 		}
 
-		busNum := mustConvToInt(args[0])
 		level := mustConvToFloat64(args[1])
 
-		err := client.SetBusFader(busNum, level)
+		err := client.SetBusFader(busIndex, level)
 		if err != nil {
 			cmd.PrintErrln("Error setting bus fader level:", err)
 			return
 		}
-		cmd.Printf("Bus %d fader set to %.2f dB\n", busNum, level)
+		cmd.Printf("Bus %d fader set to %.2f dB\n", busIndex, level)
 	},
 }
 
-// busFadeOutCmd represents the bus fade out command
+// busFadeOutCmd represents the bus fade out command.
 var busFadeOutCmd = &cobra.Command{
 	Use:   "fadeout",
 	Short: "Fade out the bus fader over a specified duration",
@@ -142,7 +148,7 @@ For example:
 		// Calculate total steps needed to reach target dB
 		totalSteps := float64(currentFader - target)
 		if totalSteps <= 0 {
-			cmd.Println("Bus is already faded out")
+			cmd.Println("Bus is already at or below target level")
 			return
 		}
 
@@ -162,7 +168,7 @@ For example:
 	},
 }
 
-// BusFadeInCmd represents the bus fade in command
+// BusFadeInCmd represents the bus fade in command.
 var busFadeInCmd = &cobra.Command{
 	Use:   "fadein",
 	Short: "Fade in the bus fader over a specified duration",
@@ -233,7 +239,7 @@ func init() {
 
 	busCmd.AddCommand(busFaderCmd)
 	busCmd.AddCommand(busFadeOutCmd)
-	busFadeOutCmd.Flags().Float64P("duration", "d", 5, "Duration for fade out in seconds")
+	busFadeOutCmd.Flags().Float64P("duration", "d", 5.0, "Duration for fade out in seconds")
 	busCmd.AddCommand(busFadeInCmd)
-	busFadeInCmd.Flags().Float64P("duration", "d", 5, "Duration for fade in in seconds")
+	busFadeInCmd.Flags().Float64P("duration", "d", 5.0, "Duration for fade in in seconds")
 }
