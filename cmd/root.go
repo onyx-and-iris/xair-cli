@@ -28,13 +28,13 @@ various commands to manage mixer settings directly from the terminal.`,
 		}
 		log.SetLevel(level)
 
-		kind := xair.NewMixerKind(viper.GetString("kind"))
+		kind := viper.GetString("kind")
 		log.Debugf("Initializing client for mixer kind: %s", kind)
 
 		client, err := xair.NewClient(
 			viper.GetString("host"),
 			viper.GetInt("port"),
-			xair.WithKind(string(kind)),
+			xair.WithKind(kind),
 		)
 		if err != nil {
 			return err
