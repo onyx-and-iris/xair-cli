@@ -334,7 +334,7 @@ func (c *Client) BusMute(bus int) (bool, error) {
 func (c *Client) SetBusMute(bus int, muted bool) error {
 	formatter := c.addressMap["bus"]
 	address := fmt.Sprintf(formatter, bus) + "/mix/on"
-	var value int32 = 0
+	var value int32
 	if !muted {
 		value = 1
 	}
@@ -405,7 +405,7 @@ func (c *Client) MainLRMute() (bool, error) {
 
 // SetMainLRMute sets the main L/R mute status
 func (c *Client) SetMainLRMute(muted bool) error {
-	var value int32 = 0
+	var value int32
 	if !muted {
 		value = 1
 	}
