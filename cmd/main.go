@@ -18,7 +18,7 @@ var mainCmd = &cobra.Command{
 
 // mainMuteCmd represents the main mute command.
 var mainMuteCmd = &cobra.Command{
-	Use:   "mute",
+	Use:   "mute [true|false]",
 	Short: "Get or set the main LR mute status",
 	Long: `Get or set the main L/R mute status.
 
@@ -69,7 +69,7 @@ For example:
 
 // mainFaderCmd represents the main fader command.
 var mainFaderCmd = &cobra.Command{
-	Use:   "fader",
+	Use:   "fader [level in dB]",
 	Short: "Set or get the main LR fader level",
 	Long: `Set or get the main L/R fader level in dB.
 
@@ -111,7 +111,7 @@ For example:
 
 // mainFadeOutCmd represents the main fadeout command.
 var mainFadeOutCmd = &cobra.Command{
-	Use:   "fadeout [target_db]",
+	Use:   "fadeout --duration [seconds] [target_db]",
 	Short: "Fade out the main output",
 	Long: `Fade out the main output over a specified duration.
 For example:
@@ -171,7 +171,7 @@ This command will fade out the main output to the specified dB level.
 
 // mainFadeInCmd represents the main fadein command.
 var mainFadeInCmd = &cobra.Command{
-	Use:   "fadein [target_db]",
+	Use:   "fadein --duration [seconds] [target_db]",
 	Short: "Fade in the main output",
 	Long: `Fade in the main output over a specified duration.
 
