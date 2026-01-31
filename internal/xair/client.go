@@ -3,7 +3,6 @@ package xair
 import (
 	"fmt"
 	"net"
-	"time"
 
 	"github.com/charmbracelet/log"
 
@@ -12,18 +11,6 @@ import (
 
 type parser interface {
 	Parse(data []byte) (*osc.Message, error)
-}
-
-type engine struct {
-	Kind      MixerKind
-	conn      *net.UDPConn
-	mixerAddr *net.UDPAddr
-
-	parser     parser
-	addressMap map[string]string
-
-	done     chan bool
-	respChan chan *osc.Message
 }
 
 type Client struct {
@@ -75,97 +62,21 @@ func NewClient(mixerIP string, mixerPort int, opts ...Option) (*Client, error) {
 
 // Start begins listening for messages in a goroutine
 func (c *Client) StartListening() {
-	go c.receiveLoop()
-	log.Debugf("Started listening on %s...", c.conn.LocalAddr().String())
-}
-
-// receiveLoop handles incoming OSC messages
-func (c *Client) receiveLoop() {
-	buffer := make([]byte, 4096)
-
-	for {
-		select {
-		case <-c.done:
-			return
-		default:
-			// Set read timeout to avoid blocking forever
-			c.conn.SetReadDeadline(time.Now().Add(100 * time.Millisecond))
-
-			n, _, err := c.conn.ReadFromUDP(buffer)
-			if err != nil {
-				if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
-					// Timeout is expected, continue loop
-					continue
-				}
-				// Check if we're shutting down to avoid logging expected errors
-				select {
-				case <-c.done:
-					return
-				default:
-					log.Errorf("Read error: %v", err)
-					return
-				}
-			}
-
-			msg, err := c.parseOSCMessage(buffer[:n])
-			if err != nil {
-				log.Errorf("Failed to parse OSC message: %v", err)
-				continue
-			}
-			c.respChan <- msg
-		}
-	}
-}
-
-// parseOSCMessage parses raw bytes into an OSC message with improved error handling
-func (c *Client) parseOSCMessage(data []byte) (*osc.Message, error) {
-	msg, err := c.parser.Parse(data)
-	if err != nil {
-		return nil, err
-	}
-
-	return msg, nil
+	go c.engine.receiveLoop()
+	log.Debugf("Started listening on %s...", c.engine.conn.LocalAddr().String())
 }
 
 // Stop stops the client and closes the connection
 func (c *Client) Stop() {
-	close(c.done)
-	if c.conn != nil {
-		c.conn.Close()
+	close(c.engine.done)
+	if c.engine.conn != nil {
+		c.engine.conn.Close()
 	}
 }
 
 // SendMessage sends an OSC message to the mixer using the unified connection
 func (c *Client) SendMessage(address string, args ...any) error {
-	return c.SendToAddress(c.mixerAddr, address, args...)
-}
-
-// SendToAddress sends an OSC message to a specific address (enables replying to different ports)
-func (c *Client) SendToAddress(addr *net.UDPAddr, oscAddress string, args ...any) error {
-	msg := osc.NewMessage(oscAddress)
-	for _, arg := range args {
-		msg.Append(arg)
-	}
-
-	log.Debugf("Sending to %v: %s", addr, msg.String())
-	if len(args) > 0 {
-		log.Debug(" - Arguments: ")
-		for i, arg := range args {
-			if i > 0 {
-				log.Debug(", ")
-			}
-			log.Debugf("%v", arg)
-		}
-	}
-	log.Debug("")
-
-	data, err := msg.MarshalBinary()
-	if err != nil {
-		return fmt.Errorf("failed to marshal message: %v", err)
-	}
-
-	_, err = c.conn.WriteToUDP(data, addr)
-	return err
+	return c.engine.sendToAddress(c.mixerAddr, address, args...)
 }
 
 // RequestInfo requests mixer information
