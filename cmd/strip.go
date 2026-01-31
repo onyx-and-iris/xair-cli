@@ -8,9 +8,9 @@ import (
 
 // stripCmd represents the strip command.
 var stripCmd = &cobra.Command{
-	Use:   "strip",
 	Short: "Commands to control individual strips",
 	Long:  `Commands to control individual strips of the XAir mixer, including fader level and mute status.`,
+	Use:   "strip",
 	Run: func(cmd *cobra.Command, _ []string) {
 		cmd.Help()
 	},
@@ -18,23 +18,20 @@ var stripCmd = &cobra.Command{
 
 // stripMuteCmd represents the strip mute command.
 var stripMuteCmd = &cobra.Command{
-	Use:   "mute [strip number] [true|false]",
 	Short: "Get or set the mute status of a strip",
 	Long: `Get or set the mute status of a specific strip.
 
 If no argument is provided, the current mute status is retrieved.
 If "true" or "1" is provided as an argument, the strip is muted.
-If "false" or "0" is provided, the strip is unmuted.
-
-For example:
-  # Get the current mute status of strip 1
+If "false" or "0" is provided, the strip is unmuted.`,
+	Use: "mute [strip number] [true|false]",
+	Example: `  # Get the current mute status of strip 1
   xair-cli strip mute 1
   
   # Mute strip 1
   xair-cli strip mute 1 true
   # Unmute strip 1
-  xair-cli strip mute 1 false
-`,
+  xair-cli strip mute 1 false`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -85,20 +82,17 @@ For example:
 
 // stripFaderCmd represents the strip fader command.
 var stripFaderCmd = &cobra.Command{
-	Use:   "fader [strip number] [level in dB]",
 	Short: "Get or set the fader level of a strip",
 	Long: `Get or set the fader level of a specific strip.
 
 If no level argument is provided, the current fader level is retrieved.
-If a level argument (in dB) is provided, the strip fader is set to that level.
-
-For example:
-  # Get the current fader level of strip 1
+If a level argument (in dB) is provided, the strip fader is set to that level.`,
+	Use: "fader [strip number] [level in dB]",
+	Example: `  # Get the current fader level of strip 1
   xair-cli strip fader 1
   
   # Set the fader level of strip 1 to -10.0 dB
-  xair-cli strip fader 1 -10.0
-`,
+  xair-cli strip fader 1 -10.0`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -141,14 +135,11 @@ For example:
 
 // stripFadeOutCmd represents the strip fade out command.
 var stripFadeOutCmd = &cobra.Command{
-	Use:   "fadeout [strip number] --duration [seconds] [target level in dB]",
 	Short: "Fade out the strip over a specified duration",
-	Long: `Fade out the strip over a specified duration in seconds.
-
-For example:
-  # Fade out strip 1 over 5 seconds
-  xair-cli strip fadeout 1 --duration 5.0 -- -90.0
-`,
+	Long:  "Fade out the strip over a specified duration in seconds.",
+	Use:   "fadeout [strip number] --duration [seconds] [target level in dB]",
+	Example: `  # Fade out strip 1 over 5 seconds
+  xair-cli strip fadeout 1 --duration 5.0 -- -90.0`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -204,14 +195,11 @@ For example:
 
 // stripFadeInCmd represents the strip fade in command.
 var stripFadeInCmd = &cobra.Command{
-	Use:   "fadein [strip number] --duration [seconds] [target level in dB]",
 	Short: "Fade in the strip over a specified duration",
-	Long: `Fade in the strip over a specified duration in seconds.
-
-For example:
-  # Fade in strip 1 over 5 seconds
-  xair-cli strip fadein 1 --duration 5.0 0
-`,
+	Long:  "Fade in the strip over a specified duration in seconds.",
+	Use:   "fadein [strip number] --duration [seconds] [target level in dB]",
+	Example: `  # Fade in strip 1 over 5 seconds
+  xair-cli strip fadein 1 --duration 5.0 0`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -267,17 +255,14 @@ For example:
 
 // stripSendCmd represents the strip send command.
 var stripSendCmd = &cobra.Command{
-	Use:   "send [strip number] [bus number] [level in dB]",
 	Short: "Commands to get or set strip send levels",
-	Long: `Commands to get or set the send levels for individual strips.
-	
-For example:
-  # Get the send level of strip 1 to bus 1
+	Long:  "Commands to get or set the send levels for individual strips.",
+	Use:   "send [strip number] [bus number] [level in dB]",
+	Example: `  # Get the send level of strip 1 to bus 1
   xair-cli strip send 1 1
   
   # Set the send level of strip 1 to bus 1 to -5.0 dB
-  xair-cli strip send 1 1 -- -5.0
-`,
+  xair-cli strip send 1 1 -- -5.0`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {

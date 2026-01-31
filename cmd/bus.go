@@ -8,9 +8,9 @@ import (
 
 // busCmd represents the bus command.
 var busCmd = &cobra.Command{
-	Use:   "bus",
 	Short: "Commands to control individual buses",
 	Long:  `Commands to control individual buses of the XAir mixer, including mute status.`,
+	Use:   "bus",
 	Run: func(cmd *cobra.Command, _ []string) {
 		cmd.Help()
 	},
@@ -18,9 +18,9 @@ var busCmd = &cobra.Command{
 
 // busMuteCmd represents the bus mute command.
 var busMuteCmd = &cobra.Command{
-	Use:   "mute [bus number] [true|false]",
 	Short: "Get or set the bus mute status",
 	Long:  `Get or set the mute status of a specific bus.`,
+	Use:   "mute [bus number] [true|false]",
 	Run: func(cmd *cobra.Command, args []string) {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -56,19 +56,16 @@ var busMuteCmd = &cobra.Command{
 
 // busFaderCmd represents the bus fader command.
 var busFaderCmd = &cobra.Command{
-	Use:   "fader [bus number] [level in dB]",
 	Short: "Get or set the bus fader level",
 	Long: `Get or set the fader level of a specific bus.
 If no level argument is provided, the current fader level is retrieved.
-If a level argument (in dB) is provided, the bus fader is set to that level.
-
-For example:
-	# Get the current fader level of bus 1
+If a level argument (in dB) is provided, the bus fader is set to that level.`,
+	Use: "fader [bus number] [level in dB]",
+	Example: `	# Get the current fader level of bus 1
 	xair-cli bus fader 1
 	
 	# Set the fader level of bus 1 to -10.0 dB
-	xair-cli bus fader 1 -10.0
-	`,
+	xair-cli bus fader 1 -10.0`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -106,14 +103,11 @@ For example:
 
 // busFadeOutCmd represents the bus fade out command.
 var busFadeOutCmd = &cobra.Command{
-	Use:   "fadeout [bus number] --duration [seconds] [target level in dB]",
 	Short: "Fade out the bus fader over a specified duration",
-	Long: `Fade out the bus fader to minimum level over a specified duration in seconds.
-
-For example:
-  # Fade out bus 1 over 5 seconds
-  xair-cli bus fadeout 1 --duration 5 -- -90.0
-`,
+	Long:  "Fade out the bus fader to minimum level over a specified duration in seconds.",
+	Use:   "fadeout [bus number] --duration [seconds] [target level in dB]",
+	Example: `  # Fade out bus 1 over 5 seconds
+  xair-cli bus fadeout 1 --duration 5 -- -90.0`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -170,14 +164,11 @@ For example:
 
 // BusFadeInCmd represents the bus fade in command.
 var busFadeInCmd = &cobra.Command{
-	Use:   "fadein [bus number] --duration [seconds] [target level in dB]",
 	Short: "Fade in the bus fader over a specified duration",
-	Long: `Fade in the bus fader to maximum level over a specified duration in seconds.
-
-For example:
-  # Fade in bus 1 over 5 seconds
-  xair-cli bus fadein 1 --duration 5 -- 0.0
-`,
+	Long:  "Fade in the bus fader to maximum level over a specified duration in seconds.",
+	Use:   "fadein [bus number] --duration [seconds] [target level in dB]",
+	Example: `  # Fade in bus 1 over 5 seconds
+  xair-cli bus fadein 1 --duration 5 -- 0.0`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
