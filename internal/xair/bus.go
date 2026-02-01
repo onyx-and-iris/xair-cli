@@ -4,13 +4,17 @@ import "fmt"
 
 type Bus struct {
 	baseAddress string
-	client      Client
+	client      *Client
+	Eq          *Eq
+	Comp        *Comp
 }
 
-func NewBus(c Client) *Bus {
+func NewBus(c *Client) *Bus {
 	return &Bus{
 		baseAddress: c.addressMap["bus"],
 		client:      c,
+		Eq:          newEqForBus(c),
+		Comp:        newCompForBus(c),
 	}
 }
 

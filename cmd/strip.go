@@ -203,7 +203,7 @@ var stripFadeInCmd = &cobra.Command{
 
 		stripIndex := mustConvToInt(args[0])
 
-		duration, err := cmd.Flags().GetFloat64("duration")
+		duration, err := cmd.Flags().GetDuration("duration")
 		if err != nil {
 			return fmt.Errorf("Error getting duration flag: %w", err)
 		}
@@ -224,7 +224,7 @@ var stripFadeInCmd = &cobra.Command{
 			return nil
 		}
 
-		stepDelay := time.Duration(duration*1000/totalSteps) * time.Millisecond
+		stepDelay := time.Duration(duration.Seconds()*1000/totalSteps) * time.Millisecond
 
 		for currentFader < target {
 			currentFader += 1.0
@@ -235,7 +235,7 @@ var stripFadeInCmd = &cobra.Command{
 			time.Sleep(stepDelay)
 		}
 
-		cmd.Printf("Strip %d faded in to %.2f dB over %.2f seconds\n", stripIndex, target, duration)
+		cmd.Printf("Strip %d faded in to %.2f dB over %.2f seconds\n", stripIndex, target, duration.Seconds())
 		return nil
 	},
 }
@@ -333,18 +333,89 @@ If a name argument is provided, the strip name is set to that value.`,
 	},
 }
 
+// stripEqCmd represents the strip EQ command.
+var stripEqCmd = &cobra.Command{
+	Short: "Commands to control the EQ of individual strips.",
+	Long:  `Commands to control the EQ of individual strips, including turning the EQ on or off.`,
+	Use:   "eq",
+	Run: func(cmd *cobra.Command, _ []string) {
+		cmd.Help()
+	},
+}
+
+// stripEqOnCmd represents the strip EQ on command.
+var stripEqOnCmd = &cobra.Command{
+	Short: "Get or set the EQ on/off status of a strip",
+	Long: `Get or set the EQ on/off status of a specific strip.
+
+If no status argument is provided, the current EQ status is retrieved.
+If "true" or "1" is provided as an argument, the EQ is turned on.
+If "false" or "0" is provided, the EQ is turned off.`,
+	Use: "on [strip number] [true|false]",
+	Example: `  # Get the current EQ status of strip 1
+  xair-cli strip eq on 1
+  
+  # Turn on EQ for strip 1
+  xair-cli strip eq on 1 true
+  # Turn off EQ for strip 1
+  xair-cli strip eq on 1 false`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			on, err := client.Strip.Eq.On(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip EQ on status: %w", err)
+			}
+			cmd.Printf("Strip %d EQ on: %v\n", stripIndex, on)
+			return nil
+		}
+
+		var on bool
+		switch args[1] {
+		case "true", "1":
+			on = true
+		case "false", "0":
+			on = false
+		default:
+			return fmt.Errorf("Invalid EQ status. Use true/false or 1/0")
+		}
+
+		err := client.Strip.Eq.SetOn(stripIndex, on)
+		if err != nil {
+			return fmt.Errorf("Error setting strip EQ on status: %w", err)
+		}
+
+		if on {
+			cmd.Printf("Strip %d EQ turned on successfully\n", stripIndex)
+		} else {
+			cmd.Printf("Strip %d EQ turned off successfully\n", stripIndex)
+		}
+		return nil
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(stripCmd)
 
 	stripCmd.AddCommand(stripMuteCmd)
-
 	stripCmd.AddCommand(stripFaderCmd)
 	stripCmd.AddCommand(stripFadeOutCmd)
 	stripFadeOutCmd.Flags().DurationP("duration", "d", 5*time.Second, "Duration of the fade out in seconds")
 	stripCmd.AddCommand(stripFadeInCmd)
 	stripFadeInCmd.Flags().DurationP("duration", "d", 5*time.Second, "Duration of the fade in in seconds")
-
 	stripCmd.AddCommand(stripSendCmd)
-
 	stripCmd.AddCommand(stripNameCmd)
+
+	stripCmd.AddCommand(stripEqCmd)
+	stripEqCmd.AddCommand(stripEqOnCmd)
 }

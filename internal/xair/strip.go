@@ -4,13 +4,19 @@ import "fmt"
 
 type Strip struct {
 	baseAddress string
-	client      Client
+	client      *Client
+	Gate        *Gate
+	Eq          *Eq
+	Comp        *Comp
 }
 
-func NewStrip(c Client) *Strip {
+func NewStrip(c *Client) *Strip {
 	return &Strip{
 		baseAddress: c.addressMap["strip"],
 		client:      c,
+		Gate:        newGate(c),
+		Eq:          newEqForStrip(c),
+		Comp:        newCompForStrip(c),
 	}
 }
 

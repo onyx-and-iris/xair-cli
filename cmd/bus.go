@@ -254,16 +254,63 @@ var busNameCmd = &cobra.Command{
 	},
 }
 
+// busEqCmd represents the bus EQ command.
+var busEqCmd = &cobra.Command{
+	Short: "Commands to control bus EQ settings",
+	Long:  `Commands to control the EQ of individual buses, including turning the EQ on or off.`,
+	Use:   "eq",
+	Run: func(cmd *cobra.Command, _ []string) {
+		cmd.Help()
+	},
+}
+
+// busEqOnCmd represents the bus EQ on/off command.
+var busEqOnCmd = &cobra.Command{
+	Short: "Get or set the bus EQ on/off status",
+	Long:  `Get or set the EQ on/off status of a specific bus.`,
+	Use:   "on [bus number] [true|false]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide bus number and EQ on status (true/false)")
+		}
+
+		busNum := mustConvToInt(args[0])
+		var eqOn bool
+		switch args[1] {
+		case "true", "1":
+			eqOn = true
+		case "false", "0":
+			eqOn = false
+		default:
+			return fmt.Errorf("Invalid EQ on status. Use true/false or 1/0")
+		}
+
+		err := client.Bus.Eq.SetOn(busNum, eqOn)
+		if err != nil {
+			return fmt.Errorf("Error setting bus EQ on status: %w", err)
+		}
+
+		cmd.Printf("Bus %d EQ on set to %v\n", busNum, eqOn)
+		return nil
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(busCmd)
 
 	busCmd.AddCommand(busMuteCmd)
-
 	busCmd.AddCommand(busFaderCmd)
 	busCmd.AddCommand(busFadeOutCmd)
 	busFadeOutCmd.Flags().DurationP("duration", "d", 5*time.Second, "Duration for fade out in seconds")
 	busCmd.AddCommand(busFadeInCmd)
 	busFadeInCmd.Flags().DurationP("duration", "d", 5*time.Second, "Duration for fade in in seconds")
-
 	busCmd.AddCommand(busNameCmd)
+
+	busCmd.AddCommand(busEqCmd)
+	busEqCmd.AddCommand(busEqOnCmd)
 }
