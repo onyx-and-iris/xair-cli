@@ -38,7 +38,7 @@ Use "xair-cli [command] --help" for more information about a command.
 
 ### Examples
 
-*Fade out main LR all the way to -∞*
+*Fade out main LR all the way to -∞ over a 5s duration*
 
 ```console
 xair-cli main fadeout
