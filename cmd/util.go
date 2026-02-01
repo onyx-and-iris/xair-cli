@@ -21,3 +21,13 @@ func mustConvToInt(intStr string) int {
 	}
 	return val
 }
+
+// generic indexOf returns the index of elem in slice, or -1 if not found.
+func indexOf[T comparable](slice []T, elem T) int {
+	for i, v := range slice {
+		if v == elem {
+			return i
+		}
+	}
+	return -1
+}

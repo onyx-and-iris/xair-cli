@@ -475,6 +475,187 @@ If "false" or "0" is provided, the EQ is turned off.`,
 	},
 }
 
+// stripEqGainCmd represents the strip EQ Gain command.
+var stripEqGainCmd = &cobra.Command{
+	Short: "Get or set the EQ band gain for a strip",
+	Long:  "Get or set the EQ band gain for a specific strip and band.",
+	Use:   "gain [strip number] [band number] [gain in dB]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide strip number and band number")
+		}
+
+		stripIndex, bandIndex := func() (int, int) {
+			return mustConvToInt(args[0]), mustConvToInt(args[1])
+		}()
+
+		if len(args) == 2 {
+			currentGain, err := client.Strip.Eq.Gain(stripIndex, bandIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip EQ band gain: %w", err)
+			}
+			cmd.Printf("Strip %d EQ band %d gain: %.2f dB\n", stripIndex, bandIndex, currentGain)
+			return nil
+		}
+
+		if len(args) < 3 {
+			return fmt.Errorf("Please provide a gain in dB")
+		}
+
+		gain := mustConvToFloat64(args[2])
+
+		err := client.Strip.Eq.SetGain(stripIndex, bandIndex, gain)
+		if err != nil {
+			return fmt.Errorf("Error setting strip EQ band gain: %w", err)
+		}
+
+		cmd.Printf("Strip %d EQ band %d gain set to %.2f dB\n", stripIndex, bandIndex, gain)
+		return nil
+	},
+}
+
+// stripEqFreqCmd represents the strip EQ Frequency command.
+var stripEqFreqCmd = &cobra.Command{
+	Short: "Get or set the EQ band frequency for a strip",
+	Long:  "Get or set the EQ band frequency for a specific strip and band.",
+	Use:   "freq [strip number] [band number] [frequency in Hz]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide strip number and band number")
+		}
+
+		stripIndex, bandIndex := func() (int, int) {
+			return mustConvToInt(args[0]), mustConvToInt(args[1])
+		}()
+
+		if len(args) == 2 {
+			currentFreq, err := client.Strip.Eq.Frequency(stripIndex, bandIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip EQ band frequency: %w", err)
+			}
+			cmd.Printf("Strip %d EQ band %d frequency: %.2f Hz\n", stripIndex, bandIndex, currentFreq)
+			return nil
+		}
+
+		if len(args) < 3 {
+			return fmt.Errorf("Please provide a frequency in Hz")
+		}
+
+		freq := mustConvToFloat64(args[2])
+
+		err := client.Strip.Eq.SetFrequency(stripIndex, bandIndex, freq)
+		if err != nil {
+			return fmt.Errorf("Error setting strip EQ band frequency: %w", err)
+		}
+
+		cmd.Printf("Strip %d EQ band %d frequency set to %.2f Hz\n", stripIndex, bandIndex, freq)
+		return nil
+	},
+}
+
+// stripEqQCmd represents the strip EQ Q command.
+var stripEqQCmd = &cobra.Command{
+	Short: "Get or set the EQ band Q factor for a strip",
+	Long:  "Get or set the EQ band Q factor for a specific strip and band.",
+	Use:   "q [strip number] [band number] [Q factor]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide strip number and band number")
+		}
+
+		stripIndex, bandIndex := func() (int, int) {
+			return mustConvToInt(args[0]), mustConvToInt(args[1])
+		}()
+
+		if len(args) == 2 {
+			currentQ, err := client.Strip.Eq.Q(stripIndex, bandIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip EQ band Q factor: %w", err)
+			}
+			cmd.Printf("Strip %d EQ band %d Q factor: %.2f\n", stripIndex, bandIndex, currentQ)
+			return nil
+		}
+
+		if len(args) < 3 {
+			return fmt.Errorf("Please provide a Q factor")
+		}
+
+		q := mustConvToFloat64(args[2])
+
+		err := client.Strip.Eq.SetQ(stripIndex, bandIndex, q)
+		if err != nil {
+			return fmt.Errorf("Error setting strip EQ band Q factor: %w", err)
+		}
+
+		cmd.Printf("Strip %d EQ band %d Q factor set to %.2f\n", stripIndex, bandIndex, q)
+		return nil
+	},
+}
+
+// stripEqTypeCmd represents the strip EQ Type command.
+var stripEqTypeCmd = &cobra.Command{
+	Short: "Get or set the EQ band type for a strip",
+	Long:  "Get or set the EQ band type for a specific strip and band.",
+	Use:   "type [strip number] [band number] [type]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide strip number and band number")
+		}
+
+		stripIndex, bandIndex := func() (int, int) {
+			return mustConvToInt(args[0]), mustConvToInt(args[1])
+		}()
+
+		eqTypeNames := []string{"lcut", "lshv", "peq", "veq", "hshv", "hcut"}
+
+		if len(args) == 2 {
+			currentType, err := client.Strip.Eq.Type(stripIndex, bandIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip EQ band type: %w", err)
+			}
+			cmd.Printf("Strip %d EQ band %d type: %s\n", stripIndex, bandIndex, eqTypeNames[currentType])
+			return nil
+		}
+
+		if len(args) < 3 {
+			return fmt.Errorf("Please provide a type")
+		}
+
+		eqType := indexOf(eqTypeNames, args[2])
+		if eqType == -1 {
+			return fmt.Errorf("Invalid EQ band type. Valid types are: %v", eqTypeNames)
+		}
+
+		err := client.Strip.Eq.SetType(stripIndex, bandIndex, eqType)
+		if err != nil {
+			return fmt.Errorf("Error setting strip EQ band type: %w", err)
+		}
+
+		cmd.Printf("Strip %d EQ band %d type set to %s\n", stripIndex, bandIndex, eqTypeNames[eqType])
+		return nil
+	},
+}
+
 // stripCompCmd represents the strip Compressor command.
 var stripCompCmd = &cobra.Command{
 	Short: "Commands to control the Compressor of individual strips.",
@@ -563,6 +744,10 @@ func init() {
 
 	stripCmd.AddCommand(stripEqCmd)
 	stripEqCmd.AddCommand(stripEqOnCmd)
+	stripEqCmd.AddCommand(stripEqGainCmd)
+	stripEqCmd.AddCommand(stripEqFreqCmd)
+	stripEqCmd.AddCommand(stripEqQCmd)
+	stripEqCmd.AddCommand(stripEqTypeCmd)
 
 	stripCmd.AddCommand(stripCompCmd)
 	stripCompCmd.AddCommand(stripCompOnCmd)

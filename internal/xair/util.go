@@ -10,6 +10,14 @@ func linSet(min float64, max float64, value float64) float64 {
 	return (value - min) / (max - min)
 }
 
+func logGet(min float64, max float64, value float64) float64 {
+	return min * math.Exp(math.Log(max/min)*value)
+}
+
+func logSet(min float64, max float64, value float64) float64 {
+	return math.Log(value/min) / math.Log(max/min)
+}
+
 func mustDbInto(db float64) float64 {
 	switch {
 	case db >= 10:

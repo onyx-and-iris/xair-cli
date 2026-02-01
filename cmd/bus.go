@@ -300,6 +300,228 @@ var busEqOnCmd = &cobra.Command{
 	},
 }
 
+// busEqModeCmd represents the bus EQ mode command.
+var busEqModeCmd = &cobra.Command{
+	Short: "Get or set the bus EQ mode",
+	Long:  `Get or set the EQ mode of a specific bus.`,
+	Use:   "mode [bus number] [mode]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide bus number")
+		}
+
+		busIndex := mustConvToInt(args[0])
+
+		modeNames := []string{"peq", "geq", "teq"}
+
+		if len(args) == 1 {
+			mode, err := client.Bus.Eq.Mode(busIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting bus EQ mode: %w", err)
+			}
+			cmd.Printf("Bus %d EQ mode: %s\n", busIndex, modeNames[mode])
+			return nil
+		}
+
+		mode := indexOf(modeNames, args[1])
+		if mode == -1 {
+			return fmt.Errorf("Invalid EQ mode. Valid modes are: %v", modeNames)
+		}
+
+		err := client.Bus.Eq.SetMode(busIndex, mode)
+		if err != nil {
+			return fmt.Errorf("Error setting bus EQ mode: %w", err)
+		}
+
+		cmd.Printf("Bus %d EQ mode set to %s\n", busIndex, modeNames[mode])
+		return nil
+	},
+}
+
+// busEqGainCmd represents the bus EQ gain command.
+var busEqGainCmd = &cobra.Command{
+	Short: "Get or set the bus EQ gain for a specific band",
+	Long: `Get or set the EQ gain (in dB) for a specific band of a bus.
+	
+	Gain values range from -15.0 dB to +15.0 dB.`,
+	Use: "gain [bus number] [band number] [gain in dB]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide bus number and band number")
+		}
+
+		busIndex, bandIndex := func() (int, int) {
+			return mustConvToInt(args[0]), mustConvToInt(args[1])
+		}()
+
+		if len(args) == 2 {
+			gain, err := client.Bus.Eq.Gain(busIndex, bandIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting bus EQ gain: %w", err)
+			}
+			cmd.Printf("Bus %d EQ band %d gain: %.1f dB\n", busIndex, bandIndex, gain)
+			return nil
+		}
+
+		if len(args) < 3 {
+			return fmt.Errorf("Please provide bus number, band number, and gain (in dB)")
+		}
+
+		gain := mustConvToFloat64(args[2])
+
+		err := client.Bus.Eq.SetGain(busIndex, bandIndex, gain)
+		if err != nil {
+			return fmt.Errorf("Error setting bus EQ gain: %w", err)
+		}
+
+		cmd.Printf("Bus %d EQ band %d gain set to %.1f dB\n", busIndex, bandIndex, gain)
+		return nil
+	},
+}
+
+// busEqFreqCmd represents the bus EQ frequency command.
+var busEqFreqCmd = &cobra.Command{
+	Short: "Get or set the bus EQ frequency for a specific band",
+	Long:  `Get or set the EQ frequency (in Hz) for a specific band of a bus.`,
+	Use:   "freq [bus number] [band number] [frequency in Hz]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide bus number and band number")
+		}
+
+		busIndex, bandIndex := func() (int, int) {
+			return mustConvToInt(args[0]), mustConvToInt(args[1])
+		}()
+
+		if len(args) == 2 {
+			freq, err := client.Bus.Eq.Frequency(busIndex, bandIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting bus EQ frequency: %w", err)
+			}
+			cmd.Printf("Bus %d EQ band %d frequency: %.1f Hz\n", busIndex, bandIndex, freq)
+			return nil
+		}
+
+		if len(args) < 3 {
+			return fmt.Errorf("Please provide bus number, band number, and frequency (in Hz)")
+		}
+
+		freq := mustConvToFloat64(args[2])
+
+		err := client.Bus.Eq.SetFrequency(busIndex, bandIndex, freq)
+		if err != nil {
+			return fmt.Errorf("Error setting bus EQ frequency: %w", err)
+		}
+
+		cmd.Printf("Bus %d EQ band %d frequency set to %.1f Hz\n", busIndex, bandIndex, freq)
+		return nil
+	},
+}
+
+// busEqQCmd represents the bus EQ Q command.
+var busEqQCmd = &cobra.Command{
+	Short: "Get or set the bus EQ Q factor for a specific band",
+	Long:  `Get or set the EQ Q factor for a specific band of a bus.`,
+	Use:   "q [bus number] [band number] [Q factor]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide bus number and band number")
+		}
+
+		busIndex, bandIndex := func() (int, int) {
+			return mustConvToInt(args[0]), mustConvToInt(args[1])
+		}()
+
+		if len(args) == 2 {
+			qFactor, err := client.Bus.Eq.Q(busIndex, bandIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting bus EQ Q factor: %w", err)
+			}
+			cmd.Printf("Bus %d EQ band %d Q factor: %.2f\n", busIndex, bandIndex, qFactor)
+			return nil
+		}
+
+		if len(args) < 3 {
+			return fmt.Errorf("Please provide bus number, band number, and Q factor")
+		}
+
+		qFactor := mustConvToFloat64(args[2])
+
+		err := client.Bus.Eq.SetQ(busIndex, bandIndex, qFactor)
+		if err != nil {
+			return fmt.Errorf("Error setting bus EQ Q factor: %w", err)
+		}
+
+		cmd.Printf("Bus %d EQ band %d Q factor set to %.2f\n", busIndex, bandIndex, qFactor)
+		return nil
+	},
+}
+
+// busEqTypeCmd represents the bus EQ type command.
+var busEqTypeCmd = &cobra.Command{
+	Short: "Get or set the bus EQ band type",
+	Long:  `Get or set the EQ band type for a specific band of a bus.`,
+	Use:   "type [bus number] [band number] [type]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide bus number and band number")
+		}
+
+		busIndex, bandIndex := func() (int, int) {
+			return mustConvToInt(args[0]), mustConvToInt(args[1])
+		}()
+
+		eqTypeNames := []string{"lcut", "lshv", "peq", "veq", "hshv", "hcut"}
+
+		if len(args) == 2 {
+			currentType, err := client.Bus.Eq.Type(busIndex, bandIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting bus EQ band type: %w", err)
+			}
+			cmd.Printf("Bus %d EQ band %d type: %s\n", busIndex, bandIndex, eqTypeNames[currentType])
+			return nil
+		}
+
+		eqType := indexOf(eqTypeNames, args[2])
+		if eqType == -1 {
+			return fmt.Errorf("Invalid EQ band type. Valid types are: %v", eqTypeNames)
+		}
+
+		err := client.Bus.Eq.SetType(busIndex, bandIndex, eqType)
+		if err != nil {
+			return fmt.Errorf("Error setting bus EQ band type: %w", err)
+		}
+
+		cmd.Printf("Bus %d EQ band %d type set to %s\n", busIndex, bandIndex, eqTypeNames[eqType])
+		return nil
+	},
+}
+
 // busCompCmd represents the bus Compressor command.
 var busCompCmd = &cobra.Command{
 	Short: "Commands to control bus Compressor settings",
@@ -359,6 +581,11 @@ func init() {
 
 	busCmd.AddCommand(busEqCmd)
 	busEqCmd.AddCommand(busEqOnCmd)
+	busEqCmd.AddCommand(busEqModeCmd)
+	busEqCmd.AddCommand(busEqGainCmd)
+	busEqCmd.AddCommand(busEqFreqCmd)
+	busEqCmd.AddCommand(busEqQCmd)
+	busEqCmd.AddCommand(busEqTypeCmd)
 
 	busCmd.AddCommand(busCompCmd)
 	busCompCmd.AddCommand(busCompOnCmd)
