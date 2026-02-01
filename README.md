@@ -38,8 +38,6 @@ Use "xair-cli [command] --help" for more information about a command.
 
 ### Examples
 
-Things that are possible with this CLI:
-
 *Fade out main LR all the way to -∞*
 
 ```console
