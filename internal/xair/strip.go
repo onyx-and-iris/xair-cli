@@ -3,18 +3,20 @@ package xair
 import "fmt"
 
 type Strip struct {
-	client Client
+	baseAddress string
+	client      Client
 }
 
 func NewStrip(c Client) *Strip {
 	return &Strip{
-		client: c,
+		baseAddress: c.addressMap["strip"],
+		client:      c,
 	}
 }
 
 // Mute gets the mute status of the specified strip (1-based indexing).
 func (s *Strip) Mute(strip int) (bool, error) {
-	address := fmt.Sprintf("/ch/%02d/mix/on", strip)
+	address := fmt.Sprintf(s.baseAddress, strip) + "/mix/on"
 	err := s.client.SendMessage(address)
 	if err != nil {
 		return false, err
@@ -30,7 +32,7 @@ func (s *Strip) Mute(strip int) (bool, error) {
 
 // SetMute sets the mute status of the specified strip (1-based indexing).
 func (s *Strip) SetMute(strip int, muted bool) error {
-	address := fmt.Sprintf("/ch/%02d/mix/on", strip)
+	address := fmt.Sprintf(s.baseAddress, strip) + "/mix/on"
 	var value int32 = 0
 	if !muted {
 		value = 1
@@ -40,7 +42,7 @@ func (s *Strip) SetMute(strip int, muted bool) error {
 
 // Fader gets the fader level of the specified strip (1-based indexing).
 func (s *Strip) Fader(strip int) (float64, error) {
-	address := fmt.Sprintf("/ch/%02d/mix/fader", strip)
+	address := fmt.Sprintf(s.baseAddress, strip) + "/mix/fader"
 	err := s.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -57,13 +59,13 @@ func (s *Strip) Fader(strip int) (float64, error) {
 
 // SetFader sets the fader level of the specified strip (1-based indexing).
 func (s *Strip) SetFader(strip int, level float64) error {
-	address := fmt.Sprintf("/ch/%02d/mix/fader", strip)
+	address := fmt.Sprintf(s.baseAddress, strip) + "/mix/fader"
 	return s.client.SendMessage(address, float32(mustDbInto(level)))
 }
 
 // MicGain requests the phantom gain for a specific strip (1-based indexing).
 func (s *Strip) MicGain(strip int) (float64, error) {
-	address := fmt.Sprintf("/ch/%02d/mix/gain", strip)
+	address := fmt.Sprintf(s.baseAddress, strip) + "/mix/gain"
 	err := s.client.SendMessage(address)
 	if err != nil {
 		return 0, fmt.Errorf("failed to send strip gain request: %v", err)
@@ -79,13 +81,13 @@ func (s *Strip) MicGain(strip int) (float64, error) {
 
 // SetMicGain sets the phantom gain for a specific strip (1-based indexing).
 func (s *Strip) SetMicGain(strip int, gain float32) error {
-	address := fmt.Sprintf("/ch/%02d/mix/gain", strip)
+	address := fmt.Sprintf(s.baseAddress, strip) + "/mix/gain"
 	return s.client.SendMessage(address, gain)
 }
 
 // Name requests the name for a specific strip
 func (s *Strip) Name(strip int) (string, error) {
-	address := fmt.Sprintf("/ch/%02d/config/name", strip)
+	address := fmt.Sprintf(s.baseAddress, strip) + "/config/name"
 	err := s.client.SendMessage(address)
 	if err != nil {
 		return "", fmt.Errorf("failed to send strip name request: %v", err)
@@ -101,13 +103,13 @@ func (s *Strip) Name(strip int) (string, error) {
 
 // SetName sets the name for a specific strip
 func (s *Strip) SetName(strip int, name string) error {
-	address := fmt.Sprintf("/ch/%02d/config/name", strip)
+	address := fmt.Sprintf(s.baseAddress, strip) + "/config/name"
 	return s.client.SendMessage(address, name)
 }
 
 // Color requests the color for a specific strip
 func (s *Strip) Color(strip int) (int32, error) {
-	address := fmt.Sprintf("/ch/%02d/config/color", strip)
+	address := fmt.Sprintf(s.baseAddress, strip) + "/config/color"
 	err := s.client.SendMessage(address)
 	if err != nil {
 		return 0, fmt.Errorf("failed to send strip color request: %v", err)
@@ -123,13 +125,13 @@ func (s *Strip) Color(strip int) (int32, error) {
 
 // SetColor sets the color for a specific strip (0-15)
 func (s *Strip) SetColor(strip int, color int32) error {
-	address := fmt.Sprintf("/ch/%02d/config/color", strip)
+	address := fmt.Sprintf(s.baseAddress, strip) + "/config/color"
 	return s.client.SendMessage(address, color)
 }
 
 // Sends requests the sends level for a mixbus.
 func (s *Strip) SendLevel(strip int, bus int) (float64, error) {
-	address := fmt.Sprintf("/ch/%02d/mix/%02d/level", strip, bus)
+	address := fmt.Sprintf(s.baseAddress, strip) + fmt.Sprintf("/mix/%02d/level", bus)
 	err := s.client.SendMessage(address)
 	if err != nil {
 		return 0, fmt.Errorf("failed to send strip send level request: %v", err)
@@ -145,6 +147,6 @@ func (s *Strip) SendLevel(strip int, bus int) (float64, error) {
 
 // SetSendLevel sets the sends level for a mixbus.
 func (s *Strip) SetSendLevel(strip int, bus int, level float64) error {
-	address := fmt.Sprintf("/ch/%02d/mix/%02d/level", strip, bus)
+	address := fmt.Sprintf(s.baseAddress, strip) + fmt.Sprintf("/mix/%02d/level", bus)
 	return s.client.SendMessage(address, float32(mustDbInto(level)))
 }
