@@ -134,7 +134,7 @@ var stripFadeOutCmd = &cobra.Command{
 	Long:  "Fade out the strip over a specified duration in seconds.",
 	Use:   "fadeout [strip number] --duration [seconds] [target level in dB]",
 	Example: `  # Fade out strip 1 over 5 seconds
-  xair-cli strip fadeout 1 --duration 5.0 -- -90.0`,
+  xair-cli strip fadeout 1 --duration 5s -- -90.0`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -147,7 +147,7 @@ var stripFadeOutCmd = &cobra.Command{
 
 		stripIndex := mustConvToInt(args[0])
 
-		duration, err := cmd.Flags().GetFloat64("duration")
+		duration, err := cmd.Flags().GetDuration("duration")
 		if err != nil {
 			return fmt.Errorf("Error getting duration flag: %w", err)
 		}
@@ -168,7 +168,7 @@ var stripFadeOutCmd = &cobra.Command{
 			return nil
 		}
 
-		stepDelay := time.Duration(duration*1000/totalSteps) * time.Millisecond
+		stepDelay := time.Duration(duration.Seconds()*1000/totalSteps) * time.Millisecond
 
 		for currentFader > target {
 			currentFader -= 1.0
@@ -179,7 +179,7 @@ var stripFadeOutCmd = &cobra.Command{
 			time.Sleep(stepDelay)
 		}
 
-		cmd.Printf("Strip %d faded out to %.2f dB over %.2f seconds\n", stripIndex, target, duration)
+		cmd.Printf("Strip %d faded out to %.2f dB over %.2f seconds\n", stripIndex, target, duration.Seconds())
 		return nil
 	},
 }
@@ -190,7 +190,7 @@ var stripFadeInCmd = &cobra.Command{
 	Long:  "Fade in the strip over a specified duration in seconds.",
 	Use:   "fadein [strip number] --duration [seconds] [target level in dB]",
 	Example: `  # Fade in strip 1 over 5 seconds
-  xair-cli strip fadein 1 --duration 5.0 0`,
+  xair-cli strip fadein 1 --duration 5s 0`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -340,9 +340,9 @@ func init() {
 
 	stripCmd.AddCommand(stripFaderCmd)
 	stripCmd.AddCommand(stripFadeOutCmd)
-	stripFadeOutCmd.Flags().Float64P("duration", "d", 5.0, "Duration of the fade out in seconds")
+	stripFadeOutCmd.Flags().DurationP("duration", "d", 5*time.Second, "Duration of the fade out in seconds")
 	stripCmd.AddCommand(stripFadeInCmd)
-	stripFadeInCmd.Flags().Float64P("duration", "d", 5.0, "Duration of the fade in in seconds")
+	stripFadeInCmd.Flags().DurationP("duration", "d", 5*time.Second, "Duration of the fade in in seconds")
 
 	stripCmd.AddCommand(stripSendCmd)
 

@@ -116,7 +116,7 @@ This command will fade out the main output to the specified dB level.
 `,
 	Use: "fadeout --duration [seconds] [target_db]",
 	Example: `  # Fade out main output over 5 seconds
-  xair-cli main fadeout --duration 5 -- -90.0`,
+  xair-cli main fadeout --duration 5s -- -90.0`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -124,7 +124,7 @@ This command will fade out the main output to the specified dB level.
 			return
 		}
 
-		duration, err := cmd.Flags().GetFloat64("duration")
+		duration, err := cmd.Flags().GetDuration("duration")
 		if err != nil {
 			cmd.PrintErrln("Error getting duration flag:", err)
 			return
@@ -150,7 +150,7 @@ This command will fade out the main output to the specified dB level.
 		}
 
 		// Calculate delay per step to achieve exact duration
-		stepDelay := time.Duration(duration*1000/totalSteps) * time.Millisecond
+		stepDelay := time.Duration(duration.Seconds()*1000/totalSteps) * time.Millisecond
 
 		for currentFader > target {
 			currentFader -= 1.0
@@ -175,7 +175,7 @@ This command will fade in the main output to the specified dB level.
 `,
 	Use: "fadein --duration [seconds] [target_db]",
 	Example: `  # Fade in main output over 5 seconds
-  xair-cli main fadein --duration 5 -- 0.0`,
+  xair-cli main fadein --duration 5s -- 0.0`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -183,7 +183,7 @@ This command will fade in the main output to the specified dB level.
 			return
 		}
 
-		duration, err := cmd.Flags().GetFloat64("duration")
+		duration, err := cmd.Flags().GetDuration("duration")
 		if err != nil {
 			cmd.PrintErrln("Error getting duration flag:", err)
 			return
@@ -208,7 +208,7 @@ This command will fade in the main output to the specified dB level.
 		}
 
 		// Calculate delay per step to achieve exact duration
-		stepDelay := time.Duration(duration*1000/totalSteps) * time.Millisecond
+		stepDelay := time.Duration(duration.Seconds()*1000/totalSteps) * time.Millisecond
 
 		for currentFader < target {
 			currentFader += 1.0
@@ -231,7 +231,7 @@ func init() {
 
 	mainCmd.AddCommand(mainFaderCmd)
 	mainCmd.AddCommand(mainFadeOutCmd)
-	mainFadeOutCmd.Flags().Float64P("duration", "d", 5, "Duration for fade out in seconds")
+	mainFadeOutCmd.Flags().DurationP("duration", "d", 5*time.Second, "Duration for fade out in seconds")
 	mainCmd.AddCommand(mainFadeInCmd)
-	mainFadeInCmd.Flags().Float64P("duration", "d", 5, "Duration for fade in in seconds")
+	mainFadeInCmd.Flags().DurationP("duration", "d", 5*time.Second, "Duration for fade in in seconds")
 }

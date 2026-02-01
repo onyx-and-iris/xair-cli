@@ -44,14 +44,14 @@ Use "xair-cli [command] --help" for more information about a command.
 xair-cli main fadeout
 ```
 
-*enable phantom power and set the gain to 28dB for strip 09*
+*enable phantom power and set the gain to 28.0dB over a 10s duration for strip 09*
 ```console
 xair-cli headamp 9 phantom on
 
-xair-cli headamp 9 gain 28
+xair-cli headamp 9 gain 28.0 --duration 10s
 ```
 
-*adjust strip 09 send level to bus 5*
+*set strip 09 send level for bus 5 to -18.0dB*
 ```console
 xair-cli strip send 9 5 -- -18.0
 ```

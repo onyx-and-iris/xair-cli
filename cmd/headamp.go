@@ -2,7 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
+	"github.com/charmbracelet/log"
+	"github.com/onyx-and-iris/xair-cli/internal/xair"
 	"github.com/spf13/cobra"
 )
 
@@ -23,12 +26,16 @@ var headampGainCmd = &cobra.Command{
 	Use:   "gain",
 	Short: "Get or set headamp gain level",
 	Long: `Get or set the gain level for a specified headamp index.
+When setting gain, it will gradually increase from the current level to prevent 
+sudden jumps that could cause feedback or equipment damage.
 
 Examples:
   # Get gain level for headamp index 1
-  xairctl headamp gain 1
-  # Set gain level for headamp index 1 to 3.5 dB
-  xairctl headamp gain 1 3.5`,
+  xair-cli headamp gain 1
+  # Set gain level for headamp index 1 to 3.5 dB (gradually over 5 seconds)
+  xair-cli headamp gain 1 3.5
+  # Set gain level for headamp index 1 to 3.5 dB over 10 seconds
+  xair-cli headamp gain 1 3.5 --duration 10s`,
 	Args: cobra.RangeArgs(1, 2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
@@ -55,16 +62,77 @@ Examples:
 			return fmt.Errorf("Please provide a gain level in dB")
 		}
 
-		level := mustConvToFloat64(args[1])
+		targetLevel := mustConvToFloat64(args[1])
 
-		err := client.HeadAmp.SetGain(index, level)
+		currentGain, err := client.HeadAmp.Gain(index)
 		if err != nil {
-			return fmt.Errorf("Error setting headamp gain level: %w", err)
+			return fmt.Errorf("Error getting current headamp gain level: %w", err)
 		}
 
-		cmd.Printf("Headamp %d Gain set to %.2f dB\n", index, level)
+		duration, err := cmd.Flags().GetDuration("duration")
+		if err != nil {
+			return fmt.Errorf("Error getting duration flag: %w", err)
+		}
+
+		if currentGain == targetLevel {
+			cmd.Printf("Headamp %d Gain already at %.2f dB\n", index, targetLevel)
+			return nil
+		}
+
+		if err := gradualGainAdjust(client, cmd, index, currentGain, targetLevel, duration); err != nil {
+			return fmt.Errorf("Error adjusting headamp gain level: %w", err)
+		}
+
+		cmd.Printf("Headamp %d Gain set to %.2f dB\n", index, targetLevel)
 		return nil
 	},
+}
+
+// gradualGainAdjust gradually adjusts gain from current to target over specified duration
+func gradualGainAdjust(
+	client *xair.Client,
+	cmd *cobra.Command,
+	index int,
+	currentGain, targetGain float64,
+	duration time.Duration,
+) error {
+	gainDiff := targetGain - currentGain
+
+	stepInterval := 100 * time.Millisecond
+	totalSteps := int(duration / stepInterval)
+
+	if totalSteps < 1 {
+		totalSteps = 1
+		stepInterval = duration
+	}
+
+	stepIncrement := gainDiff / float64(totalSteps)
+
+	log.Debugf("Adjusting Headamp %d gain from %.2f dB to %.2f dB over %v...\n",
+		index, currentGain, targetGain, duration)
+
+	for step := 1; step <= totalSteps; step++ {
+		newGain := currentGain + (stepIncrement * float64(step))
+
+		if step == totalSteps {
+			newGain = targetGain
+		}
+
+		err := client.HeadAmp.SetGain(index, newGain)
+		if err != nil {
+			return err
+		}
+
+		if step%10 == 0 || step == totalSteps {
+			log.Debugf("  Step %d/%d: %.2f dB\n", step, totalSteps, newGain)
+		}
+
+		if step < totalSteps {
+			time.Sleep(stepInterval)
+		}
+	}
+
+	return nil
 }
 
 // headampPhantomPowerCmd represents the headamp phantom power command
@@ -137,5 +205,7 @@ func init() {
 	rootCmd.AddCommand(headampCmd)
 
 	headampCmd.AddCommand(headampGainCmd)
+	headampGainCmd.Flags().DurationP("duration", "d", 5*time.Second, "Duration over which to gradually adjust gain")
+
 	headampCmd.AddCommand(headampPhantomPowerCmd)
 }

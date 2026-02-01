@@ -104,7 +104,7 @@ var busFadeOutCmd = &cobra.Command{
 	Long:  "Fade out the bus fader to minimum level over a specified duration in seconds.",
 	Use:   "fadeout [bus number] --duration [seconds] [target level in dB]",
 	Example: `  # Fade out bus 1 over 5 seconds
-  xair-cli bus fadeout 1 --duration 5 -- -90.0`,
+  xair-cli bus fadeout 1 --duration 5s -- -90.0`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -117,7 +117,7 @@ var busFadeOutCmd = &cobra.Command{
 
 		busIndex := mustConvToInt(args[0])
 
-		duration, err := cmd.Flags().GetFloat64("duration")
+		duration, err := cmd.Flags().GetDuration("duration")
 		if err != nil {
 			return fmt.Errorf("Error getting duration flag: %w", err)
 		}
@@ -139,7 +139,7 @@ var busFadeOutCmd = &cobra.Command{
 			return nil
 		}
 
-		stepDelay := time.Duration(duration*1000/totalSteps) * time.Millisecond
+		stepDelay := time.Duration(duration.Seconds()*1000/totalSteps) * time.Millisecond
 
 		for currentFader > target {
 			currentFader -= 1.0
@@ -161,7 +161,7 @@ var busFadeInCmd = &cobra.Command{
 	Long:  "Fade in the bus fader to maximum level over a specified duration in seconds.",
 	Use:   "fadein [bus number] --duration [seconds] [target level in dB]",
 	Example: `  # Fade in bus 1 over 5 seconds
-  xair-cli bus fadein 1 --duration 5 -- 0.0`,
+  xair-cli bus fadein 1 --duration 5s -- 0.0`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
@@ -174,7 +174,7 @@ var busFadeInCmd = &cobra.Command{
 
 		busIndex := mustConvToInt(args[0])
 
-		duration, err := cmd.Flags().GetFloat64("duration")
+		duration, err := cmd.Flags().GetDuration("duration")
 		if err != nil {
 			return fmt.Errorf("Error getting duration flag: %w", err)
 		}
@@ -196,7 +196,7 @@ var busFadeInCmd = &cobra.Command{
 			return nil
 		}
 
-		stepDelay := time.Duration(duration*1000/totalSteps) * time.Millisecond
+		stepDelay := time.Duration(duration.Seconds()*1000/totalSteps) * time.Millisecond
 
 		for currentFader < target {
 			currentFader += 1.0
@@ -261,9 +261,9 @@ func init() {
 
 	busCmd.AddCommand(busFaderCmd)
 	busCmd.AddCommand(busFadeOutCmd)
-	busFadeOutCmd.Flags().Float64P("duration", "d", 5.0, "Duration for fade out in seconds")
+	busFadeOutCmd.Flags().DurationP("duration", "d", 5*time.Second, "Duration for fade out in seconds")
 	busCmd.AddCommand(busFadeInCmd)
-	busFadeInCmd.Flags().Float64P("duration", "d", 5.0, "Duration for fade in in seconds")
+	busFadeInCmd.Flags().DurationP("duration", "d", 5*time.Second, "Duration for fade in in seconds")
 
 	busCmd.AddCommand(busNameCmd)
 }
