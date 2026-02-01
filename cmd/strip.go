@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -32,16 +33,14 @@ If "false" or "0" is provided, the strip is unmuted.`,
   xair-cli strip mute 1 true
   # Unmute strip 1
   xair-cli strip mute 1 false`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) < 1 {
-			cmd.PrintErrln("Please provide a strip number")
-			return
+			return fmt.Errorf("Please provide a strip number")
 		}
 
 		stripIndex := mustConvToInt(args[0])
@@ -49,11 +48,10 @@ If "false" or "0" is provided, the strip is unmuted.`,
 		if len(args) == 1 {
 			resp, err := client.Strip.Mute(stripIndex)
 			if err != nil {
-				cmd.PrintErrln("Error getting strip mute status:", err)
-				return
+				return fmt.Errorf("Error getting strip mute status: %w", err)
 			}
 			cmd.Printf("Strip %d mute: %v\n", stripIndex, resp)
-			return
+			return nil
 		}
 
 		var muted bool
@@ -63,20 +61,20 @@ If "false" or "0" is provided, the strip is unmuted.`,
 		case "false", "0":
 			muted = false
 		default:
-			cmd.PrintErrln("Invalid mute status. Use true/false or 1/0")
-			return
+			return fmt.Errorf("Invalid mute status. Use true/false or 1/0")
 		}
 
 		err := client.Strip.SetMute(stripIndex, muted)
 		if err != nil {
-			cmd.PrintErrln("Error setting strip mute status:", err)
-			return
+			return fmt.Errorf("Error setting strip mute status: %w", err)
 		}
+
 		if muted {
 			cmd.Printf("Strip %d muted successfully\n", stripIndex)
 		} else {
 			cmd.Printf("Strip %d unmuted successfully\n", stripIndex)
 		}
+		return nil
 	},
 }
 
@@ -93,16 +91,14 @@ If a level argument (in dB) is provided, the strip fader is set to that level.`,
   
   # Set the fader level of strip 1 to -10.0 dB
   xair-cli strip fader 1 -10.0`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) < 1 {
-			cmd.PrintErrln("Please provide a strip number")
-			return
+			return fmt.Errorf("Please provide a strip number")
 		}
 
 		stripIndex := mustConvToInt(args[0])
@@ -110,26 +106,25 @@ If a level argument (in dB) is provided, the strip fader is set to that level.`,
 		if len(args) == 1 {
 			level, err := client.Strip.Fader(stripIndex)
 			if err != nil {
-				cmd.PrintErrln("Error getting strip fader level:", err)
-				return
+				return fmt.Errorf("Error getting strip fader level: %w", err)
 			}
 			cmd.Printf("Strip %d fader level: %.2f\n", stripIndex, level)
-			return
+			return nil
 		}
 
 		if len(args) < 2 {
-			cmd.PrintErrln("Please provide a fader level in dB")
-			return
+			return fmt.Errorf("Please provide a fader level in dB")
 		}
 
 		level := mustConvToFloat64(args[1])
 
 		err := client.Strip.SetFader(stripIndex, level)
 		if err != nil {
-			cmd.PrintErrln("Error setting strip fader level:", err)
-			return
+			return fmt.Errorf("Error setting strip fader level: %w", err)
 		}
+
 		cmd.Printf("Strip %d fader set to %.2f dB\n", stripIndex, level)
+		return nil
 	},
 }
 
@@ -140,24 +135,21 @@ var stripFadeOutCmd = &cobra.Command{
 	Use:   "fadeout [strip number] --duration [seconds] [target level in dB]",
 	Example: `  # Fade out strip 1 over 5 seconds
   xair-cli strip fadeout 1 --duration 5.0 -- -90.0`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) < 1 {
-			cmd.PrintErrln("Please provide strip number")
-			return
+			return fmt.Errorf("Please provide strip number")
 		}
 
 		stripIndex := mustConvToInt(args[0])
 
 		duration, err := cmd.Flags().GetFloat64("duration")
 		if err != nil {
-			cmd.PrintErrln("Error getting duration flag:", err)
-			return
+			return fmt.Errorf("Error getting duration flag: %w", err)
 		}
 
 		target := -90.0
@@ -167,14 +159,13 @@ var stripFadeOutCmd = &cobra.Command{
 
 		currentFader, err := client.Strip.Fader(stripIndex)
 		if err != nil {
-			cmd.PrintErrln("Error getting current strip fader level:", err)
-			return
+			return fmt.Errorf("Error getting current strip fader level: %w", err)
 		}
 
 		totalSteps := float64(currentFader - target)
 		if totalSteps <= 0 {
 			cmd.Println("Strip is already at or below target level")
-			return
+			return nil
 		}
 
 		stepDelay := time.Duration(duration*1000/totalSteps) * time.Millisecond
@@ -183,13 +174,13 @@ var stripFadeOutCmd = &cobra.Command{
 			currentFader -= 1.0
 			err := client.Strip.SetFader(stripIndex, currentFader)
 			if err != nil {
-				cmd.PrintErrln("Error setting strip fader level:", err)
-				return
+				return fmt.Errorf("Error setting strip fader level: %w", err)
 			}
 			time.Sleep(stepDelay)
 		}
 
 		cmd.Printf("Strip %d faded out to %.2f dB over %.2f seconds\n", stripIndex, target, duration)
+		return nil
 	},
 }
 
@@ -200,24 +191,21 @@ var stripFadeInCmd = &cobra.Command{
 	Use:   "fadein [strip number] --duration [seconds] [target level in dB]",
 	Example: `  # Fade in strip 1 over 5 seconds
   xair-cli strip fadein 1 --duration 5.0 0`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) < 1 {
-			cmd.PrintErrln("Please provide strip number")
-			return
+			return fmt.Errorf("Please provide strip number")
 		}
 
 		stripIndex := mustConvToInt(args[0])
 
 		duration, err := cmd.Flags().GetFloat64("duration")
 		if err != nil {
-			cmd.PrintErrln("Error getting duration flag:", err)
-			return
+			return fmt.Errorf("Error getting duration flag: %w", err)
 		}
 
 		target := 0.0
@@ -227,14 +215,13 @@ var stripFadeInCmd = &cobra.Command{
 
 		currentFader, err := client.Strip.Fader(stripIndex)
 		if err != nil {
-			cmd.PrintErrln("Error getting current strip fader level:", err)
-			return
+			return fmt.Errorf("Error getting current strip fader level: %w", err)
 		}
 
 		totalSteps := float64(target - currentFader)
 		if totalSteps <= 0 {
 			cmd.Println("Strip is already at or above target level")
-			return
+			return nil
 		}
 
 		stepDelay := time.Duration(duration*1000/totalSteps) * time.Millisecond
@@ -243,13 +230,13 @@ var stripFadeInCmd = &cobra.Command{
 			currentFader += 1.0
 			err := client.Strip.SetFader(stripIndex, currentFader)
 			if err != nil {
-				cmd.PrintErrln("Error setting strip fader level:", err)
-				return
+				return fmt.Errorf("Error setting strip fader level: %w", err)
 			}
 			time.Sleep(stepDelay)
 		}
 
 		cmd.Printf("Strip %d faded in to %.2f dB over %.2f seconds\n", stripIndex, target, duration)
+		return nil
 	},
 }
 
@@ -263,16 +250,14 @@ var stripSendCmd = &cobra.Command{
   
   # Set the send level of strip 1 to bus 1 to -5.0 dB
   xair-cli strip send 1 1 -- -5.0`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) < 2 {
-			cmd.PrintErrln("Please provide strip number and bus number")
-			return
+			return fmt.Errorf("Please provide strip number and bus number")
 		}
 
 		stripIndex, busIndex := func() (int, int) {
@@ -282,26 +267,24 @@ var stripSendCmd = &cobra.Command{
 		if len(args) == 2 {
 			currentLevel, err := client.Strip.SendLevel(stripIndex, busIndex)
 			if err != nil {
-				cmd.PrintErrln("Error getting strip send level:", err)
-				return
+				return fmt.Errorf("Error getting strip send level: %w", err)
 			}
 			cmd.Printf("Strip %d send level to bus %d: %.2f dB\n", stripIndex, busIndex, currentLevel)
-			return
+			return nil
 		}
 
 		if len(args) < 3 {
-			cmd.PrintErrln("Please provide a send level in dB")
-			return
+			return fmt.Errorf("Please provide a send level in dB")
 		}
 
 		level := mustConvToFloat64(args[2])
 
 		err := client.Strip.SetSendLevel(stripIndex, busIndex, level)
 		if err != nil {
-			cmd.PrintErrln("Error setting strip send level:", err)
-			return
+			return fmt.Errorf("Error setting strip send level: %w", err)
 		}
 		cmd.Printf("Strip %d send level to bus %d set to %.2f dB\n", stripIndex, busIndex, level)
+		return nil
 	},
 }
 
@@ -318,16 +301,14 @@ If a name argument is provided, the strip name is set to that value.`,
   
   # Set the name of strip 1 to "Guitar"
   xair-cli strip name 1 "Guitar"`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) < 1 {
-			cmd.PrintErrln("Please provide a strip number")
-			return
+			return fmt.Errorf("Please provide a strip number")
 		}
 
 		stripIndex := mustConvToInt(args[0])
@@ -335,21 +316,20 @@ If a name argument is provided, the strip name is set to that value.`,
 		if len(args) == 1 {
 			name, err := client.Strip.Name(stripIndex)
 			if err != nil {
-				cmd.PrintErrln("Error getting strip name:", err)
-				return
+				return fmt.Errorf("Error getting strip name: %w", err)
 			}
 			cmd.Printf("Strip %d name: %s\n", stripIndex, name)
-			return
+			return nil
 		}
 
 		name := args[1]
 
 		err := client.Strip.SetName(stripIndex, name)
 		if err != nil {
-			cmd.PrintErrln("Error setting strip name:", err)
-			return
+			return fmt.Errorf("Error setting strip name: %w", err)
 		}
 		cmd.Printf("Strip %d name set to: %s\n", stripIndex, name)
+		return nil
 	},
 }
 

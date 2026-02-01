@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -21,16 +22,14 @@ var busMuteCmd = &cobra.Command{
 	Short: "Get or set the bus mute status",
 	Long:  `Get or set the mute status of a specific bus.`,
 	Use:   "mute [bus number] [true|false]",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) < 2 {
-			cmd.PrintErrln("Please provide bus number and mute status (true/false)")
-			return
+			return fmt.Errorf("Please provide bus number and mute status (true/false)")
 		}
 
 		busNum := mustConvToInt(args[0])
@@ -41,16 +40,16 @@ var busMuteCmd = &cobra.Command{
 		case "false", "0":
 			muted = false
 		default:
-			cmd.PrintErrln("Invalid mute status. Use true/false or 1/0")
-			return
+			return fmt.Errorf("Invalid mute status. Use true/false or 1/0")
 		}
 
 		err := client.Bus.SetMute(busNum, muted)
 		if err != nil {
-			cmd.PrintErrln("Error setting bus mute status:", err)
-			return
+			return fmt.Errorf("Error setting bus mute status: %w", err)
 		}
+
 		cmd.Printf("Bus %d mute set to %v\n", busNum, muted)
+		return nil
 	},
 }
 
@@ -66,11 +65,10 @@ If a level argument (in dB) is provided, the bus fader is set to that level.`,
 	
 	# Set the fader level of bus 1 to -10.0 dB
 	xair-cli bus fader 1 -10.0`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		busIndex := mustConvToInt(args[0])
@@ -78,26 +76,25 @@ If a level argument (in dB) is provided, the bus fader is set to that level.`,
 		if len(args) == 1 {
 			level, err := client.Bus.Fader(busIndex)
 			if err != nil {
-				cmd.PrintErrln("Error getting bus fader level:", err)
-				return
+				return fmt.Errorf("Error getting bus fader level: %w", err)
 			}
 			cmd.Printf("Bus %d fader level: %.1f dB\n", busIndex, level)
-			return
+			return nil
 		}
 
 		if len(args) < 2 {
-			cmd.PrintErrln("Please provide bus number and fader level (in dB)")
-			return
+			return fmt.Errorf("Please provide bus number and fader level (in dB)")
 		}
 
 		level := mustConvToFloat64(args[1])
 
 		err := client.Bus.SetFader(busIndex, level)
 		if err != nil {
-			cmd.PrintErrln("Error setting bus fader level:", err)
-			return
+			return fmt.Errorf("Error setting bus fader level: %w", err)
 		}
+
 		cmd.Printf("Bus %d fader set to %.2f dB\n", busIndex, level)
+		return nil
 	},
 }
 
@@ -108,24 +105,21 @@ var busFadeOutCmd = &cobra.Command{
 	Use:   "fadeout [bus number] --duration [seconds] [target level in dB]",
 	Example: `  # Fade out bus 1 over 5 seconds
   xair-cli bus fadeout 1 --duration 5 -- -90.0`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) < 1 {
-			cmd.PrintErrln("Please provide bus number")
-			return
+			return fmt.Errorf("Please provide bus number")
 		}
 
 		busIndex := mustConvToInt(args[0])
 
 		duration, err := cmd.Flags().GetFloat64("duration")
 		if err != nil {
-			cmd.PrintErrln("Error getting duration flag:", err)
-			return
+			return fmt.Errorf("Error getting duration flag: %w", err)
 		}
 
 		target := -90.0
@@ -135,15 +129,14 @@ var busFadeOutCmd = &cobra.Command{
 
 		currentFader, err := client.Bus.Fader(busIndex)
 		if err != nil {
-			cmd.PrintErrln("Error getting current bus fader level:", err)
-			return
+			return fmt.Errorf("Error getting current bus fader level: %w", err)
 		}
 
 		// Calculate total steps needed to reach target dB
 		totalSteps := float64(currentFader - target)
 		if totalSteps <= 0 {
 			cmd.Println("Bus is already at or below target level")
-			return
+			return nil
 		}
 
 		stepDelay := time.Duration(duration*1000/totalSteps) * time.Millisecond
@@ -152,13 +145,13 @@ var busFadeOutCmd = &cobra.Command{
 			currentFader -= 1.0
 			err := client.Bus.SetFader(busIndex, currentFader)
 			if err != nil {
-				cmd.PrintErrln("Error setting bus fader level:", err)
-				return
+				return fmt.Errorf("Error setting bus fader level: %w", err)
 			}
 			time.Sleep(stepDelay)
 		}
 
 		cmd.Println("Bus fade out completed")
+		return nil
 	},
 }
 
@@ -169,24 +162,21 @@ var busFadeInCmd = &cobra.Command{
 	Use:   "fadein [bus number] --duration [seconds] [target level in dB]",
 	Example: `  # Fade in bus 1 over 5 seconds
   xair-cli bus fadein 1 --duration 5 -- 0.0`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) < 1 {
-			cmd.PrintErrln("Please provide bus number")
-			return
+			return fmt.Errorf("Please provide bus number")
 		}
 
 		busIndex := mustConvToInt(args[0])
 
 		duration, err := cmd.Flags().GetFloat64("duration")
 		if err != nil {
-			cmd.PrintErrln("Error getting duration flag:", err)
-			return
+			return fmt.Errorf("Error getting duration flag: %w", err)
 		}
 
 		target := 0.0
@@ -196,15 +186,14 @@ var busFadeInCmd = &cobra.Command{
 
 		currentFader, err := client.Bus.Fader(busIndex)
 		if err != nil {
-			cmd.PrintErrln("Error getting current bus fader level:", err)
-			return
+			return fmt.Errorf("Error getting current bus fader level: %w", err)
 		}
 
 		// Calculate total steps needed to reach target dB
 		totalSteps := float64(target - currentFader)
 		if totalSteps <= 0 {
 			cmd.Println("Bus is already at or above target level")
-			return
+			return nil
 		}
 
 		stepDelay := time.Duration(duration*1000/totalSteps) * time.Millisecond
@@ -213,13 +202,13 @@ var busFadeInCmd = &cobra.Command{
 			currentFader += 1.0
 			err := client.Bus.SetFader(busIndex, currentFader)
 			if err != nil {
-				cmd.PrintErrln("Error setting bus fader level:", err)
-				return
+				return fmt.Errorf("Error setting bus fader level: %w", err)
 			}
 			time.Sleep(stepDelay)
 		}
 
 		cmd.Println("Bus fade in completed")
+		return nil
 	},
 }
 
@@ -233,16 +222,14 @@ var busNameCmd = &cobra.Command{
 
   # Set the name of bus 1 to "Vocals"
   xair-cli bus name 1 Vocals`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) < 1 {
-			cmd.PrintErrln("Please provide bus number")
-			return
+			return fmt.Errorf("Please provide bus number")
 		}
 
 		busIndex := mustConvToInt(args[0])
@@ -250,20 +237,20 @@ var busNameCmd = &cobra.Command{
 		if len(args) == 1 {
 			name, err := client.Bus.Name(busIndex)
 			if err != nil {
-				cmd.PrintErrln("Error getting bus name:", err)
-				return
+				return fmt.Errorf("Error getting bus name: %w", err)
 			}
 			cmd.Printf("Bus %d name: %s\n", busIndex, name)
-			return
+			return nil
 		}
 
 		newName := args[1]
 		err := client.Bus.SetName(busIndex, newName)
 		if err != nil {
-			cmd.PrintErrln("Error setting bus name:", err)
-			return
+			return fmt.Errorf("Error setting bus name: %w", err)
 		}
+
 		cmd.Printf("Bus %d name set to: %s\n", busIndex, newName)
+		return nil
 	},
 }
 

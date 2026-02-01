@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -28,16 +30,14 @@ Examples:
   # Set gain level for headamp index 1 to 3.5 dB
   xairctl headamp gain 1 3.5`,
 	Args: cobra.RangeArgs(1, 2),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) < 1 {
-			cmd.PrintErrln("Please provide a headamp index")
-			return
+			return fmt.Errorf("Please provide a headamp index")
 		}
 
 		index := mustConvToInt(args[0])
@@ -45,26 +45,25 @@ Examples:
 		if len(args) == 1 {
 			gain, err := client.HeadAmp.Gain(index)
 			if err != nil {
-				cmd.PrintErrln("Error getting headamp gain level:", err)
-				return
+				return fmt.Errorf("Error getting headamp gain level: %w", err)
 			}
 			cmd.Printf("Headamp %d Gain: %.2f dB\n", index, gain)
-			return
+			return nil
 		}
 
 		if len(args) < 2 {
-			cmd.PrintErrln("Please provide a gain level in dB")
-			return
+			return fmt.Errorf("Please provide a gain level in dB")
 		}
 
 		level := mustConvToFloat64(args[1])
 
 		err := client.HeadAmp.SetGain(index, level)
 		if err != nil {
-			cmd.PrintErrln("Error setting headamp gain level:", err)
-			return
+			return fmt.Errorf("Error setting headamp gain level: %w", err)
 		}
+
 		cmd.Printf("Headamp %d Gain set to %.2f dB\n", index, level)
+		return nil
 	},
 }
 
@@ -81,16 +80,14 @@ Examples:
   # Disable phantom power for headamp index 1
   xairctl headamp phantom 1 off`,
 	Args: cobra.RangeArgs(1, 2),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) < 1 {
-			cmd.PrintErrln("Please provide a headamp index")
-			return
+			return fmt.Errorf("Please provide a headamp index")
 		}
 
 		index := mustConvToInt(args[0])
@@ -98,20 +95,18 @@ Examples:
 		if len(args) == 1 {
 			enabled, err := client.HeadAmp.PhantomPower(index)
 			if err != nil {
-				cmd.PrintErrln("Error getting headamp phantom power status:", err)
-				return
+				return fmt.Errorf("Error getting headamp phantom power status: %w", err)
 			}
 			status := "disabled"
 			if enabled {
 				status = "enabled"
 			}
 			cmd.Printf("Headamp %d Phantom Power is %s\n", index, status)
-			return
+			return nil
 		}
 
 		if len(args) < 2 {
-			cmd.PrintErrln("Please provide phantom power status: on or off")
-			return
+			return fmt.Errorf("Please provide phantom power status: on or off")
 		}
 
 		var enable bool
@@ -121,20 +116,20 @@ Examples:
 		case "off", "disable":
 			enable = false
 		default:
-			cmd.PrintErrln("Invalid phantom power status. Use 'on' or 'off'")
-			return
+			return fmt.Errorf("Invalid phantom power status. Use 'on' or 'off'")
 		}
 
 		err := client.HeadAmp.SetPhantomPower(index, enable)
 		if err != nil {
-			cmd.PrintErrln("Error setting headamp phantom power status:", err)
-			return
+			return fmt.Errorf("Error setting headamp phantom power status: %w", err)
 		}
 		status := "disabled"
 		if enable {
 			status = "enabled"
 		}
+
 		cmd.Printf("Headamp %d Phantom Power %s successfully\n", index, status)
+		return nil
 	},
 }
 

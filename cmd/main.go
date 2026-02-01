@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -33,21 +34,19 @@ If "false" or "0" is provided, the main output is unmuted.`,
 
   # Unmute the main output
   xair-cli main mute false`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) == 0 {
 			resp, err := client.Main.Mute()
 			if err != nil {
-				cmd.PrintErrln("Error getting main LR mute status:", err)
-				return
+				return fmt.Errorf("Error getting main LR mute status: %w", err)
 			}
 			cmd.Printf("Main LR mute: %v\n", resp)
-			return
+			return nil
 		}
 
 		var muted bool
@@ -57,16 +56,16 @@ If "false" or "0" is provided, the main output is unmuted.`,
 		case "false", "0":
 			muted = false
 		default:
-			cmd.PrintErrln("Invalid mute status. Use true/false or 1/0")
-			return
+			return fmt.Errorf("Invalid mute status. Use true/false or 1/0")
 		}
 
 		err := client.Main.SetMute(muted)
 		if err != nil {
-			cmd.PrintErrln("Error setting main LR mute status:", err)
-			return
+			return fmt.Errorf("Error setting main LR mute status: %w", err)
 		}
+
 		cmd.Println("Main LR mute status set successfully")
+		return nil
 	},
 }
 
@@ -83,29 +82,28 @@ If a dB value is provided as an argument, the fader level is set to that value.`
 
   # Set the main LR fader level to -10.0 dB
   xair-cli main fader -- -10.0`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
 		if client == nil {
-			cmd.PrintErrln("OSC client not found in context")
-			return
+			return fmt.Errorf("OSC client not found in context")
 		}
 
 		if len(args) == 0 {
 			resp, err := client.Main.Fader()
 			if err != nil {
-				cmd.PrintErrln("Error getting main LR fader:", err)
-				return
+				return fmt.Errorf("Error getting main LR fader: %w", err)
 			}
 			cmd.Printf("Main LR fader: %.1f dB\n", resp)
-			return
+			return nil
 		}
 
 		err := client.Main.SetFader(mustConvToFloat64(args[0]))
 		if err != nil {
-			cmd.PrintErrln("Error setting main LR fader:", err)
-			return
+			return fmt.Errorf("Error setting main LR fader: %w", err)
 		}
+
 		cmd.Println("Main LR fader set successfully")
+		return nil
 	},
 }
 
@@ -163,6 +161,7 @@ This command will fade out the main output to the specified dB level.
 			}
 			time.Sleep(stepDelay)
 		}
+
 		cmd.Println("Main output faded out successfully")
 	},
 }
@@ -220,6 +219,7 @@ This command will fade in the main output to the specified dB level.
 			}
 			time.Sleep(stepDelay)
 		}
+
 		cmd.Println("Main output faded in successfully")
 	},
 }
