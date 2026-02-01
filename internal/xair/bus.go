@@ -3,12 +3,14 @@ package xair
 import "fmt"
 
 type Bus struct {
-	client Client
+	baseAddress string
+	client      Client
 }
 
 func NewBus(c Client) *Bus {
 	return &Bus{
-		client: c,
+		baseAddress: c.addressMap["bus"],
+		client:      c,
 	}
 }
 
@@ -31,8 +33,7 @@ func (b *Bus) Mute(bus int) (bool, error) {
 
 // SetMute sets the mute status for a specific bus (1-based indexing)
 func (b *Bus) SetMute(bus int, muted bool) error {
-	formatter := b.client.addressMap["bus"]
-	address := fmt.Sprintf(formatter, bus) + "/mix/on"
+	address := fmt.Sprintf(b.baseAddress, bus) + "/mix/on"
 	var value int32
 	if !muted {
 		value = 1
@@ -42,8 +43,7 @@ func (b *Bus) SetMute(bus int, muted bool) error {
 
 // Fader requests the current fader level for a bus
 func (b *Bus) Fader(bus int) (float64, error) {
-	formatter := b.client.addressMap["bus"]
-	address := fmt.Sprintf(formatter, bus) + "/mix/fader"
+	address := fmt.Sprintf(b.baseAddress, bus) + "/mix/fader"
 	err := b.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -60,7 +60,28 @@ func (b *Bus) Fader(bus int) (float64, error) {
 
 // SetFader sets the fader level for a specific bus (1-based indexing)
 func (b *Bus) SetFader(bus int, level float64) error {
-	formatter := b.client.addressMap["bus"]
-	address := fmt.Sprintf(formatter, bus) + "/mix/fader"
+	address := fmt.Sprintf(b.baseAddress, bus) + "/mix/fader"
 	return b.client.SendMessage(address, float32(mustDbInto(level)))
+}
+
+// Name requests the name for a specific bus
+func (b *Bus) Name(bus int) (string, error) {
+	address := fmt.Sprintf(b.baseAddress, bus) + "/config/name"
+	err := b.client.SendMessage(address)
+	if err != nil {
+		return "", fmt.Errorf("failed to send bus name request: %v", err)
+	}
+
+	resp := <-b.client.respChan
+	val, ok := resp.Arguments[0].(string)
+	if !ok {
+		return "", fmt.Errorf("unexpected argument type for bus name value")
+	}
+	return val, nil
+}
+
+// SetName sets the name for a specific bus
+func (b *Bus) SetName(bus int, name string) error {
+	address := fmt.Sprintf(b.baseAddress, bus) + "/config/name"
+	return b.client.SendMessage(address, name)
 }

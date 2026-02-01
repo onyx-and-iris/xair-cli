@@ -305,6 +305,54 @@ var stripSendCmd = &cobra.Command{
 	},
 }
 
+// stripNameCmd represents the strip name command.
+var stripNameCmd = &cobra.Command{
+	Short: "Get or set the name of a strip",
+	Long: `Get or set the name of a specific strip.
+
+If no name argument is provided, the current strip name is retrieved.
+If a name argument is provided, the strip name is set to that value.`,
+	Use: "name [strip number] [name]",
+	Example: `  # Get the current name of strip 1
+  xair-cli strip name 1
+  
+  # Set the name of strip 1 to "Guitar"
+  xair-cli strip name 1 "Guitar"`,
+	Run: func(cmd *cobra.Command, args []string) {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			cmd.PrintErrln("OSC client not found in context")
+			return
+		}
+
+		if len(args) < 1 {
+			cmd.PrintErrln("Please provide a strip number")
+			return
+		}
+
+		stripIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			name, err := client.Strip.Name(stripIndex)
+			if err != nil {
+				cmd.PrintErrln("Error getting strip name:", err)
+				return
+			}
+			cmd.Printf("Strip %d name: %s\n", stripIndex, name)
+			return
+		}
+
+		name := args[1]
+
+		err := client.Strip.SetName(stripIndex, name)
+		if err != nil {
+			cmd.PrintErrln("Error setting strip name:", err)
+			return
+		}
+		cmd.Printf("Strip %d name set to: %s\n", stripIndex, name)
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(stripCmd)
 
@@ -317,4 +365,6 @@ func init() {
 	stripFadeInCmd.Flags().Float64P("duration", "d", 5.0, "Duration of the fade in in seconds")
 
 	stripCmd.AddCommand(stripSendCmd)
+
+	stripCmd.AddCommand(stripNameCmd)
 }

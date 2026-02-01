@@ -223,6 +223,50 @@ var busFadeInCmd = &cobra.Command{
 	},
 }
 
+// busNameCmd represents the bus name command.
+var busNameCmd = &cobra.Command{
+	Short: "Get or set the bus name",
+	Long:  `Get or set the name of a specific bus.`,
+	Use:   "name [bus number] [new name]",
+	Example: `  # Get the name of bus 1
+  xair-cli bus name 1
+
+  # Set the name of bus 1 to "Vocals"
+  xair-cli bus name 1 Vocals`,
+	Run: func(cmd *cobra.Command, args []string) {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			cmd.PrintErrln("OSC client not found in context")
+			return
+		}
+
+		if len(args) < 1 {
+			cmd.PrintErrln("Please provide bus number")
+			return
+		}
+
+		busIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			name, err := client.Bus.Name(busIndex)
+			if err != nil {
+				cmd.PrintErrln("Error getting bus name:", err)
+				return
+			}
+			cmd.Printf("Bus %d name: %s\n", busIndex, name)
+			return
+		}
+
+		newName := args[1]
+		err := client.Bus.SetName(busIndex, newName)
+		if err != nil {
+			cmd.PrintErrln("Error setting bus name:", err)
+			return
+		}
+		cmd.Printf("Bus %d name set to: %s\n", busIndex, newName)
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(busCmd)
 
@@ -233,4 +277,6 @@ func init() {
 	busFadeOutCmd.Flags().Float64P("duration", "d", 5.0, "Duration for fade out in seconds")
 	busCmd.AddCommand(busFadeInCmd)
 	busFadeInCmd.Flags().Float64P("duration", "d", 5.0, "Duration for fade in in seconds")
+
+	busCmd.AddCommand(busNameCmd)
 }
