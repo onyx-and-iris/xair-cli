@@ -16,8 +16,7 @@ func NewBus(c Client) *Bus {
 
 // Mute requests the current mute status for a bus
 func (b *Bus) Mute(bus int) (bool, error) {
-	formatter := b.client.addressMap["bus"]
-	address := fmt.Sprintf(formatter, bus) + "/mix/on"
+	address := fmt.Sprintf(b.baseAddress, bus) + "/mix/on"
 	err := b.client.SendMessage(address)
 	if err != nil {
 		return false, err
