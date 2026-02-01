@@ -7,7 +7,7 @@ type Eq struct {
 	baseAddress string
 }
 
-// Helper function to create Eq instance for Strip
+// Factory function to create Eq instance for Strip
 func newEqForStrip(c *Client) *Eq {
 	return &Eq{
 		client:      c,
@@ -15,7 +15,7 @@ func newEqForStrip(c *Client) *Eq {
 	}
 }
 
-// Helper function to create Eq instance for Bus
+// Factory function to create Eq instance for Bus
 func newEqForBus(c *Client) *Eq {
 	return &Eq{
 		client:      c,
@@ -23,6 +23,7 @@ func newEqForBus(c *Client) *Eq {
 	}
 }
 
+// On retrieves the on/off status of the EQ for a specific strip or bus (1-based indexing).
 func (e *Eq) On(index int) (bool, error) {
 	address := fmt.Sprintf(e.baseAddress, index) + "/eq/on"
 	err := e.client.SendMessage(address)
@@ -38,6 +39,7 @@ func (e *Eq) On(index int) (bool, error) {
 	return val != 0, nil
 }
 
+// SetOn sets the on/off status of the EQ for a specific strip or bus (1-based indexing).
 func (e *Eq) SetOn(index int, on bool) error {
 	address := fmt.Sprintf(e.baseAddress, index) + "/eq/on"
 	var value int32

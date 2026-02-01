@@ -333,6 +333,77 @@ If a name argument is provided, the strip name is set to that value.`,
 	},
 }
 
+// stripGateCmd represents the strip Gate command.
+var stripGateCmd = &cobra.Command{
+	Short: "Commands to control the Gate of individual strips.",
+	Long:  `Commands to control the Gate of individual strips, including turning the Gate on or off.`,
+	Use:   "gate",
+	Run: func(cmd *cobra.Command, _ []string) {
+		cmd.Help()
+	},
+}
+
+// stripGateOnCmd represents the strip Gate on command.
+var stripGateOnCmd = &cobra.Command{
+	Short: "Get or set the Gate on/off status of a strip",
+	Long: `Get or set the Gate on/off status of a specific strip.
+
+If no status argument is provided, the current Gate status is retrieved.
+If "true" or "1" is provided as an argument, the Gate is turned on.
+If "false" or "0" is provided, the Gate is turned off.`,
+	Use: "on [strip number] [true|false]",
+	Example: `  # Get the current Gate status of strip 1
+  xair-cli strip gate on 1
+  
+  # Turn on Gate for strip 1
+  xair-cli strip gate on 1 true
+  # Turn off Gate for strip 1
+  xair-cli strip gate on 1 false`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			on, err := client.Strip.Gate.On(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Gate on status: %w", err)
+			}
+			cmd.Printf("Strip %d Gate on: %v\n", stripIndex, on)
+			return nil
+		}
+
+		var on bool
+		switch args[1] {
+		case "true", "1":
+			on = true
+		case "false", "0":
+			on = false
+		default:
+			return fmt.Errorf("Invalid Gate status. Use true/false or 1/0")
+		}
+
+		err := client.Strip.Gate.SetOn(stripIndex, on)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Gate on status: %w", err)
+		}
+
+		if on {
+			cmd.Printf("Strip %d Gate turned on successfully\n", stripIndex)
+		} else {
+			cmd.Printf("Strip %d Gate turned off successfully\n", stripIndex)
+		}
+		return nil
+	},
+}
+
 // stripEqCmd represents the strip EQ command.
 var stripEqCmd = &cobra.Command{
 	Short: "Commands to control the EQ of individual strips.",
@@ -404,6 +475,77 @@ If "false" or "0" is provided, the EQ is turned off.`,
 	},
 }
 
+// stripCompCmd represents the strip Compressor command.
+var stripCompCmd = &cobra.Command{
+	Short: "Commands to control the Compressor of individual strips.",
+	Long:  `Commands to control the Compressor of individual strips, including turning the Compressor on or off.`,
+	Use:   "comp",
+	Run: func(cmd *cobra.Command, _ []string) {
+		cmd.Help()
+	},
+}
+
+// stripCompOnCmd represents the strip Compressor on command.
+var stripCompOnCmd = &cobra.Command{
+	Short: "Get or set the Compressor on/off status of a strip",
+	Long: `Get or set the Compressor on/off status of a specific strip.
+
+If no status argument is provided, the current Compressor status is retrieved.
+If "true" or "1" is provided as an argument, the Compressor is turned on.
+If "false" or "0" is provided, the Compressor is turned off.`,
+	Use: "on [strip number] [true|false]",
+	Example: `  # Get the current Compressor status of strip 1
+  xair-cli strip comp on 1
+  
+  # Turn on Compressor for strip 1
+  xair-cli strip comp on 1 true
+  # Turn off Compressor for strip 1
+  xair-cli strip comp on 1 false`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			on, err := client.Strip.Comp.On(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Compressor on status: %w", err)
+			}
+			cmd.Printf("Strip %d Compressor on: %v\n", stripIndex, on)
+			return nil
+		}
+
+		var on bool
+		switch args[1] {
+		case "true", "1":
+			on = true
+		case "false", "0":
+			on = false
+		default:
+			return fmt.Errorf("Invalid Compressor status. Use true/false or 1/0")
+		}
+
+		err := client.Strip.Comp.SetOn(stripIndex, on)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Compressor on status: %w", err)
+		}
+
+		if on {
+			cmd.Printf("Strip %d Compressor turned on successfully\n", stripIndex)
+		} else {
+			cmd.Printf("Strip %d Compressor turned off successfully\n", stripIndex)
+		}
+		return nil
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(stripCmd)
 
@@ -416,6 +558,12 @@ func init() {
 	stripCmd.AddCommand(stripSendCmd)
 	stripCmd.AddCommand(stripNameCmd)
 
+	stripCmd.AddCommand(stripGateCmd)
+	stripGateCmd.AddCommand(stripGateOnCmd)
+
 	stripCmd.AddCommand(stripEqCmd)
 	stripEqCmd.AddCommand(stripEqOnCmd)
+
+	stripCmd.AddCommand(stripCompCmd)
+	stripCompCmd.AddCommand(stripCompOnCmd)
 }

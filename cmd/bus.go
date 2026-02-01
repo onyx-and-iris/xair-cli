@@ -300,6 +300,52 @@ var busEqOnCmd = &cobra.Command{
 	},
 }
 
+// busCompCmd represents the bus Compressor command.
+var busCompCmd = &cobra.Command{
+	Short: "Commands to control bus Compressor settings",
+	Long:  `Commands to control the Compressor of individual buses, including turning the Compressor on or off.`,
+	Use:   "comp",
+	Run: func(cmd *cobra.Command, _ []string) {
+		cmd.Help()
+	},
+}
+
+// busCompOnCmd represents the bus Compressor on/off command.
+var busCompOnCmd = &cobra.Command{
+	Short: "Get or set the bus Compressor on/off status",
+	Long:  `Get or set the Compressor on/off status of a specific bus.`,
+	Use:   "on [bus number] [true|false]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide bus number and Compressor on status (true/false)")
+		}
+
+		busNum := mustConvToInt(args[0])
+		var compOn bool
+		switch args[1] {
+		case "true", "1":
+			compOn = true
+		case "false", "0":
+			compOn = false
+		default:
+			return fmt.Errorf("Invalid Compressor on status. Use true/false or 1/0")
+		}
+
+		err := client.Bus.Comp.SetOn(busNum, compOn)
+		if err != nil {
+			return fmt.Errorf("Error setting bus Compressor on status: %w", err)
+		}
+
+		cmd.Printf("Bus %d Compressor on set to %v\n", busNum, compOn)
+		return nil
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(busCmd)
 
@@ -313,4 +359,7 @@ func init() {
 
 	busCmd.AddCommand(busEqCmd)
 	busEqCmd.AddCommand(busEqOnCmd)
+
+	busCmd.AddCommand(busCompCmd)
+	busCompCmd.AddCommand(busCompOnCmd)
 }
