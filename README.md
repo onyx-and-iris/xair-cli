@@ -35,3 +35,40 @@ Flags:
 
 Use "xair-cli [command] --help" for more information about a command.
 ```
+
+### Examples
+
+Things that are possible with this CLI:
+
+*Fade out main LR all the way to -∞*
+
+```console
+xair-cli main fadeout
+```
+
+*enable phantom power and set the gain to 28dB for strip 09*
+```console
+xair-cli headamp 9 phantom on
+
+xair-cli headamp 9 gain 28
+```
+
+*adjust strip 09 send level to bus 5*
+```console
+xair-cli strip send 9 5 -- -18.0
+```
+
+*rename bus 01 to 'vocal mix'*
+```console
+xair-cli bus 1 name 'vocal mix'
+```
+
+
+### Notes
+
+I've only implemented the parts I personally need, I don't know how much more I intend to add.
+
+
+### License
+
+`xair-cli` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
