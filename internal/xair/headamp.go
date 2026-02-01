@@ -4,10 +4,10 @@ import "fmt"
 
 type HeadAmp struct {
 	baseAddress string
-	client      Client
+	client      *Client
 }
 
-func NewHeadAmp(c Client) *HeadAmp {
+func NewHeadAmp(c *Client) *HeadAmp {
 	return &HeadAmp{
 		baseAddress: c.addressMap["headamp"],
 		client:      c,

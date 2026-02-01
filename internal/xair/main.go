@@ -3,10 +3,10 @@ package xair
 import "fmt"
 
 type Main struct {
-	client Client
+	client *Client
 }
 
-func newMain(c Client) *Main {
+func newMain(c *Client) *Main {
 	return &Main{
 		client: c,
 	}
