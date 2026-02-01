@@ -15,8 +15,8 @@ func NewStrip(c Client) *Strip {
 }
 
 // Mute gets the mute status of the specified strip (1-based indexing).
-func (s *Strip) Mute(strip int) (bool, error) {
-	address := fmt.Sprintf(s.baseAddress, strip) + "/mix/on"
+func (s *Strip) Mute(index int) (bool, error) {
+	address := fmt.Sprintf(s.baseAddress, index) + "/mix/on"
 	err := s.client.SendMessage(address)
 	if err != nil {
 		return false, err
@@ -61,28 +61,6 @@ func (s *Strip) Fader(strip int) (float64, error) {
 func (s *Strip) SetFader(strip int, level float64) error {
 	address := fmt.Sprintf(s.baseAddress, strip) + "/mix/fader"
 	return s.client.SendMessage(address, float32(mustDbInto(level)))
-}
-
-// MicGain requests the phantom gain for a specific strip (1-based indexing).
-func (s *Strip) MicGain(strip int) (float64, error) {
-	address := fmt.Sprintf(s.baseAddress, strip) + "/mix/gain"
-	err := s.client.SendMessage(address)
-	if err != nil {
-		return 0, fmt.Errorf("failed to send strip gain request: %v", err)
-	}
-
-	resp := <-s.client.respChan
-	val, ok := resp.Arguments[0].(float32)
-	if !ok {
-		return 0, fmt.Errorf("unexpected argument type for strip gain value")
-	}
-	return mustDbFrom(float64(val)), nil
-}
-
-// SetMicGain sets the phantom gain for a specific strip (1-based indexing).
-func (s *Strip) SetMicGain(strip int, gain float32) error {
-	address := fmt.Sprintf(s.baseAddress, strip) + "/mix/gain"
-	return s.client.SendMessage(address, gain)
 }
 
 // Name requests the name for a specific strip
@@ -149,4 +127,26 @@ func (s *Strip) SendLevel(strip int, bus int) (float64, error) {
 func (s *Strip) SetSendLevel(strip int, bus int, level float64) error {
 	address := fmt.Sprintf(s.baseAddress, strip) + fmt.Sprintf("/mix/%02d/level", bus)
 	return s.client.SendMessage(address, float32(mustDbInto(level)))
+}
+
+// MicGain requests the phantom gain for a specific strip (1-based indexing).
+func (s *Strip) MicGain(strip int) (float64, error) {
+	address := fmt.Sprintf(s.baseAddress, strip) + "/mix/gain"
+	err := s.client.SendMessage(address)
+	if err != nil {
+		return 0, fmt.Errorf("failed to send strip gain request: %v", err)
+	}
+
+	resp := <-s.client.respChan
+	val, ok := resp.Arguments[0].(float32)
+	if !ok {
+		return 0, fmt.Errorf("unexpected argument type for strip gain value")
+	}
+	return mustDbFrom(float64(val)), nil
+}
+
+// SetMicGain sets the phantom gain for a specific strip (1-based indexing).
+func (s *Strip) SetMicGain(strip int, gain float64) error {
+	address := fmt.Sprintf(s.baseAddress, strip) + "/mix/gain"
+	return s.client.SendMessage(address, float32(mustDbInto(gain)))
 }

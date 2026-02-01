@@ -2,6 +2,14 @@ package xair
 
 import "math"
 
+func linGet(min float64, max float64, value float64) float64 {
+	return min + (max-min)*value
+}
+
+func linSet(min float64, max float64, value float64) float64 {
+	return (value - min) / (max - min)
+}
+
 func mustDbInto(db float64) float64 {
 	switch {
 	case db >= 10:

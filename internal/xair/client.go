@@ -15,9 +15,10 @@ type parser interface {
 
 type Client struct {
 	engine
-	Main  *Main
-	Strip *Strip
-	Bus   *Bus
+	Main    *Main
+	Strip   *Strip
+	Bus     *Bus
+	HeadAmp *HeadAmp
 }
 
 // NewClient creates a new XAirClient instance
@@ -60,6 +61,7 @@ func NewClient(mixerIP string, mixerPort int, opts ...Option) (*Client, error) {
 	c.Main = newMain(*c)
 	c.Strip = NewStrip(*c)
 	c.Bus = NewBus(*c)
+	c.HeadAmp = NewHeadAmp(*c)
 
 	return c, nil
 }
