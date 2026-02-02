@@ -56,15 +56,22 @@ xair-cli headamp 9 gain 28.0 --duration 10s
 xair-cli strip send 9 5 -- -18.0
 ```
 
+*enable eq for strip 01*
+```console
+xair-cli strip eq on 1 true
+```
+
 *rename bus 01 to 'vocal mix'*
 ```console
 xair-cli bus 1 name 'vocal mix'
 ```
 
+For every command/subcommand there exists a `--help` flag which you can use to get usage information.
+
 
 ### Notes
 
-I've only implemented the parts I personally need, I don't know how much more I intend to add.
+I wrote this primarily because I needed a CLI that I could run on a machine without any external dependencies (ie a compiled binary). However, there exists an alternative you should check out that has much wider support of the protocol including support for operations like batch commands and network discovery (which I have no plans to implement on this CLI). Check out [dc-xair-cli](https://pypi.org/project/dc-xair-cli/) on pypi.
 
 
 ### License
