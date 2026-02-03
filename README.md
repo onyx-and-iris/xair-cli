@@ -46,9 +46,9 @@ xair-cli main fadeout
 
 *enable phantom power and set the gain to 28.0dB over a 10s duration for strip 09*
 ```console
-xair-cli headamp 9 phantom on
+xair-cli headamp phantom 9 on
 
-xair-cli headamp 9 gain 28.0 --duration 10s
+xair-cli headamp gain 9 28.0 --duration 10s
 ```
 
 *set strip 09 send level for bus 5 to -18.0dB*
@@ -63,7 +63,7 @@ xair-cli strip eq on 1 true
 
 *rename bus 01 to 'vocal mix'*
 ```console
-xair-cli bus 1 name 'vocal mix'
+xair-cli bus name 1 'vocal mix'
 ```
 
 For every command/subcommand there exists a `--help` flag which you can use to get usage information.
@@ -71,7 +71,7 @@ For every command/subcommand there exists a `--help` flag which you can use to g
 
 ### Notes
 
-I wrote this primarily because I needed a CLI that I could run on a machine without any external dependencies (ie a compiled binary). However, there exists an alternative you should check out that has much wider support of the protocol including support for operations like batch commands and network discovery (which I have no plans to implement on this CLI). Check out [dc-xair-cli](https://pypi.org/project/dc-xair-cli/) on pypi.
+This CLI is useful if just want to run some commands on the terminal using a single binary, no further downloads. However, there exists an alternative you should check out that has wider support of the XAir OSC protocol including support for operations like batch commands and network discovery (which I have no plans to implement on this CLI). Check out [dc-xair-cli](https://pypi.org/project/dc-xair-cli/) on pypi.
 
 
 ### License
