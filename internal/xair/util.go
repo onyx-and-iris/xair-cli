@@ -56,3 +56,13 @@ func toFixed(num float64, precision int) float64 {
 	output := math.Pow(10, float64(precision))
 	return float64(math.Round(num*output)) / output
 }
+
+// generic indexOf returns the index of elem in slice, or -1 if not found.
+func indexOf[T comparable](slice []T, elem T) int {
+	for i, v := range slice {
+		if v == elem {
+			return i
+		}
+	}
+	return -1
+}

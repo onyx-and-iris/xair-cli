@@ -31,3 +31,8 @@ func indexOf[T comparable](slice []T, elem T) int {
 	}
 	return -1
 }
+
+// generic contains checks if elem is in slice.
+func contains[T comparable](slice []T, elem T) bool {
+	return indexOf(slice, elem) != -1
+}

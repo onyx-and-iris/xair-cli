@@ -727,6 +727,304 @@ If "false" or "0" is provided, the Compressor is turned off.`,
 	},
 }
 
+// stripCompThresholdCmd represents the strip Compressor Threshold command.
+var stripCompThresholdCmd = &cobra.Command{
+	Short: "Get or set the Compressor threshold for a strip",
+	Long:  "Get or set the Compressor threshold for a specific strip.",
+	Use:   "threshold [strip number] [threshold in dB]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			currentThreshold, err := client.Strip.Comp.Threshold(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Compressor threshold: %w", err)
+			}
+			cmd.Printf("Strip %d Compressor threshold: %.2f dB\n", stripIndex, currentThreshold)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide a threshold in dB")
+		}
+
+		threshold := mustConvToFloat64(args[1])
+
+		err := client.Strip.Comp.SetThreshold(stripIndex, threshold)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Compressor threshold: %w", err)
+		}
+
+		cmd.Printf("Strip %d Compressor threshold set to %.2f dB\n", stripIndex, threshold)
+		return nil
+	},
+}
+
+// stripCompRatioCmd represents the strip Compressor Ratio command.
+var stripCompRatioCmd = &cobra.Command{
+	Short: "Get or set the Compressor ratio for a strip",
+	Long:  "Get or set the Compressor ratio for a specific strip.",
+	Use:   "ratio [strip number] [ratio]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			currentRatio, err := client.Strip.Comp.Ratio(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Compressor ratio: %w", err)
+			}
+			cmd.Printf("Strip %d Compressor ratio: %.2f\n", stripIndex, currentRatio)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide a ratio")
+		}
+
+		ratio := mustConvToFloat64(args[1])
+		possibleValues := []float64{1.1, 1.3, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 7.0, 10, 20, 100}
+		if !contains(possibleValues, ratio) {
+			return fmt.Errorf("Invalid ratio value. Valid values are: %v", possibleValues)
+		}
+
+		err := client.Strip.Comp.SetRatio(stripIndex, ratio)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Compressor ratio: %w", err)
+		}
+
+		cmd.Printf("Strip %d Compressor ratio set to %.2f\n", stripIndex, ratio)
+		return nil
+	},
+}
+
+// stripCompMixCmd represents the strip Compressor Mix command.
+var stripCompMixCmd = &cobra.Command{
+	Short: "Get or set the Compressor mix for a strip",
+	Long:  "Get or set the Compressor mix for a specific strip.",
+	Use:   "mix [strip number] [mix percentage]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			currentMix, err := client.Strip.Comp.Mix(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Compressor mix: %w", err)
+			}
+			cmd.Printf("Strip %d Compressor mix: %.2f%%\n", stripIndex, currentMix)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide a mix percentage")
+		}
+
+		mix := mustConvToFloat64(args[1])
+
+		err := client.Strip.Comp.SetMix(stripIndex, mix)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Compressor mix: %w", err)
+		}
+
+		cmd.Printf("Strip %d Compressor mix set to %.2f%%\n", stripIndex, mix)
+		return nil
+	},
+}
+
+// stripCompMakeUpCmd represents the strip Compressor Make-Up Gain command.
+var stripCompMakeUpCmd = &cobra.Command{
+	Short: "Get or set the Compressor make-up gain for a strip",
+	Long:  "Get or set the Compressor make-up gain for a specific strip.",
+	Use:   "makeup [strip number] [make-up gain in dB]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			currentMakeUp, err := client.Strip.Comp.MakeUp(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Compressor make-up gain: %w", err)
+			}
+			cmd.Printf("Strip %d Compressor make-up gain: %.2f dB\n", stripIndex, currentMakeUp)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide a make-up gain in dB")
+		}
+
+		makeUp := mustConvToFloat64(args[1])
+
+		err := client.Strip.Comp.SetMakeUp(stripIndex, makeUp)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Compressor make-up gain: %w", err)
+		}
+
+		cmd.Printf("Strip %d Compressor make-up gain set to %.2f dB\n", stripIndex, makeUp)
+		return nil
+	},
+}
+
+// stripCompAttackCmd represents the strip Compressor Attack command.
+var stripCompAttackCmd = &cobra.Command{
+	Short: "Get or set the Compressor attack time for a strip",
+	Long:  "Get or set the Compressor attack time for a specific strip.",
+	Use:   "attack [strip number] [attack time in ms]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			currentAttack, err := client.Strip.Comp.Attack(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Compressor attack time: %w", err)
+			}
+			cmd.Printf("Strip %d Compressor attack time: %.2f ms\n", stripIndex, currentAttack)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide an attack time in ms")
+		}
+
+		attack := mustConvToFloat64(args[1])
+
+		err := client.Strip.Comp.SetAttack(stripIndex, attack)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Compressor attack time: %w", err)
+		}
+
+		cmd.Printf("Strip %d Compressor attack time set to %.2f ms\n", stripIndex, attack)
+		return nil
+	},
+}
+
+// stripCompHoldCmd represents the strip Compressor Hold command.
+var stripCompHoldCmd = &cobra.Command{
+	Short: "Get or set the Compressor hold time for a strip",
+	Long:  "Get or set the Compressor hold time for a specific strip.",
+	Use:   "hold [strip number] [hold time in ms]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			currentHold, err := client.Strip.Comp.Hold(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Compressor hold time: %w", err)
+			}
+			cmd.Printf("Strip %d Compressor hold time: %.2f ms\n", stripIndex, currentHold)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide a hold time in ms")
+		}
+
+		hold := mustConvToFloat64(args[1])
+
+		err := client.Strip.Comp.SetHold(stripIndex, hold)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Compressor hold time: %w", err)
+		}
+
+		cmd.Printf("Strip %d Compressor hold time set to %.2f ms\n", stripIndex, hold)
+		return nil
+	},
+}
+
+// stripCompReleaseCmd represents the strip Compressor Release command.
+var stripCompReleaseCmd = &cobra.Command{
+	Short: "Get or set the Compressor release time for a strip",
+	Long:  "Get or set the Compressor release time for a specific strip.",
+	Use:   "release [strip number] [release time in ms]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			currentRelease, err := client.Strip.Comp.Release(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Compressor release time: %w", err)
+			}
+			cmd.Printf("Strip %d Compressor release time: %.2f ms\n", stripIndex, currentRelease)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide a release time in ms")
+		}
+
+		release := mustConvToFloat64(args[1])
+
+		err := client.Strip.Comp.SetRelease(stripIndex, release)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Compressor release time: %w", err)
+		}
+
+		cmd.Printf("Strip %d Compressor release time set to %.2f ms\n", stripIndex, release)
+		return nil
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(stripCmd)
 
@@ -751,4 +1049,11 @@ func init() {
 
 	stripCmd.AddCommand(stripCompCmd)
 	stripCompCmd.AddCommand(stripCompOnCmd)
+	stripCompCmd.AddCommand(stripCompThresholdCmd)
+	stripCompCmd.AddCommand(stripCompRatioCmd)
+	stripCompCmd.AddCommand(stripCompMixCmd)
+	stripCompCmd.AddCommand(stripCompMakeUpCmd)
+	stripCompCmd.AddCommand(stripCompAttackCmd)
+	stripCompCmd.AddCommand(stripCompHoldCmd)
+	stripCompCmd.AddCommand(stripCompReleaseCmd)
 }

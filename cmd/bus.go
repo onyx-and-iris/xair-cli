@@ -568,6 +568,300 @@ var busCompOnCmd = &cobra.Command{
 	},
 }
 
+// busCompThresholdCmd represents the bus Compressor threshold command.
+var busCompThresholdCmd = &cobra.Command{
+	Short: "Get or set the bus Compressor threshold",
+	Long:  `Get or set the Compressor threshold (in dB) for a specific bus.`,
+	Use:   "threshold [bus number] [threshold in dB]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide bus number")
+		}
+
+		busIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			threshold, err := client.Bus.Comp.Threshold(busIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting bus Compressor threshold: %w", err)
+			}
+			cmd.Printf("Bus %d Compressor threshold: %.1f dB\n", busIndex, threshold)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide bus number and threshold (in dB)")
+		}
+
+		threshold := mustConvToFloat64(args[1])
+
+		err := client.Bus.Comp.SetThreshold(busIndex, threshold)
+		if err != nil {
+			return fmt.Errorf("Error setting bus Compressor threshold: %w", err)
+		}
+
+		cmd.Printf("Bus %d Compressor threshold set to %.1f dB\n", busIndex, threshold)
+		return nil
+	},
+}
+
+// busCompRatioCmd represents the bus Compressor ratio command.
+var busCompRatioCmd = &cobra.Command{
+	Short: "Get or set the bus Compressor ratio",
+	Long:  `Get or set the Compressor ratio for a specific bus.`,
+	Use:   "ratio [bus number] [ratio]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide bus number")
+		}
+
+		busIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			ratio, err := client.Bus.Comp.Ratio(busIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting bus Compressor ratio: %w", err)
+			}
+			cmd.Printf("Bus %d Compressor ratio: %.2f\n", busIndex, ratio)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide bus number and ratio")
+		}
+
+		ratio := mustConvToFloat64(args[1])
+
+		err := client.Bus.Comp.SetRatio(busIndex, ratio)
+		if err != nil {
+			return fmt.Errorf("Error setting bus Compressor ratio: %w", err)
+		}
+
+		cmd.Printf("Bus %d Compressor ratio set to %.2f\n", busIndex, ratio)
+		return nil
+	},
+}
+
+// busMixCmd represents the bus Compressor mix command.
+var busCompMixCmd = &cobra.Command{
+	Short: "Get or set the bus Compressor mix",
+	Long:  `Get or set the Compressor mix (0-100%) for a specific bus.`,
+	Use:   "mix [bus number] [mix percentage]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide bus number")
+		}
+
+		busIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			mix, err := client.Bus.Comp.Mix(busIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting bus Compressor mix: %w", err)
+			}
+			cmd.Printf("Bus %d Compressor mix: %.1f%%\n", busIndex, mix)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide bus number and mix percentage")
+		}
+
+		mix := mustConvToFloat64(args[1])
+
+		err := client.Bus.Comp.SetMix(busIndex, mix)
+		if err != nil {
+			return fmt.Errorf("Error setting bus Compressor mix: %w", err)
+		}
+
+		cmd.Printf("Bus %d Compressor mix set to %.1f%%\n", busIndex, mix)
+		return nil
+	},
+}
+
+// busMakeUpCmd represents the bus Compressor make-up gain command.
+var busCompMakeUpCmd = &cobra.Command{
+	Short: "Get or set the bus Compressor make-up gain",
+	Long:  `Get or set the Compressor make-up gain (in dB) for a specific bus.`,
+	Use:   "makeup [bus number] [make-up gain in dB]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide bus number")
+		}
+
+		busIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			makeUp, err := client.Bus.Comp.MakeUp(busIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting bus Compressor make-up gain: %w", err)
+			}
+			cmd.Printf("Bus %d Compressor make-up gain: %.1f dB\n", busIndex, makeUp)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide bus number and make-up gain (in dB)")
+		}
+
+		makeUp := mustConvToFloat64(args[1])
+
+		err := client.Bus.Comp.SetMakeUp(busIndex, makeUp)
+		if err != nil {
+			return fmt.Errorf("Error setting bus Compressor make-up gain: %w", err)
+		}
+
+		cmd.Printf("Bus %d Compressor make-up gain set to %.1f dB\n", busIndex, makeUp)
+		return nil
+	},
+}
+
+// busAttackCmd represents the bus Compressor attack time command.
+var busCompAttackCmd = &cobra.Command{
+	Short: "Get or set the bus Compressor attack time",
+	Long:  `Get or set the Compressor attack time (in milliseconds) for a specific bus.`,
+	Use:   "attack [bus number] [attack time in ms]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide bus number")
+		}
+
+		busIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			attack, err := client.Bus.Comp.Attack(busIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting bus Compressor attack time: %w", err)
+			}
+			cmd.Printf("Bus %d Compressor attack time: %.1f ms\n", busIndex, attack)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide bus number and attack time (in ms)")
+		}
+
+		attack := mustConvToFloat64(args[1])
+
+		err := client.Bus.Comp.SetAttack(busIndex, attack)
+		if err != nil {
+			return fmt.Errorf("Error setting bus Compressor attack time: %w", err)
+		}
+
+		cmd.Printf("Bus %d Compressor attack time set to %.1f ms\n", busIndex, attack)
+		return nil
+	},
+}
+
+// busHoldCmd represents the bus Compressor hold time command.
+var busCompHoldCmd = &cobra.Command{
+	Short: "Get or set the bus Compressor hold time",
+	Long:  `Get or set the Compressor hold time (in milliseconds) for a specific bus.`,
+	Use:   "hold [bus number] [hold time in ms]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide bus number")
+		}
+
+		busIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			hold, err := client.Bus.Comp.Hold(busIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting bus Compressor hold time: %w", err)
+			}
+			cmd.Printf("Bus %d Compressor hold time: %.1f ms\n", busIndex, hold)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide bus number and hold time (in ms)")
+		}
+
+		hold := mustConvToFloat64(args[1])
+
+		err := client.Bus.Comp.SetHold(busIndex, hold)
+		if err != nil {
+			return fmt.Errorf("Error setting bus Compressor hold time: %w", err)
+		}
+
+		cmd.Printf("Bus %d Compressor hold time set to %.1f ms\n", busIndex, hold)
+		return nil
+	},
+}
+
+// busReleaseCmd represents the bus Compressor release time command.
+var busCompReleaseCmd = &cobra.Command{
+	Short: "Get or set the bus Compressor release time",
+	Long:  `Get or set the Compressor release time (in milliseconds) for a specific bus.`,
+	Use:   "release [bus number] [release time in ms]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide bus number")
+		}
+
+		busIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			release, err := client.Bus.Comp.Release(busIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting bus Compressor release time: %w", err)
+			}
+			cmd.Printf("Bus %d Compressor release time: %.1f ms\n", busIndex, release)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide bus number and release time (in ms)")
+		}
+
+		release := mustConvToFloat64(args[1])
+
+		err := client.Bus.Comp.SetRelease(busIndex, release)
+		if err != nil {
+			return fmt.Errorf("Error setting bus Compressor release time: %w", err)
+		}
+
+		cmd.Printf("Bus %d Compressor release time set to %.1f ms\n", busIndex, release)
+		return nil
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(busCmd)
 
@@ -589,4 +883,11 @@ func init() {
 
 	busCmd.AddCommand(busCompCmd)
 	busCompCmd.AddCommand(busCompOnCmd)
+	busCompCmd.AddCommand(busCompThresholdCmd)
+	busCompCmd.AddCommand(busCompRatioCmd)
+	busCompCmd.AddCommand(busCompMixCmd)
+	busCompCmd.AddCommand(busCompMakeUpCmd)
+	busCompCmd.AddCommand(busCompAttackCmd)
+	busCompCmd.AddCommand(busCompHoldCmd)
+	busCompCmd.AddCommand(busCompReleaseCmd)
 }
