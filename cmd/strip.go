@@ -404,6 +404,249 @@ If "false" or "0" is provided, the Gate is turned off.`,
 	},
 }
 
+// stripGateModeCmd represents the strip Gate Mode command.
+var stripGateModeCmd = &cobra.Command{
+	Short: "Get or set the Gate mode for a strip",
+	Long:  "Get or set the Gate mode for a specific strip.",
+	Use:   "mode [strip number] [mode]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+		stripIndex := mustConvToInt(args[0])
+		if len(args) == 1 {
+			currentMode, err := client.Strip.Gate.Mode(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Gate mode: %w", err)
+			}
+			cmd.Printf("Strip %d Gate mode: %s\n", stripIndex, currentMode)
+			return nil
+		}
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide a mode")
+		}
+
+		mode := args[1]
+		possibleModes := []string{"exp2", "exp3", "exp4", "gate", "duck"}
+		if !contains(possibleModes, mode) {
+			return fmt.Errorf("Invalid mode value. Valid values are: %v", possibleModes)
+		}
+
+		err := client.Strip.Gate.SetMode(stripIndex, mode)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Gate mode: %w", err)
+		}
+
+		cmd.Printf("Strip %d Gate mode set to %s\n", stripIndex, mode)
+		return nil
+	},
+}
+
+// stripGateThresholdCmd represents the strip Gate Threshold command.
+var stripGateThresholdCmd = &cobra.Command{
+	Short: "Get or set the Gate threshold for a strip",
+	Long:  "Get or set the Gate threshold for a specific strip.",
+	Use:   "threshold [strip number] [threshold in dB]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+		if len(args) == 1 {
+			currentThreshold, err := client.Strip.Gate.Threshold(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Gate threshold: %w", err)
+			}
+			cmd.Printf("Strip %d Gate threshold: %.2f dB\n", stripIndex, currentThreshold)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide a threshold in dB")
+		}
+
+		threshold := mustConvToFloat64(args[1])
+		err := client.Strip.Gate.SetThreshold(stripIndex, threshold)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Gate threshold: %w", err)
+		}
+
+		cmd.Printf("Strip %d Gate threshold set to %.2f dB\n", stripIndex, threshold)
+		return nil
+	},
+}
+
+// stripGateRangeCmd represents the strip Gate Range command.
+var stripGateRangeCmd = &cobra.Command{
+	Short: "Get or set the Gate range for a strip",
+	Long:  "Get or set the Gate range for a specific strip.",
+	Use:   "range [strip number] [range in dB]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+		if len(args) == 1 {
+			currentRange, err := client.Strip.Gate.Range(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Gate range: %w", err)
+			}
+			cmd.Printf("Strip %d Gate range: %.2f dB\n", stripIndex, currentRange)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide a range in dB")
+		}
+
+		rangeDb := mustConvToFloat64(args[1])
+		err := client.Strip.Gate.SetRange(stripIndex, rangeDb)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Gate range: %w", err)
+		}
+
+		cmd.Printf("Strip %d Gate range set to %.2f dB\n", stripIndex, rangeDb)
+		return nil
+	},
+}
+
+// stripGateAttackCmd represents the strip Gate Attack command.
+var stripGateAttackCmd = &cobra.Command{
+	Short: "Get or set the Gate attack time for a strip",
+	Long:  "Get or set the Gate attack time for a specific strip.",
+	Use:   "attack [strip number] [attack time in ms]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+		if len(args) == 1 {
+			currentAttack, err := client.Strip.Gate.Attack(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Gate attack time: %w", err)
+			}
+			cmd.Printf("Strip %d Gate attack time: %.2f ms\n", stripIndex, currentAttack)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide an attack time in ms")
+		}
+
+		attack := mustConvToFloat64(args[1])
+		err := client.Strip.Gate.SetAttack(stripIndex, attack)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Gate attack time: %w", err)
+		}
+
+		cmd.Printf("Strip %d Gate attack time set to %.2f ms\n", stripIndex, attack)
+		return nil
+	},
+}
+
+// stripGateHoldCmd represents the strip Gate Hold command.
+var stripGateHoldCmd = &cobra.Command{
+	Short: "Get or set the Gate hold time for a strip",
+	Long:  "Get or set the Gate hold time for a specific strip.",
+	Use:   "hold [strip number] [hold time in ms]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+		if len(args) == 1 {
+			currentHold, err := client.Strip.Gate.Hold(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Gate hold time: %w", err)
+			}
+			cmd.Printf("Strip %d Gate hold time: %.2f ms\n", stripIndex, currentHold)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide a hold time in ms")
+		}
+
+		hold := mustConvToFloat64(args[1])
+		err := client.Strip.Gate.SetHold(stripIndex, hold)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Gate hold time: %w", err)
+		}
+
+		cmd.Printf("Strip %d Gate hold time set to %.2f ms\n", stripIndex, hold)
+		return nil
+	},
+}
+
+// stripGateReleaseCmd represents the strip Gate Release command.
+var stripGateReleaseCmd = &cobra.Command{
+	Short: "Get or set the Gate release time for a strip",
+	Long:  "Get or set the Gate release time for a specific strip.",
+	Use:   "release [strip number] [release time in ms]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+		if len(args) == 1 {
+			currentRelease, err := client.Strip.Gate.Release(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Gate release time: %w", err)
+			}
+			cmd.Printf("Strip %d Gate release time: %.2f ms\n", stripIndex, currentRelease)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide a release time in ms")
+		}
+
+		release := mustConvToFloat64(args[1])
+		err := client.Strip.Gate.SetRelease(stripIndex, release)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Gate release time: %w", err)
+		}
+
+		cmd.Printf("Strip %d Gate release time set to %.2f ms\n", stripIndex, release)
+		return nil
+	},
+}
+
 // stripEqCmd represents the strip EQ command.
 var stripEqCmd = &cobra.Command{
 	Short: "Commands to control the EQ of individual strips.",
@@ -727,6 +970,51 @@ If "false" or "0" is provided, the Compressor is turned off.`,
 	},
 }
 
+// stripCompModeCmd represents the strip Compressor Mode command.
+var stripCompModeCmd = &cobra.Command{
+	Short: "Get or set the Compressor mode for a strip",
+	Long:  "Get or set the Compressor mode for a specific strip.",
+	Use:   "mode [strip number] [mode]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide a strip number")
+		}
+
+		stripIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			currentMode, err := client.Strip.Comp.Mode(stripIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting strip Compressor mode: %w", err)
+			}
+			cmd.Printf("Strip %d Compressor mode: %s\n", stripIndex, currentMode)
+			return nil
+		}
+
+		if len(args) < 2 {
+			return fmt.Errorf("Please provide a mode")
+		}
+
+		mode := args[1]
+		if !contains([]string{"comp", "exp"}, mode) {
+			return fmt.Errorf("Invalid mode value. Valid values are: comp, exp")
+		}
+
+		err := client.Strip.Comp.SetMode(stripIndex, mode)
+		if err != nil {
+			return fmt.Errorf("Error setting strip Compressor mode: %w", err)
+		}
+
+		cmd.Printf("Strip %d Compressor mode set to %s\n", stripIndex, mode)
+		return nil
+	},
+}
+
 // stripCompThresholdCmd represents the strip Compressor Threshold command.
 var stripCompThresholdCmd = &cobra.Command{
 	Short: "Get or set the Compressor threshold for a strip",
@@ -1039,6 +1327,12 @@ func init() {
 
 	stripCmd.AddCommand(stripGateCmd)
 	stripGateCmd.AddCommand(stripGateOnCmd)
+	stripGateCmd.AddCommand(stripGateModeCmd)
+	stripGateCmd.AddCommand(stripGateThresholdCmd)
+	stripGateCmd.AddCommand(stripGateRangeCmd)
+	stripGateCmd.AddCommand(stripGateAttackCmd)
+	stripGateCmd.AddCommand(stripGateHoldCmd)
+	stripGateCmd.AddCommand(stripGateReleaseCmd)
 
 	stripCmd.AddCommand(stripEqCmd)
 	stripEqCmd.AddCommand(stripEqOnCmd)
@@ -1049,6 +1343,7 @@ func init() {
 
 	stripCmd.AddCommand(stripCompCmd)
 	stripCompCmd.AddCommand(stripCompOnCmd)
+	stripCompCmd.AddCommand(stripCompModeCmd)
 	stripCompCmd.AddCommand(stripCompThresholdCmd)
 	stripCompCmd.AddCommand(stripCompRatioCmd)
 	stripCompCmd.AddCommand(stripCompMixCmd)
