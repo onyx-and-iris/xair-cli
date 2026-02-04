@@ -568,6 +568,47 @@ var busCompOnCmd = &cobra.Command{
 	},
 }
 
+// busCompModeCmd represents the bus Compressor mode command.
+var busCompModeCmd = &cobra.Command{
+	Short: "Get or set the bus Compressor mode",
+	Long:  `Get or set the Compressor mode of a specific bus.`,
+	Use:   "mode [bus number] [mode]",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		client := ClientFromContext(cmd.Context())
+		if client == nil {
+			return fmt.Errorf("OSC client not found in context")
+		}
+
+		if len(args) < 1 {
+			return fmt.Errorf("Please provide bus number")
+		}
+
+		busIndex := mustConvToInt(args[0])
+
+		if len(args) == 1 {
+			mode, err := client.Bus.Comp.Mode(busIndex)
+			if err != nil {
+				return fmt.Errorf("Error getting bus Compressor mode: %w", err)
+			}
+			cmd.Printf("Bus %d Compressor mode: %s\n", busIndex, mode)
+			return nil
+		}
+
+		mode := args[1]
+		if !contains([]string{"comp", "exp"}, mode) {
+			return fmt.Errorf("Invalid mode value. Valid values are: comp, exp")
+		}
+
+		err := client.Bus.Comp.SetMode(busIndex, mode)
+		if err != nil {
+			return fmt.Errorf("Error setting bus Compressor mode: %w", err)
+		}
+
+		cmd.Printf("Bus %d Compressor mode set to %s\n", busIndex, mode)
+		return nil
+	},
+}
+
 // busCompThresholdCmd represents the bus Compressor threshold command.
 var busCompThresholdCmd = &cobra.Command{
 	Short: "Get or set the bus Compressor threshold",
@@ -883,6 +924,7 @@ func init() {
 
 	busCmd.AddCommand(busCompCmd)
 	busCompCmd.AddCommand(busCompOnCmd)
+	busCompCmd.AddCommand(busCompModeCmd)
 	busCompCmd.AddCommand(busCompThresholdCmd)
 	busCompCmd.AddCommand(busCompRatioCmd)
 	busCompCmd.AddCommand(busCompMixCmd)

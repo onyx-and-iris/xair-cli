@@ -49,6 +49,31 @@ func (c *Comp) SetOn(index int, on bool) error {
 	return c.client.SendMessage(address, value)
 }
 
+// Mode retrieves the current mode of the Compressor for a specific strip or bus (1-based indexing).
+func (c *Comp) Mode(index int) (string, error) {
+	address := fmt.Sprintf(c.baseAddress, index) + "/dyn/mode"
+	err := c.client.SendMessage(address)
+	if err != nil {
+		return "", err
+	}
+
+	possibleModes := []string{"comp", "exp"}
+
+	resp := <-c.client.respChan
+	val, ok := resp.Arguments[0].(int32)
+	if !ok {
+		return "", fmt.Errorf("unexpected argument type for Compressor mode value")
+	}
+	return possibleModes[val], nil
+}
+
+// SetMode sets the mode of the Compressor for a specific strip or bus (1-based indexing).
+func (c *Comp) SetMode(index int, mode string) error {
+	address := fmt.Sprintf(c.baseAddress, index) + "/dyn/mode"
+	possibleModes := []string{"comp", "exp"}
+	return c.client.SendMessage(address, int32(indexOf(possibleModes, mode)))
+}
+
 // Threshold retrieves the threshold value of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) Threshold(index int) (float64, error) {
 	address := fmt.Sprintf(c.baseAddress, index) + "/dyn/thr"
