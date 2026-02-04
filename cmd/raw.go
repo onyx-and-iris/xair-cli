@@ -17,7 +17,7 @@ Optionally provide a timeout duration to wait for a response from the mixer. Def
 	Use: "raw",
 	Example: `  xair-cli raw /xinfo
   xair-cli raw /ch/01/mix/fader 0.75
-  xair-cli raw --timeout 500ms /bus/02/mix/on 1`,
+  xair-cli raw --timeout 500ms /bus/2/mix/on 1`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		client := ClientFromContext(cmd.Context())
