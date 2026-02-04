@@ -13,7 +13,7 @@ var rawCmd = &cobra.Command{
 	Long: `Send a raw OSC message to the mixer.
 You need to provide the OSC address and any parameters as arguments.
 
-Provide a timeout duration to wait for a response from the mixer.`,
+Optionally provide a timeout duration to wait for a response from the mixer. Default is 200ms.`,
 	Use: "raw",
 	Example: `  xair-cli raw /xinfo
   xair-cli raw /ch/01/mix/fader 0.75
