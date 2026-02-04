@@ -14,8 +14,24 @@ func NewSnapshot(c *Client) *Snapshot {
 	}
 }
 
-// Name sets the name of the snapshot at the given index.
-func (s *Snapshot) Name(index int, name string) error {
+// Name gets the name of the snapshot at the given index.
+func (s *Snapshot) Name(index int) (string, error) {
+	address := s.baseAddress + fmt.Sprintf("/name/%d", index)
+	err := s.client.SendMessage(address)
+	if err != nil {
+		return "", err
+	}
+
+	resp := <-s.client.respChan
+	name, ok := resp.Arguments[0].(string)
+	if !ok {
+		return "", fmt.Errorf("unexpected argument type for snapshot name")
+	}
+	return name, nil
+}
+
+// SetName sets the name of the snapshot at the given index.
+func (s *Snapshot) SetName(index int, name string) error {
 	address := s.baseAddress + fmt.Sprintf("/name/%d", index)
 	return s.client.SendMessage(address, name)
 }
