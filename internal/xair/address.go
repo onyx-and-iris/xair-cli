@@ -1,9 +1,10 @@
 package xair
 
 var xairAddressMap = map[string]string{
-	"strip":   "/ch/%02d",
-	"bus":     "/bus/%01d",
-	"headamp": "/headamp/%02d",
+	"strip":    "/ch/%02d",
+	"bus":      "/bus/%01d",
+	"headamp":  "/headamp/%02d",
+	"snapshot": "/-snap",
 }
 
 var x32AddressMap = map[string]string{

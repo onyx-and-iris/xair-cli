@@ -3,6 +3,7 @@ package xair
 import (
 	"fmt"
 	"net"
+	"time"
 
 	"github.com/charmbracelet/log"
 
@@ -15,10 +16,11 @@ type parser interface {
 
 type Client struct {
 	engine
-	Main    *Main
-	Strip   *Strip
-	Bus     *Bus
-	HeadAmp *HeadAmp
+	Main     *Main
+	Strip    *Strip
+	Bus      *Bus
+	HeadAmp  *HeadAmp
+	Snapshot *Snapshot
 }
 
 // NewClient creates a new XAirClient instance
@@ -83,6 +85,20 @@ func (c *Client) Stop() {
 // SendMessage sends an OSC message to the mixer using the unified connection
 func (c *Client) SendMessage(address string, args ...any) error {
 	return c.engine.sendToAddress(c.mixerAddr, address, args...)
+}
+
+// ReceiveMessage receives an OSC message from the mixer
+func (c *Client) ReceiveMessage(timeout time.Duration) (*osc.Message, error) {
+	t := time.Tick(timeout)
+	select {
+	case <-t:
+		return nil, nil
+	case val := <-c.respChan:
+		if val == nil {
+			return nil, fmt.Errorf("no message received")
+		}
+		return val, nil
+	}
 }
 
 // RequestInfo requests mixer information
