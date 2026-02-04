@@ -23,6 +23,7 @@ Available Commands:
   headamp     Commands to control headamp gain and phantom power
   help        Help about any command
   main        Commands to control the main output
+  raw         Send a raw OSC message to the mixer
   strip       Commands to control individual strips
 
 Flags:
