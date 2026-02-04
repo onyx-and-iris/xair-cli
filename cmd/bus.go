@@ -800,7 +800,7 @@ var busCompHoldCmd = &cobra.Command{
 			if err != nil {
 				return fmt.Errorf("Error getting bus Compressor hold time: %w", err)
 			}
-			cmd.Printf("Bus %d Compressor hold time: %.1f ms\n", busIndex, hold)
+			cmd.Printf("Bus %d Compressor hold time: %.2f ms\n", busIndex, hold)
 			return nil
 		}
 
@@ -815,7 +815,7 @@ var busCompHoldCmd = &cobra.Command{
 			return fmt.Errorf("Error setting bus Compressor hold time: %w", err)
 		}
 
-		cmd.Printf("Bus %d Compressor hold time set to %.1f ms\n", busIndex, hold)
+		cmd.Printf("Bus %d Compressor hold time set to %.2f ms\n", busIndex, hold)
 		return nil
 	},
 }
