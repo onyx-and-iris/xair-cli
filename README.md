@@ -120,6 +120,11 @@ xair-cli strip 1 eq on true
 xair-cli bus 1 name 'vocal mix'
 ```
 
+*set bus 03 eq band 03 (LoMid) gain*
+```console
+xair-cli bus 3 eq 3 gain -- -3.5
+```
+
 *Send a raw OSC message to the mixer*
 ```console
 xair-cli raw /xinfo
