@@ -37,6 +37,8 @@ type Config struct {
 	Kind string `default:"xr18"        help:"The kind of the X-Air device." env:"XAIR_CLI_KIND"`
 }
 
+// CLI is the main struct for the command-line interface.
+// It embeds the Config struct for global configuration and defines the available commands and flags.
 type CLI struct {
 	Config `embed:"" prefix:"" help:"The configuration for the CLI."`
 
@@ -103,6 +105,7 @@ func run(ctx *kong.Context, config Config) error {
 	return ctx.Run()
 }
 
+// connect creates a new X-Air client based on the provided configuration.
 func connect(config Config) (*xair.Client, error) {
 	client, err := xair.NewClient(config.Host, config.Port, xair.WithKind(config.Kind))
 	if err != nil {

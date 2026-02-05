@@ -5,12 +5,14 @@ import (
 	"time"
 )
 
+// RawCmd represents the command to send raw OSC messages to the mixer.
 type RawCmd struct {
 	Timeout time.Duration `help:"Timeout for the OSC message send operation."  default:"200ms" short:"t"`
 	Address string        `help:"The OSC address to send the message to."                                arg:""`
 	Args    []string      `help:"The arguments to include in the OSC message."                           arg:"" optional:""`
 }
 
+// Run executes the RawCmd by sending the specified OSC message to the mixer and optionally waiting for a response.
 func (cmd *RawCmd) Run(ctx *context) error {
 	params := make([]any, len(cmd.Args))
 	for i, arg := range cmd.Args {

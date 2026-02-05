@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// MainCmdGroup defines the command group for controlling the Main L/R output, including commands for mute state, fader level, and fade-in/fade-out times.
 type MainCmdGroup struct {
 	Mute MainMuteCmd `help:"Get or set the mute state of the Main L/R output." cmd:""`
 
@@ -13,10 +14,12 @@ type MainCmdGroup struct {
 	Fadeout MainFadeoutCmd `help:"Get or set the fade-out time of the Main L/R output." cmd:""`
 }
 
+// MainMuteCmd defines the command for getting or setting the mute state of the Main L/R output, allowing users to specify the desired state as "true"/"on" or "false"/"off".
 type MainMuteCmd struct {
 	Mute *bool `arg:"" help:"The mute state to set. If not provided, the current state will be printed."`
 }
 
+// Run executes the MainMuteCmd command, either retrieving the current mute state of the Main L/R output or setting it based on the provided argument.
 func (cmd *MainMuteCmd) Run(ctx *context) error {
 	if cmd.Mute == nil {
 		resp, err := ctx.Client.Main.Mute()
@@ -34,10 +37,12 @@ func (cmd *MainMuteCmd) Run(ctx *context) error {
 	return nil
 }
 
+// MainFaderCmd defines the command for getting or setting the fader level of the Main L/R output, allowing users to specify the desired level in dB.
 type MainFaderCmd struct {
 	Level *float64 `arg:"" help:"The fader level to set. If not provided, the current level will be printed."`
 }
 
+// Run executes the MainFaderCmd command, either retrieving the current fader level of the Main L/R output or setting it based on the provided argument.
 func (cmd *MainFaderCmd) Run(ctx *context) error {
 	if cmd.Level == nil {
 		resp, err := ctx.Client.Main.Fader()
@@ -55,11 +60,13 @@ func (cmd *MainFaderCmd) Run(ctx *context) error {
 	return nil
 }
 
+// MainFadeinCmd defines the command for getting or setting the fade-in time of the Main L/R output, allowing users to specify the desired duration for the fade-in effect.
 type MainFadeinCmd struct {
 	Duration time.Duration `flag:"" help:"The duration of the fade-in. (in seconds.)"                                                   default:"5s"`
 	Target   float64       `        help:"The target level for the fade-in. If not provided, the current target level will be printed." default:"0.0" arg:""`
 }
 
+// Run executes the MainFadeinCmd command, either retrieving the current fade-in time of the Main L/R output or setting it based on the provided argument, with an optional target level for the fade-in effect.
 func (cmd *MainFadeinCmd) Run(ctx *context) error {
 	currentLevel, err := ctx.Client.Main.Fader()
 	if err != nil {
@@ -87,11 +94,13 @@ func (cmd *MainFadeinCmd) Run(ctx *context) error {
 	return nil
 }
 
+// MainFadeoutCmd defines the command for getting or setting the fade-out time of the Main L/R output, allowing users to specify the desired duration for the fade-out effect and an optional target level to fade out to.
 type MainFadeoutCmd struct {
 	Duration time.Duration `flag:"" help:"The duration of the fade-out. (in seconds.)"                                                   default:"5s"`
 	Target   float64       `        help:"The target level for the fade-out. If not provided, the current target level will be printed." default:"-90.0" arg:""`
 }
 
+// Run executes the MainFadeoutCmd command, either retrieving the current fade-out time of the Main L/R output or setting it based on the provided argument, with an optional target level for the fade-out effect.
 func (cmd *MainFadeoutCmd) Run(ctx *context) error {
 	currentLevel, err := ctx.Client.Main.Fader()
 	if err != nil {

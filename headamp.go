@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/log"
 )
 
+// HeadampCmdGroup defines the command group for controlling input gain and phantom power of a headamp, allowing users to specify the index of the headamp they want to control.
 type HeadampCmdGroup struct {
 	Index struct {
 		Index   int               `arg:"" help:"The index of the headamp."`
@@ -15,11 +16,13 @@ type HeadampCmdGroup struct {
 	} `arg:"" help:"Control a specific headamp by index."`
 }
 
+// HeadampGainCmd defines the command for getting or setting the gain of a headamp, allowing users to specify the gain in dB and an optional duration for a gradual fade when setting the gain.
 type HeadampGainCmd struct {
 	Duration time.Duration `help:"The duration of the fade in/out when setting the gain." default:"5s"`
 	Gain     *float64      `help:"The gain of the headamp in dB."                                      arg:""`
 }
 
+// Run executes the HeadampGainCmd command, either retrieving the current gain of the headamp or setting it based on the provided argument, with an optional fade duration for smooth transitions.
 func (cmd *HeadampGainCmd) Run(ctx *context, headamp *HeadampCmdGroup) error {
 	if cmd.Gain == nil {
 		resp, err := ctx.Client.HeadAmp.Gain(headamp.Index.Index)
@@ -88,10 +91,12 @@ func gradualGainAdjust(
 	return nil
 }
 
+// HeadampPhantomCmd defines the command for getting or setting the phantom power state of a headamp, allowing users to specify the desired state as "true"/"on" or "false"/"off".
 type HeadampPhantomCmd struct {
 	State *string `help:"The phantom power state of the headamp." arg:"" enum:"true,on,false,off" optional:""`
 }
 
+// Validate checks if the provided phantom power state is valid and normalizes it to "true" or "false".
 func (cmd *HeadampPhantomCmd) Validate() error {
 	if cmd.State != nil {
 		switch *cmd.State {
@@ -106,6 +111,7 @@ func (cmd *HeadampPhantomCmd) Validate() error {
 	return nil
 }
 
+// Run executes the HeadampPhantomCmd command, either retrieving the current phantom power state of the headamp or setting it based on the provided argument.
 func (cmd *HeadampPhantomCmd) Run(ctx *context, headamp *HeadampCmdGroup) error {
 	if cmd.State == nil {
 		resp, err := ctx.Client.HeadAmp.PhantomPower(headamp.Index.Index)
