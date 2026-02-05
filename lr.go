@@ -9,9 +9,9 @@ import (
 type MainCmdGroup struct {
 	Mute MainMuteCmd `help:"Get or set the mute state of the Main L/R output." cmd:""`
 
-	Fader   MainFaderCmd   `help:"Get or set the fader level of the Main L/R output."   cmd:""`
-	Fadein  MainFadeinCmd  `help:"Get or set the fade-in time of the Main L/R output."  cmd:""`
-	Fadeout MainFadeoutCmd `help:"Get or set the fade-out time of the Main L/R output." cmd:""`
+	Fader   MainFaderCmd   `help:"Get or set the fader level of the Main L/R output."      cmd:""`
+	Fadein  MainFadeinCmd  `help:"Fade in the Main L/R output over a specified duration."  cmd:""`
+	Fadeout MainFadeoutCmd `help:"Fade out the Main L/R output over a specified duration." cmd:""`
 }
 
 // MainMuteCmd defines the command for getting or setting the mute state of the Main L/R output, allowing users to specify the desired state as "true"/"on" or "false"/"off".
