@@ -12,7 +12,7 @@ go install github.com/onyx-and-iris/xair-cli@latest
 
 Although there exist flags/environment variables for `--host`, `--port` and `--kind` you should only need `--host` for xair mixers and `--host`, `--kind` for the x32.
 
-- --host/-H: You mixers IP
+- --host/-H: Your mixers IP
 - --kind/-k: The kind of mixer, use this to connect to an x32. It does two things:
   - Adjusts the port to 10023
   - Updates some of the OSC addresses.
