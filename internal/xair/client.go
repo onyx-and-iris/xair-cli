@@ -74,8 +74,8 @@ func (c *Client) StartListening() {
 	log.Debugf("Started listening on %s...", c.engine.conn.LocalAddr().String())
 }
 
-// Stop stops the client and closes the connection
-func (c *Client) Stop() {
+// Close stops the client and closes the connection
+func (c *Client) Close() {
 	close(c.engine.done)
 	if c.engine.conn != nil {
 		c.engine.conn.Close()
@@ -102,10 +102,10 @@ func (c *Client) ReceiveMessage(timeout time.Duration) (*osc.Message, error) {
 }
 
 // RequestInfo requests mixer information
-func (c *Client) RequestInfo() (error, InfoResponse) {
+func (c *Client) RequestInfo() (InfoResponse, error) {
 	err := c.SendMessage("/xinfo")
 	if err != nil {
-		return err, InfoResponse{}
+		return InfoResponse{}, err
 	}
 
 	val := <-c.respChan
@@ -115,7 +115,7 @@ func (c *Client) RequestInfo() (error, InfoResponse) {
 		info.Name = val.Arguments[1].(string)
 		info.Model = val.Arguments[2].(string)
 	}
-	return nil, info
+	return info, nil
 }
 
 // KeepAlive sends keep-alive message (required for multi-client usage)

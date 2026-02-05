@@ -49,24 +49,27 @@ func (e *Eq) SetOn(index int, on bool) error {
 	return e.client.SendMessage(address, value)
 }
 
-func (e *Eq) Mode(index int) (int, error) {
+func (e *Eq) Mode(index int) (string, error) {
 	address := fmt.Sprintf(e.baseAddress, index) + "/eq/mode"
 	err := e.client.SendMessage(address)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
+
+	possibleModes := []string{"peq", "geq", "teq"}
 
 	resp := <-e.client.respChan
 	val, ok := resp.Arguments[0].(int32)
 	if !ok {
-		return 0, fmt.Errorf("unexpected argument type for EQ mode value")
+		return "", fmt.Errorf("unexpected argument type for EQ mode value")
 	}
-	return int(val), nil
+	return possibleModes[val], nil
 }
 
-func (e *Eq) SetMode(index int, mode int) error {
+func (e *Eq) SetMode(index int, mode string) error {
 	address := fmt.Sprintf(e.baseAddress, index) + "/eq/mode"
-	return e.client.SendMessage(address, int32(mode))
+	possibleModes := []string{"peq", "geq", "teq"}
+	return e.client.SendMessage(address, int32(indexOf(possibleModes, mode)))
 }
 
 // Gain retrieves the gain for a specific EQ band on a strip or bus (1-based indexing).
@@ -136,23 +139,26 @@ func (e *Eq) SetQ(index int, band int, q float64) error {
 }
 
 // Type retrieves the type for a specific EQ band on a strip or bus (1-based indexing).
-func (e *Eq) Type(index int, band int) (int, error) {
+func (e *Eq) Type(index int, band int) (string, error) {
 	address := fmt.Sprintf(e.baseAddress, index) + fmt.Sprintf("/eq/%d/type", band)
 	err := e.client.SendMessage(address)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
+
+	possibleTypes := []string{"lcut", "lshv", "peq", "veq", "hshv", "hcut"}
 
 	resp := <-e.client.respChan
 	val, ok := resp.Arguments[0].(int32)
 	if !ok {
-		return 0, fmt.Errorf("unexpected argument type for EQ type value")
+		return "", fmt.Errorf("unexpected argument type for EQ type value")
 	}
-	return int(val), nil
+	return possibleTypes[val], nil
 }
 
 // SetType sets the type for a specific EQ band on a strip or bus (1-based indexing).
-func (e *Eq) SetType(index int, band int, eqType int) error {
+func (e *Eq) SetType(index int, band int, eqType string) error {
 	address := fmt.Sprintf(e.baseAddress, index) + fmt.Sprintf("/eq/%d/type", band)
-	return e.client.SendMessage(address, int32(eqType))
+	possibleTypes := []string{"lcut", "lshv", "peq", "veq", "hshv", "hcut"}
+	return e.client.SendMessage(address, int32(indexOf(possibleTypes, eqType)))
 }

@@ -189,8 +189,8 @@ func (c *Comp) SetRelease(index int, release float64) error {
 	return c.client.SendMessage(address, float32(logSet(4, 4000, release)))
 }
 
-// MakeUp retrieves the make-up gain of the Compressor for a specific strip or bus (1-based indexing).
-func (c *Comp) MakeUp(index int) (float64, error) {
+// Makeup retrieves the makeup gain of the Compressor for a specific strip or bus (1-based indexing).
+func (c *Comp) Makeup(index int) (float64, error) {
 	address := fmt.Sprintf(c.baseAddress, index) + "/dyn/mgain"
 	err := c.client.SendMessage(address)
 	if err != nil {
@@ -200,15 +200,15 @@ func (c *Comp) MakeUp(index int) (float64, error) {
 	resp := <-c.client.respChan
 	val, ok := resp.Arguments[0].(float32)
 	if !ok {
-		return 0, fmt.Errorf("unexpected argument type for Compressor make-up gain value")
+		return 0, fmt.Errorf("unexpected argument type for Compressor makeup gain value")
 	}
 	return linGet(0, 24, float64(val)), nil
 }
 
-// SetMakeUp sets the make-up gain of the Compressor for a specific strip or bus (1-based indexing).
-func (c *Comp) SetMakeUp(index int, makeUp float64) error {
+// SetMakeup sets the makeup gain of the Compressor for a specific strip or bus (1-based indexing).
+func (c *Comp) SetMakeup(index int, makeup float64) error {
 	address := fmt.Sprintf(c.baseAddress, index) + "/dyn/mgain"
-	return c.client.SendMessage(address, float32(linSet(0, 24, makeUp)))
+	return c.client.SendMessage(address, float32(linSet(0, 24, makeup)))
 }
 
 // Mix retrieves the mix value of the Compressor for a specific strip or bus (1-based indexing).
