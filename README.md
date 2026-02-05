@@ -10,12 +10,10 @@ go install github.com/onyx-and-iris/xair-cli@latest
 
 #### Flags
 
-Although there exist flags/environment variables for `--host`, `--port` and `--kind` you should only need `--host` for xair mixers and `--host`, `--kind` for the x32.
-
-- --host/-H: Your mixers IP
-- --kind/-k: The kind of mixer, use this to connect to an x32. It does two things:
-  - Adjusts the port to 10023
-  - Updates some of the OSC addresses.
+- --host/-H: Host of the mixer.
+- --port/-P: Port of the mixer.
+- --kind/-k: The kind of mixer. May one of (*xair*, *x32*).
+  - Use this flag to connect to an x32 mixer.
 
 #### Environment Variables
 
@@ -26,7 +24,7 @@ Example .envrc:
 
 XAIR_CLI_HOST=mixer.local
 XAIR_CLI_PORT=10024
-XAIR_CLI_KIND=xr18
+XAIR_CLI_KIND=xair
 XAIR_CLI_RAW_TIMEOUT=50ms
 ```
 
