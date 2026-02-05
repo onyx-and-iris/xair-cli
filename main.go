@@ -44,7 +44,7 @@ type CLI struct {
 
 	Completion kongcompletion.Completion `help:"Generate shell completion scripts." cmd:"" aliases:"c"`
 
-	Raw     RawCmdGroup     `help:"Send raw OSC messages to the mixer."   cmd:"" group:"Raw"`
+	Raw     RawCmd          `help:"Send raw OSC messages to the mixer."   cmd:"" group:"Raw"`
 	Main    MainCmdGroup    `help:"Control the Main L/R output"           cmd:"" group:"Main"`
 	Strip   StripCmdGroup   `help:"Control the strips."                   cmd:"" group:"Strip"`
 	Bus     BusCmdGroup     `help:"Control the buses."                    cmd:"" group:"Bus"`
