@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"time"
+
+	"github.com/alecthomas/kong"
 )
 
 type StripCmdGroup struct {
@@ -343,7 +345,7 @@ type StripEqCmdGroup struct {
 	} `help:"Commands for controlling a specific EQ band of the strip."        arg:""`
 }
 
-func (cmd *StripEqCmdGroup) Validate() error {
+func (cmd *StripEqCmdGroup) Validate(ctx kong.Context) error {
 	if cmd.Band.Band < 1 || cmd.Band.Band > 4 {
 		return fmt.Errorf("EQ band number must be between 1 and 4")
 	}

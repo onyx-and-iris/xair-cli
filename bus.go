@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"time"
+
+	"github.com/alecthomas/kong"
 )
 
 type BusCmdGroup struct {
@@ -168,7 +170,7 @@ type BusEqCmdGroup struct {
 	} `help:"Commands for controlling a specific EQ band of the bus."               arg:""`
 }
 
-func (cmd *BusEqCmdGroup) Validate() error {
+func (cmd *BusEqCmdGroup) Validate(ctx kong.Context) error {
 	if cmd.Band.Band < 1 || cmd.Band.Band > 6 {
 		return fmt.Errorf("EQ band number must be between 1 and 6")
 	}
