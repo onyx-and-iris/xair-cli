@@ -29,8 +29,8 @@ Raw
 Main
   main mute       Get or set the mute state of the Main L/R output.
   main fader      Get or set the fader level of the Main L/R output.
-  main fadein     Get or set the fade-in time of the Main L/R output.
-  main fadeout    Get or set the fade-out time of the Main L/R output.
+  main fadein     Fade in the Main L/R output over a specified duration.
+  main fadeout    Fade out the Main L/R output over a specified duration.
 
 Strip
   strip <index> mute              Get or set the mute state of the strip.
