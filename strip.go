@@ -134,8 +134,8 @@ func (cmd *StripFadeoutCmd) Run(ctx *context, strip *StripCmdGroup) error {
 }
 
 type StripSendCmd struct {
-	BusNum int     `arg:"" help:"The bus number to get or set the send level for."`
-	Level  *string `arg:"" help:"The send level to set (in dB)."                   optional:""`
+	BusNum int      `arg:"" help:"The bus number to get or set the send level for."`
+	Level  *float64 `arg:"" help:"The send level to set (in dB)."                   optional:""`
 }
 
 func (cmd *StripSendCmd) Run(ctx *context, strip *StripCmdGroup) error {
@@ -148,11 +148,10 @@ func (cmd *StripSendCmd) Run(ctx *context, strip *StripCmdGroup) error {
 		return nil
 	}
 
-	level := mustConvToFloat64(*cmd.Level)
-	if err := ctx.Client.Strip.SetSendLevel(strip.Index.Index, cmd.BusNum, level); err != nil {
+	if err := ctx.Client.Strip.SetSendLevel(strip.Index.Index, cmd.BusNum, *cmd.Level); err != nil {
 		return fmt.Errorf("failed to set send level: %w", err)
 	}
-	fmt.Fprintf(ctx.Out, "Strip %d send level for bus %d set to: %.2f dB\n", strip.Index.Index, cmd.BusNum, level)
+	fmt.Fprintf(ctx.Out, "Strip %d send level for bus %d set to: %.2f dB\n", strip.Index.Index, cmd.BusNum, *cmd.Level)
 	return nil
 }
 
