@@ -24,7 +24,7 @@ Commands:
   completion (c)    Generate shell completion scripts.
 
 Raw
-  raw send    Send a raw OSC message to the mixer.
+  raw    Send raw OSC messages to the mixer.
 
 Main
   main mute       Get or set the mute state of the Main L/R output.
@@ -118,6 +118,14 @@ xair-cli strip 1 eq on true
 *rename bus 01 to 'vocal mix'*
 ```console
 xair-cli bus 1 name 'vocal mix'
+```
+
+*Send a raw OSC message to the mixer*
+```console
+xair-cli raw /xinfo
+
+xair-cli raw /ch/01/config/name 'rode podmic'
+xair-cli raw /ch/01/config/name
 ```
 
 
