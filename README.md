@@ -42,7 +42,7 @@ Strip
   strip <index> gate on           Get or set the gate on/off state of the strip.
   strip <index> gate mode         Get or set the gate mode of the strip.
   strip <index> gate threshold    Get or set the gate threshold of the strip.
-  strip <index> gate range        Get the gate range of the strip.
+  strip <index> gate range        Get or set the gate range of the strip.
   strip <index> gate attack       Get or set the gate attack time of the strip.
   strip <index> gate hold         Get or set the gate hold time of the strip.
   strip <index> gate release      Get or set the gate release time of the strip.
@@ -68,13 +68,13 @@ Bus
   bus <index> fadeout           Fade out the bus over a specified duration.
   bus <index> name              Get or set the name of the bus.
   bus <index> eq on             Get or set the EQ on/off state of the bus.
-  bus <index> eq mode           Get or set the EQ mode of the bus (graphic or parametric).
+  bus <index> eq mode           Get or set the EQ mode of the bus (peq, geq or teq).
   bus <index> eq <band> gain    Get or set the gain of the EQ band.
   bus <index> eq <band> freq    Get or set the frequency of the EQ band.
   bus <index> eq <band> q       Get or set the Q factor of the EQ band.
-  bus <index> eq <band> type    Get or set the type of the EQ band (bell, high shelf, low shelf, high pass, low pass).
+  bus <index> eq <band> type    Get or set the type of the EQ band (lcut, lshv, peq, veq, hshv, hcut).
   bus <index> comp on           Get or set the compressor on/off state of the bus.
-  bus <index> comp mode         Get or set the compressor mode of the bus (standard, vintage, or modern).
+  bus <index> comp mode         Get or set the compressor mode of the bus (comp, exp).
   bus <index> comp threshold    Get or set the compressor threshold of the bus (in dB).
   bus <index> comp ratio        Get or set the compressor ratio of the bus.
   bus <index> comp mix          Get or set the compressor mix level of the bus (in %).
