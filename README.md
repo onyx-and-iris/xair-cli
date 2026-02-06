@@ -37,9 +37,9 @@ A CLI to control Behringer X-Air mixers.
 
 Flags:
   -h, --help                  Show context-sensitive help.
-      --host="mixer.local"    The host of the X-Air device ($XAIR_CLI_HOST).
-      --port=10024            The port of the X-Air device ($XAIR_CLI_PORT).
-      --kind="xr18"           The kind of the X-Air device ($XAIR_CLI_KIND).
+  -H, --host="mixer.local"    The host of the X-Air device ($XAIR_CLI_HOST).
+  -P, --port=10024            The port of the X-Air device ($XAIR_CLI_PORT).
+  -K, --kind="xair"           The kind of the X-Air device ($XAIR_CLI_KIND).
   -v, --version               Print gobs-cli version information and quit
 
 Commands:

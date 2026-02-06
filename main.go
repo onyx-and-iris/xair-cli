@@ -34,7 +34,7 @@ type context struct {
 type Config struct {
 	Host string `default:"mixer.local" help:"The host of the X-Air device." env:"XAIR_CLI_HOST" short:"H"`
 	Port int    `default:"10024"       help:"The port of the X-Air device." env:"XAIR_CLI_PORT" short:"P"`
-	Kind string `default:"xr18"        help:"The kind of the X-Air device." env:"XAIR_CLI_KIND" short:"K"`
+	Kind string `default:"xair"        help:"The kind of the X-Air device." env:"XAIR_CLI_KIND" short:"K"`
 }
 
 // CLI is the main struct for the command-line interface.
@@ -42,7 +42,7 @@ type Config struct {
 type CLI struct {
 	Config `embed:"" prefix:"" help:"The configuration for the CLI."`
 
-	Version VersionFlag `help:"Print gobs-cli version information and quit" name:"version" short:"v"`
+	Version VersionFlag `help:"Print xair-cli version information and quit" name:"version" short:"v"`
 
 	Completion kongcompletion.Completion `help:"Generate shell completion scripts." cmd:"" aliases:"c"`
 
