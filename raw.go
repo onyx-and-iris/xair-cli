@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"time"
+
+	"github.com/charmbracelet/log"
 )
 
 // RawCmd represents the command to send raw OSC messages to the mixer.
 type RawCmd struct {
-	Timeout time.Duration `help:"Timeout for the OSC message send operation."  default:"100ms" short:"t" env:"XAIR_CLI_RAW_TIMEOUT"`
-	Address string        `help:"The OSC address to send the message to."                                                           arg:""`
-	Args    []string      `help:"The arguments to include in the OSC message."                                                      arg:"" optional:""`
+	Address string   `help:"The OSC address to send the message to."      arg:""`
+	Args    []string `help:"The arguments to include in the OSC message." arg:"" optional:""`
 }
 
 // Run executes the RawCmd by sending the specified OSC message to the mixer and optionally waiting for a response.
@@ -22,7 +22,12 @@ func (cmd *RawCmd) Run(ctx *context) error {
 		return fmt.Errorf("failed to send raw OSC message: %w", err)
 	}
 
-	msg, err := ctx.Client.ReceiveMessage(cmd.Timeout)
+	if len(params) > 0 {
+		log.Debugf("Sent OSC message: %s with args: %v\n", cmd.Address, cmd.Args)
+		return nil
+	}
+
+	msg, err := ctx.Client.ReceiveMessage()
 	if err != nil {
 		return fmt.Errorf("failed to receive response for raw OSC message: %w", err)
 	}

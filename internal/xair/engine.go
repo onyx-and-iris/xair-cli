@@ -15,6 +15,7 @@ type parser interface {
 
 type engine struct {
 	Kind      MixerKind
+	timeout   time.Duration
 	conn      *net.UDPConn
 	mixerAddr *net.UDPAddr
 
@@ -34,7 +35,7 @@ func (e *engine) receiveLoop() {
 		case <-e.done:
 			return
 		default:
-			// Set read timeout to avoid blocking forever
+			// Set a short read deadline to prevent blocking indefinitely
 			e.conn.SetReadDeadline(time.Now().Add(100 * time.Millisecond))
 			n, _, err := e.conn.ReadFromUDP(buffer)
 			if err != nil {

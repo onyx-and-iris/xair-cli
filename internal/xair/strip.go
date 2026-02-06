@@ -28,8 +28,11 @@ func (s *Strip) Mute(index int) (bool, error) {
 		return false, err
 	}
 
-	resp := <-s.client.respChan
-	val, ok := resp.Arguments[0].(int32)
+	msg, err := s.client.ReceiveMessage()
+	if err != nil {
+		return false, err
+	}
+	val, ok := msg.Arguments[0].(int32)
 	if !ok {
 		return false, fmt.Errorf("unexpected argument type for strip mute value")
 	}
@@ -54,8 +57,11 @@ func (s *Strip) Fader(strip int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-s.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := s.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for fader value")
 	}
@@ -77,8 +83,11 @@ func (s *Strip) Name(strip int) (string, error) {
 		return "", fmt.Errorf("failed to send strip name request: %v", err)
 	}
 
-	resp := <-s.client.respChan
-	val, ok := resp.Arguments[0].(string)
+	msg, err := s.client.ReceiveMessage()
+	if err != nil {
+		return "", err
+	}
+	val, ok := msg.Arguments[0].(string)
 	if !ok {
 		return "", fmt.Errorf("unexpected argument type for strip name value")
 	}
@@ -99,8 +108,11 @@ func (s *Strip) Color(strip int) (int32, error) {
 		return 0, fmt.Errorf("failed to send strip color request: %v", err)
 	}
 
-	resp := <-s.client.respChan
-	val, ok := resp.Arguments[0].(int32)
+	msg, err := s.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(int32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for strip color value")
 	}
@@ -121,8 +133,11 @@ func (s *Strip) SendLevel(strip int, bus int) (float64, error) {
 		return 0, fmt.Errorf("failed to send strip send level request: %v", err)
 	}
 
-	resp := <-s.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := s.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for strip send level value")
 	}

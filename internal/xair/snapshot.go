@@ -22,8 +22,11 @@ func (s *Snapshot) Name(index int) (string, error) {
 		return "", err
 	}
 
-	resp := <-s.client.respChan
-	name, ok := resp.Arguments[0].(string)
+	msg, err := s.client.ReceiveMessage()
+	if err != nil {
+		return "", err
+	}
+	name, ok := msg.Arguments[0].(string)
 	if !ok {
 		return "", fmt.Errorf("unexpected argument type for snapshot name")
 	}

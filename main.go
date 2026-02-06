@@ -6,6 +6,7 @@ import (
 	"os"
 	"runtime/debug"
 	"strings"
+	"time"
 
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/log"
@@ -32,9 +33,10 @@ type context struct {
 }
 
 type Config struct {
-	Host string `default:"mixer.local" help:"The host of the X-Air device." env:"XAIR_CLI_HOST" short:"H"`
-	Port int    `default:"10024"       help:"The port of the X-Air device." env:"XAIR_CLI_PORT" short:"P"`
-	Kind string `default:"xair"        help:"The kind of the X-Air device." env:"XAIR_CLI_KIND" short:"K" enum:"xair,x32"`
+	Host    string        `default:"mixer.local" help:"The host of the X-Air device." env:"XAIR_CLI_HOST"    short:"H"`
+	Port    int           `default:"10024"       help:"The port of the X-Air device." env:"XAIR_CLI_PORT"    short:"P"`
+	Kind    string        `default:"xair"        help:"The kind of the X-Air device." env:"XAIR_CLI_KIND"    short:"K" enum:"xair,x32"`
+	Timeout time.Duration `default:"100ms"       help:"Timeout for OSC operations."   env:"XAIR_CLI_TIMEOUT" short:"T"`
 }
 
 // CLI is the main struct for the command-line interface.
@@ -107,7 +109,12 @@ func run(ctx *kong.Context, config Config) error {
 
 // connect creates a new X-Air client based on the provided configuration.
 func connect(config Config) (*xair.Client, error) {
-	client, err := xair.NewClient(config.Host, config.Port, xair.WithKind(config.Kind))
+	client, err := xair.NewClient(
+		config.Host,
+		config.Port,
+		xair.WithKind(config.Kind),
+		xair.WithTimeout(config.Timeout),
+	)
 	if err != nil {
 		return nil, err
 	}

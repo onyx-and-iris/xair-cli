@@ -31,8 +31,11 @@ func (c *Comp) On(index int) (bool, error) {
 		return false, err
 	}
 
-	resp := <-c.client.respChan
-	val, ok := resp.Arguments[0].(int32)
+	msg, err := c.client.ReceiveMessage()
+	if err != nil {
+		return false, err
+	}
+	val, ok := msg.Arguments[0].(int32)
 	if !ok {
 		return false, fmt.Errorf("unexpected argument type for Compressor on value")
 	}
@@ -59,8 +62,11 @@ func (c *Comp) Mode(index int) (string, error) {
 
 	possibleModes := []string{"comp", "exp"}
 
-	resp := <-c.client.respChan
-	val, ok := resp.Arguments[0].(int32)
+	msg, err := c.client.ReceiveMessage()
+	if err != nil {
+		return "", err
+	}
+	val, ok := msg.Arguments[0].(int32)
 	if !ok {
 		return "", fmt.Errorf("unexpected argument type for Compressor mode value")
 	}
@@ -82,8 +88,11 @@ func (c *Comp) Threshold(index int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-c.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := c.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for Compressor threshold value")
 	}
@@ -106,8 +115,11 @@ func (c *Comp) Ratio(index int) (float32, error) {
 
 	possibleValues := []float32{1.1, 1.3, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 7.0, 10, 20, 100}
 
-	resp := <-c.client.respChan
-	val, ok := resp.Arguments[0].(int32)
+	msg, err := c.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(int32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for Compressor ratio value")
 	}
@@ -131,8 +143,11 @@ func (c *Comp) Attack(index int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-c.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := c.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for Compressor attack value")
 	}
@@ -153,8 +168,11 @@ func (c *Comp) Hold(index int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-c.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := c.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for Compressor hold value")
 	}
@@ -175,8 +193,11 @@ func (c *Comp) Release(index int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-c.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := c.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for Compressor release value")
 	}
@@ -197,8 +218,11 @@ func (c *Comp) Makeup(index int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-c.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := c.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for Compressor makeup gain value")
 	}
@@ -219,8 +243,11 @@ func (c *Comp) Mix(index int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-c.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := c.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for Compressor mix value")
 	}

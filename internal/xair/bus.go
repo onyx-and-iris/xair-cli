@@ -26,8 +26,11 @@ func (b *Bus) Mute(bus int) (bool, error) {
 		return false, err
 	}
 
-	resp := <-b.client.respChan
-	val, ok := resp.Arguments[0].(int32)
+	msg, err := b.client.ReceiveMessage()
+	if err != nil {
+		return false, err
+	}
+	val, ok := msg.Arguments[0].(int32)
 	if !ok {
 		return false, fmt.Errorf("unexpected argument type for bus mute value")
 	}
@@ -52,8 +55,11 @@ func (b *Bus) Fader(bus int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-b.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := b.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for bus fader value")
 	}
@@ -75,8 +81,11 @@ func (b *Bus) Name(bus int) (string, error) {
 		return "", fmt.Errorf("failed to send bus name request: %v", err)
 	}
 
-	resp := <-b.client.respChan
-	val, ok := resp.Arguments[0].(string)
+	msg, err := b.client.ReceiveMessage()
+	if err != nil {
+		return "", err
+	}
+	val, ok := msg.Arguments[0].(string)
 	if !ok {
 		return "", fmt.Errorf("unexpected argument type for bus name value")
 	}

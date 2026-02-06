@@ -31,8 +31,11 @@ func (e *Eq) On(index int) (bool, error) {
 		return false, err
 	}
 
-	resp := <-e.client.respChan
-	val, ok := resp.Arguments[0].(int32)
+	msg, err := e.client.ReceiveMessage()
+	if err != nil {
+		return false, err
+	}
+	val, ok := msg.Arguments[0].(int32)
 	if !ok {
 		return false, fmt.Errorf("unexpected argument type for EQ on value")
 	}
@@ -58,8 +61,11 @@ func (e *Eq) Mode(index int) (string, error) {
 
 	possibleModes := []string{"peq", "geq", "teq"}
 
-	resp := <-e.client.respChan
-	val, ok := resp.Arguments[0].(int32)
+	msg, err := e.client.ReceiveMessage()
+	if err != nil {
+		return "", err
+	}
+	val, ok := msg.Arguments[0].(int32)
 	if !ok {
 		return "", fmt.Errorf("unexpected argument type for EQ mode value")
 	}
@@ -80,8 +86,11 @@ func (e *Eq) Gain(index int, band int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-e.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := e.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for EQ gain value")
 	}
@@ -102,8 +111,11 @@ func (e *Eq) Frequency(index int, band int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-e.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := e.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for EQ frequency value")
 	}
@@ -124,8 +136,11 @@ func (e *Eq) Q(index int, band int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-e.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := e.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for EQ Q value")
 	}
@@ -148,8 +163,11 @@ func (e *Eq) Type(index int, band int) (string, error) {
 
 	possibleTypes := []string{"lcut", "lshv", "peq", "veq", "hshv", "hcut"}
 
-	resp := <-e.client.respChan
-	val, ok := resp.Arguments[0].(int32)
+	msg, err := e.client.ReceiveMessage()
+	if err != nil {
+		return "", err
+	}
+	val, ok := msg.Arguments[0].(int32)
 	if !ok {
 		return "", fmt.Errorf("unexpected argument type for EQ type value")
 	}

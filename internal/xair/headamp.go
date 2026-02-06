@@ -22,8 +22,11 @@ func (h *HeadAmp) Gain(index int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-h.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := h.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for headamp gain value")
 	}
@@ -45,8 +48,11 @@ func (h *HeadAmp) PhantomPower(index int) (bool, error) {
 		return false, err
 	}
 
-	resp := <-h.client.respChan
-	val, ok := resp.Arguments[0].(int32)
+	msg, err := h.client.ReceiveMessage()
+	if err != nil {
+		return false, err
+	}
+	val, ok := msg.Arguments[0].(int32)
 	if !ok {
 		return false, fmt.Errorf("unexpected argument type for phantom power value")
 	}

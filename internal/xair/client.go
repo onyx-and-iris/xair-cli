@@ -41,6 +41,7 @@ func NewClient(mixerIP string, mixerPort int, opts ...Option) (*Client, error) {
 
 	e := &engine{
 		Kind:       KindXAir,
+		timeout:    100 * time.Millisecond,
 		conn:       conn,
 		mixerAddr:  mixerAddr,
 		parser:     newParser(),
@@ -85,32 +86,35 @@ func (c *Client) SendMessage(address string, args ...any) error {
 }
 
 // ReceiveMessage receives an OSC message from the mixer
-func (c *Client) ReceiveMessage(timeout time.Duration) (*osc.Message, error) {
-	t := time.Tick(timeout)
+func (c *Client) ReceiveMessage() (*osc.Message, error) {
+	t := time.Tick(c.engine.timeout)
 	select {
 	case <-t:
-		return nil, nil
-	case val := <-c.respChan:
-		if val == nil {
+		return nil, fmt.Errorf("timeout waiting for response")
+	case msg := <-c.respChan:
+		if msg == nil {
 			return nil, fmt.Errorf("no message received")
 		}
-		return val, nil
+		return msg, nil
 	}
 }
 
 // RequestInfo requests mixer information
 func (c *Client) RequestInfo() (InfoResponse, error) {
+	var info InfoResponse
 	err := c.SendMessage("/xinfo")
 	if err != nil {
-		return InfoResponse{}, err
+		return info, err
 	}
 
-	val := <-c.respChan
-	var info InfoResponse
-	if len(val.Arguments) >= 3 {
-		info.Host = val.Arguments[0].(string)
-		info.Name = val.Arguments[1].(string)
-		info.Model = val.Arguments[2].(string)
+	msg, err := c.ReceiveMessage()
+	if err != nil {
+		return info, err
+	}
+	if len(msg.Arguments) >= 3 {
+		info.Host = msg.Arguments[0].(string)
+		info.Name = msg.Arguments[1].(string)
+		info.Model = msg.Arguments[2].(string)
 	}
 	return info, nil
 }

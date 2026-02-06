@@ -19,8 +19,11 @@ func (g *Gate) On(index int) (bool, error) {
 		return false, err
 	}
 
-	resp := <-g.client.respChan
-	val, ok := resp.Arguments[0].(int32)
+	msg, err := g.client.ReceiveMessage()
+	if err != nil {
+		return false, err
+	}
+	val, ok := msg.Arguments[0].(int32)
 	if !ok {
 		return false, fmt.Errorf("unexpected argument type for Gate on value")
 	}
@@ -47,8 +50,11 @@ func (g *Gate) Mode(index int) (string, error) {
 
 	possibleModes := []string{"exp2", "exp3", "exp4", "gate", "duck"}
 
-	resp := <-g.client.respChan
-	val, ok := resp.Arguments[0].(int32)
+	msg, err := g.client.ReceiveMessage()
+	if err != nil {
+		return "", err
+	}
+	val, ok := msg.Arguments[0].(int32)
 	if !ok {
 		return "", fmt.Errorf("unexpected argument type for Gate mode value")
 	}
@@ -71,8 +77,11 @@ func (g *Gate) Threshold(index int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-g.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := g.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for Gate threshold value")
 	}
@@ -93,8 +102,11 @@ func (g *Gate) Range(index int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-g.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := g.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for Gate range value")
 	}
@@ -115,8 +127,11 @@ func (g *Gate) Attack(index int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-g.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := g.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for Gate attack value")
 	}
@@ -137,8 +152,11 @@ func (g *Gate) Hold(index int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-g.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := g.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for Gate hold value")
 	}
@@ -159,8 +177,11 @@ func (g *Gate) Release(index int) (float64, error) {
 		return 0, err
 	}
 
-	resp := <-g.client.respChan
-	val, ok := resp.Arguments[0].(float32)
+	msg, err := g.client.ReceiveMessage()
+	if err != nil {
+		return 0, err
+	}
+	val, ok := msg.Arguments[0].(float32)
 	if !ok {
 		return 0, fmt.Errorf("unexpected argument type for Gate release value")
 	}
