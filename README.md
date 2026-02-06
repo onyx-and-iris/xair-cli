@@ -12,7 +12,7 @@ go install github.com/onyx-and-iris/xair-cli@latest
 
 - --host/-H: Host of the mixer.
 - --port/-P: Port of the mixer.
-- --kind/-k: The kind of mixer. May one of (*xair*, *x32*).
+- --kind/-k: The kind of mixer. May be one of (*xair*, *x32*).
   - Use this flag to connect to an x32 mixer.
 
 #### Environment Variables
