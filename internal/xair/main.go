@@ -3,18 +3,30 @@ package xair
 import "fmt"
 
 type Main struct {
-	client *Client
+	baseAddress string
+	client      *Client
 }
 
-func newMain(c *Client) *Main {
+func newMainStereo(c *Client) *Main {
 	return &Main{
-		client: c,
+		baseAddress: c.addressMap["main"],
+		client:      c,
 	}
 }
 
+/* Still considering the best way to implement main mono support.
+func newMainMono(c *Client) *Main {
+	return &Main{
+		baseAddress: c.addressMap["mainmono"],
+		client:      c,
+	}
+}
+*/
+
 // Fader requests the current main L/R fader level
 func (m *Main) Fader() (float64, error) {
-	err := m.client.SendMessage("/lr/mix/fader")
+	address := m.baseAddress + "/mix/fader"
+	err := m.client.SendMessage(address)
 	if err != nil {
 		return 0, err
 	}
@@ -29,12 +41,14 @@ func (m *Main) Fader() (float64, error) {
 
 // SetFader sets the main L/R fader level
 func (m *Main) SetFader(level float64) error {
-	return m.client.SendMessage("/lr/mix/fader", float32(mustDbInto(level)))
+	address := m.baseAddress + "/mix/fader"
+	return m.client.SendMessage(address, float32(mustDbInto(level)))
 }
 
 // Mute requests the current main L/R mute status
 func (m *Main) Mute() (bool, error) {
-	err := m.client.SendMessage("/lr/mix/on")
+	address := m.baseAddress + "/mix/on"
+	err := m.client.SendMessage(address)
 	if err != nil {
 		return false, err
 	}
@@ -49,9 +63,10 @@ func (m *Main) Mute() (bool, error) {
 
 // SetMute sets the main L/R mute status
 func (m *Main) SetMute(muted bool) error {
+	address := m.baseAddress + "/mix/on"
 	var value int32
 	if !muted {
 		value = 1
 	}
-	return m.client.SendMessage("/lr/mix/on", value)
+	return m.client.SendMessage(address, value)
 }
