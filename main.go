@@ -34,7 +34,7 @@ type context struct {
 type Config struct {
 	Host string `default:"mixer.local" help:"The host of the X-Air device." env:"XAIR_CLI_HOST" short:"H"`
 	Port int    `default:"10024"       help:"The port of the X-Air device." env:"XAIR_CLI_PORT" short:"P"`
-	Kind string `default:"xair"        help:"The kind of the X-Air device." env:"XAIR_CLI_KIND" short:"K"`
+	Kind string `default:"xair"        help:"The kind of the X-Air device." env:"XAIR_CLI_KIND" short:"K" enum:"xair,x32"`
 }
 
 // CLI is the main struct for the command-line interface.
