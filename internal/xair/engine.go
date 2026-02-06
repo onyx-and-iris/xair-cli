@@ -9,6 +9,10 @@ import (
 	"github.com/hypebeast/go-osc/osc"
 )
 
+type parser interface {
+	Parse(data []byte) (*osc.Message, error)
+}
+
 type engine struct {
 	Kind      MixerKind
 	conn      *net.UDPConn

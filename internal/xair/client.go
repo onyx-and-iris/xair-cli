@@ -10,10 +10,6 @@ import (
 	"github.com/hypebeast/go-osc/osc"
 )
 
-type parser interface {
-	Parse(data []byte) (*osc.Message, error)
-}
-
 type Client struct {
 	engine
 	Main     *Main
@@ -60,10 +56,11 @@ func NewClient(mixerIP string, mixerPort int, opts ...Option) (*Client, error) {
 	c := &Client{
 		engine: *e,
 	}
-	c.Main = newMain(c)
+	c.Main = newMainStereo(c)
 	c.Strip = NewStrip(c)
 	c.Bus = NewBus(c)
 	c.HeadAmp = NewHeadAmp(c)
+	c.Snapshot = NewSnapshot(c)
 
 	return c, nil
 }
