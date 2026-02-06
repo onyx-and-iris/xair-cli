@@ -174,6 +174,11 @@ xair-cli raw /ch/01/config/name 'rode podmic'
 xair-cli raw /ch/01/config/name
 ```
 
+*Save current mixer state to a snapshot*
+```console
+xair-cli snapshot 20 save 'twitch live'
+```
+
 
 ### License
 
