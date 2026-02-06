@@ -124,8 +124,8 @@ Headamp
 Snapshot
   snapshot list              List all snapshots.
   snapshot <index> name      Get or set the name of a snapshot.
-  snapshot <index> save      Save the current mixer state.
-  snapshot <index> load      Load a mixer state.
+  snapshot <index> save      Save the current mixer state to a snapshot.
+  snapshot <index> load      Load a mixer state from a snapshot.
   snapshot <index> delete    Delete a snapshot.
 
 Run "xair-cli <command> --help" for more information on a command.

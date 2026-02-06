@@ -7,8 +7,8 @@ type SnapshotCmdGroup struct {
 	Index struct {
 		Index  int       `arg:"" help:"The index of the snapshot."`
 		Name   NameCmd   `help:"Get or set the name of a snapshot."      cmd:"name"`
-		Save   SaveCmd   `help:"Save the current mixer state." cmd:"save"`
-		Load   LoadCmd   `help:"Load a mixer state."         cmd:"load"`
+		Save   SaveCmd   `help:"Save the current mixer state to a snapshot." cmd:"save"`
+		Load   LoadCmd   `help:"Load a mixer state from a snapshot."         cmd:"load"`
 		Delete DeleteCmd `help:"Delete a snapshot."                      cmd:"delete"`
 	} `help:"The index of the snapshot."            arg:""`
 }
