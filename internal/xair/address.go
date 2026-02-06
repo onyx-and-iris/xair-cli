@@ -1,6 +1,7 @@
 package xair
 
 var xairAddressMap = map[string]string{
+	"main":     "/lr",
 	"strip":    "/ch/%02d",
 	"bus":      "/bus/%01d",
 	"headamp":  "/headamp/%02d",
@@ -8,9 +9,12 @@ var xairAddressMap = map[string]string{
 }
 
 var x32AddressMap = map[string]string{
-	"strip":   "/ch/%02d",
-	"bus":     "/bus/%02d",
-	"headamp": "/headamp/%02d",
+	"main":     "/main/st",
+	"mainmono": "/main/mono",
+	"strip":    "/ch/%02d",
+	"bus":      "/bus/%02d",
+	"headamp":  "/headamp/%02d",
+	"snapshot": "/-snap",
 }
 
 func addressMapForMixerKind(kind MixerKind) map[string]string {
