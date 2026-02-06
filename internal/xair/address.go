@@ -13,7 +13,7 @@ var x32AddressMap = map[string]string{
 	"mainmono": "/main/mono",
 	"strip":    "/ch/%02d",
 	"bus":      "/bus/%02d",
-	"headamp":  "/headamp/%02d",
+	"headamp":  "/headamp/%03d",
 	"snapshot": "/-snap",
 }
 
