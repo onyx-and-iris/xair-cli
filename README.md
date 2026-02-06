@@ -14,6 +14,7 @@ go install github.com/onyx-and-iris/xair-cli@latest
 - --port/-P: Port of the mixer.
 - --kind/-k: The kind of mixer. May be one of (*xair*, *x32*).
   - Use this flag to connect to an x32 mixer.
+- --loglevel/-L: The application's logging verbosity.
 
 #### Environment Variables
 
@@ -26,6 +27,7 @@ XAIR_CLI_HOST=mixer.local
 XAIR_CLI_PORT=10024
 XAIR_CLI_KIND=xair
 XAIR_CLI_TIMEOUT=100ms
+XAIR_CLI_LOGLEVEL=warn
 ```
 
 ### Use
