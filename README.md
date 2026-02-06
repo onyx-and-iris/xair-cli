@@ -16,7 +16,7 @@ go install github.com/onyx-and-iris/xair-cli@latest
   - Use this flag to connect to an x32 mixer.
 - --loglevel/-L: The application's logging verbosity.
 
-Pass `--host` any other configuration as flags on the root commmand:
+Pass `--host` and any other configuration as flags on the root commmand:
 
 ```console
 xair-cli --host mixer.local --kind xair --timeout 50ms --help
