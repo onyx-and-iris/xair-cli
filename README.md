@@ -41,6 +41,7 @@ Flags:
   -P, --port=10024            The port of the X-Air device ($XAIR_CLI_PORT).
   -K, --kind="xair"           The kind of the X-Air device ($XAIR_CLI_KIND).
   -T, --timeout=100ms         Timeout for OSC operations ($XAIR_CLI_TIMEOUT).
+  -L, --loglevel="warn"       Log level for the CLI ($XAIR_CLI_LOGLEVEL).
   -v, --version               Print xair-cli version information and quit
 
 Commands:
@@ -109,6 +110,13 @@ Bus
 Headamp
   headamp <index> gain       Get or set the gain of the headamp.
   headamp <index> phantom    Get or set the phantom power state of the headamp.
+
+Snapshot
+  snapshot list              List all snapshots.
+  snapshot <index> name      Get or set the name of a snapshot.
+  snapshot <index> save      Save the current mixer state.
+  snapshot <index> load      Load a mixer state.
+  snapshot <index> delete    Delete a snapshot.
 
 Run "xair-cli <command> --help" for more information on a command.
 ```
