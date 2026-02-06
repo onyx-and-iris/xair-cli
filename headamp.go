@@ -19,7 +19,7 @@ type HeadampCmdGroup struct {
 // HeadampGainCmd defines the command for getting or setting the gain of a headamp, allowing users to specify the gain in dB and an optional duration for a gradual fade when setting the gain.
 type HeadampGainCmd struct {
 	Duration time.Duration `help:"The duration of the fade in/out when setting the gain." default:"5s"`
-	Gain     *float64      `help:"The gain of the headamp in dB."                                      arg:""`
+	Gain     *float64      `help:"The gain of the headamp in dB."                                      arg:"" optional:""`
 }
 
 // Run executes the HeadampGainCmd command, either retrieving the current gain of the headamp or setting it based on the provided argument, with an optional fade duration for smooth transitions.

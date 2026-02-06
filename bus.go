@@ -148,7 +148,7 @@ func (cmd *BusFadeoutCmd) Run(ctx *context, bus *BusCmdGroup) error {
 
 // BusNameCmd defines the command for getting or setting the name of a bus.
 type BusNameCmd struct {
-	Name *string `arg:"" help:"The name to set for the bus. If not provided, the current name will be returned."`
+	Name *string `arg:"" help:"The name to set for the bus. If not provided, the current name will be returned." optional:""`
 }
 
 // Run executes the BusNameCmd command, either retrieving the current name of the bus or setting it based on the provided argument.
@@ -238,7 +238,7 @@ func (cmd *BusEqModeCmd) Run(ctx *context, bus *BusCmdGroup) error {
 
 // BusEqBandGainCmd defines the command for getting or setting the gain of a specific EQ band of a bus.
 type BusEqBandGainCmd struct {
-	Gain *float64 `arg:"" help:"The gain to set for the EQ band (in dB). If not provided, the current gain will be returned."`
+	Gain *float64 `arg:"" help:"The gain to set for the EQ band (in dB). If not provided, the current gain will be returned." optional:""`
 }
 
 // Run executes the BusEqBandGainCmd command, either retrieving the current gain of the specified EQ band of the bus or setting it based on the provided argument.
@@ -261,7 +261,7 @@ func (cmd *BusEqBandGainCmd) Run(ctx *context, bus *BusCmdGroup, busEq *BusEqCmd
 
 // BusEqBandFreqCmd defines the command for getting or setting the frequency of a specific EQ band of a bus.
 type BusEqBandFreqCmd struct {
-	Freq *float64 `arg:"" help:"The frequency to set for the EQ band (in Hz). If not provided, the current frequency will be returned."`
+	Freq *float64 `arg:"" help:"The frequency to set for the EQ band (in Hz). If not provided, the current frequency will be returned." optional:""`
 }
 
 // Run executes the BusEqBandFreqCmd command, either retrieving the current frequency of the specified EQ band of the bus or setting it based on the provided argument.
@@ -284,7 +284,7 @@ func (cmd *BusEqBandFreqCmd) Run(ctx *context, bus *BusCmdGroup, busEq *BusEqCmd
 
 // BusEqBandQCmd defines the command for getting or setting the Q factor of a specific EQ band of a bus.
 type BusEqBandQCmd struct {
-	Q *float64 `arg:"" help:"The Q factor to set for the EQ band. If not provided, the current Q factor will be returned."`
+	Q *float64 `arg:"" help:"The Q factor to set for the EQ band. If not provided, the current Q factor will be returned." optional:""`
 }
 
 // Run executes the BusEqBandQCmd command, either retrieving the current Q factor of the specified EQ band of the bus or setting it based on the provided argument.
@@ -389,7 +389,7 @@ func (cmd *BusCompModeCmd) Run(ctx *context, bus *BusCmdGroup) error {
 
 // BusCompThresholdCmd defines the command for getting or setting the compressor threshold of a bus.
 type BusCompThresholdCmd struct {
-	Threshold *float64 `arg:"" help:"The compressor threshold to set (in dB). If not provided, the current compressor threshold will be returned."`
+	Threshold *float64 `arg:"" help:"The compressor threshold to set (in dB). If not provided, the current compressor threshold will be returned." optional:""`
 }
 
 // Run executes the BusCompThresholdCmd command, either retrieving the current compressor threshold of the bus or setting it based on the provided argument.
@@ -412,7 +412,7 @@ func (cmd *BusCompThresholdCmd) Run(ctx *context, bus *BusCmdGroup) error {
 
 // BusCompRatioCmd defines the command for getting or setting the compressor ratio of a bus.
 type BusCompRatioCmd struct {
-	Ratio *float64 `arg:"" help:"The compressor ratio to set. If not provided, the current compressor ratio will be returned."`
+	Ratio *float64 `arg:"" help:"The compressor ratio to set. If not provided, the current compressor ratio will be returned." optional:""`
 }
 
 // Run executes the BusCompRatioCmd command, either retrieving the current compressor ratio of the bus or setting it based on the provided argument.
@@ -435,7 +435,7 @@ func (cmd *BusCompRatioCmd) Run(ctx *context, bus *BusCmdGroup) error {
 
 // BusCompMixCmd defines the command for getting or setting the compressor mix level of a bus.
 type BusCompMixCmd struct {
-	Mix *float64 `arg:"" help:"The compressor mix level to set (in %). If not provided, the current compressor mix level will be returned."`
+	Mix *float64 `arg:"" help:"The compressor mix level to set (in %). If not provided, the current compressor mix level will be returned." optional:""`
 }
 
 // Run executes the BusCompMixCmd command, either retrieving the current compressor mix level of the bus or setting it based on the provided argument.
@@ -458,7 +458,7 @@ func (cmd *BusCompMixCmd) Run(ctx *context, bus *BusCmdGroup) error {
 
 // BusCompMakeupCmd defines the command for getting or setting the compressor makeup gain of a bus.
 type BusCompMakeupCmd struct {
-	Makeup *float64 `arg:"" help:"The compressor makeup gain to set (in dB). If not provided, the current compressor makeup gain will be returned."`
+	Makeup *float64 `arg:"" help:"The compressor makeup gain to set (in dB). If not provided, the current compressor makeup gain will be returned." optional:""`
 }
 
 // Run executes the BusCompMakeupCmd command, either retrieving the current compressor makeup gain of the bus or setting it based on the provided argument.
@@ -481,7 +481,7 @@ func (cmd *BusCompMakeupCmd) Run(ctx *context, bus *BusCmdGroup) error {
 
 // BusCompAttackCmd defines the command for getting or setting the compressor attack time of a bus.
 type BusCompAttackCmd struct {
-	Attack *float64 `arg:"" help:"The compressor attack time to set (in ms). If not provided, the current compressor attack time will be returned."`
+	Attack *float64 `arg:"" help:"The compressor attack time to set (in ms). If not provided, the current compressor attack time will be returned." optional:""`
 }
 
 // Run executes the BusCompAttackCmd command, either retrieving the current compressor attack time of the bus or setting it based on the provided argument.
@@ -504,7 +504,7 @@ func (cmd *BusCompAttackCmd) Run(ctx *context, bus *BusCmdGroup) error {
 
 // BusCompHoldCmd defines the command for getting or setting the compressor hold time of a bus.
 type BusCompHoldCmd struct {
-	Hold *float64 `arg:"" help:"The compressor hold time to set (in ms). If not provided, the current compressor hold time will be returned."`
+	Hold *float64 `arg:"" help:"The compressor hold time to set (in ms). If not provided, the current compressor hold time will be returned." optional:""`
 }
 
 // Run executes the BusCompHoldCmd command, either retrieving the current compressor hold time of the bus or setting it based on the provided argument.
@@ -527,7 +527,7 @@ func (cmd *BusCompHoldCmd) Run(ctx *context, bus *BusCmdGroup) error {
 
 // BusCompReleaseCmd defines the command for getting or setting the compressor release time of a bus.
 type BusCompReleaseCmd struct {
-	Release *float64 `arg:"" help:"The compressor release time to set (in ms). If not provided, the current compressor release time will be returned."`
+	Release *float64 `arg:"" help:"The compressor release time to set (in ms). If not provided, the current compressor release time will be returned." optional:""`
 }
 
 // Run executes the BusCompReleaseCmd command, either retrieving the current compressor release time of the bus or setting it based on the provided argument.

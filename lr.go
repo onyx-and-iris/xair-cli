@@ -16,7 +16,7 @@ type MainCmdGroup struct {
 
 // MainMuteCmd defines the command for getting or setting the mute state of the Main L/R output, allowing users to specify the desired state as "true"/"on" or "false"/"off".
 type MainMuteCmd struct {
-	Mute *bool `arg:"" help:"The mute state to set. If not provided, the current state will be printed."`
+	Mute *bool `arg:"" help:"The mute state to set. If not provided, the current state will be printed." optional:""`
 }
 
 // Run executes the MainMuteCmd command, either retrieving the current mute state of the Main L/R output or setting it based on the provided argument.
@@ -39,7 +39,7 @@ func (cmd *MainMuteCmd) Run(ctx *context) error {
 
 // MainFaderCmd defines the command for getting or setting the fader level of the Main L/R output, allowing users to specify the desired level in dB.
 type MainFaderCmd struct {
-	Level *float64 `arg:"" help:"The fader level to set. If not provided, the current level will be printed."`
+	Level *float64 `arg:"" help:"The fader level to set. If not provided, the current level will be printed." optional:""`
 }
 
 // Run executes the MainFaderCmd command, either retrieving the current fader level of the Main L/R output or setting it based on the provided argument.
