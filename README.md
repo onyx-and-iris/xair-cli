@@ -25,7 +25,7 @@ Example .envrc:
 XAIR_CLI_HOST=mixer.local
 XAIR_CLI_PORT=10024
 XAIR_CLI_KIND=xair
-XAIR_CLI_RAW_TIMEOUT=50ms
+XAIR_CLI_TIMEOUT=100ms
 ```
 
 ### Use
@@ -40,7 +40,8 @@ Flags:
   -H, --host="mixer.local"    The host of the X-Air device ($XAIR_CLI_HOST).
   -P, --port=10024            The port of the X-Air device ($XAIR_CLI_PORT).
   -K, --kind="xair"           The kind of the X-Air device ($XAIR_CLI_KIND).
-  -v, --version               Print gobs-cli version information and quit
+  -T, --timeout=100ms         Timeout for OSC operations ($XAIR_CLI_TIMEOUT).
+  -v, --version               Print xair-cli version information and quit
 
 Commands:
   completion (c)    Generate shell completion scripts.
