@@ -33,10 +33,11 @@ type context struct {
 }
 
 type Config struct {
-	Host    string        `default:"mixer.local" help:"The host of the X-Air device." env:"XAIR_CLI_HOST"    short:"H"`
-	Port    int           `default:"10024"       help:"The port of the X-Air device." env:"XAIR_CLI_PORT"    short:"P"`
-	Kind    string        `default:"xair"        help:"The kind of the X-Air device." env:"XAIR_CLI_KIND"    short:"K" enum:"xair,x32"`
-	Timeout time.Duration `default:"100ms"       help:"Timeout for OSC operations."   env:"XAIR_CLI_TIMEOUT" short:"T"`
+	Host     string        `default:"mixer.local" help:"The host of the X-Air device." env:"XAIR_CLI_HOST"     short:"H"`
+	Port     int           `default:"10024"       help:"The port of the X-Air device." env:"XAIR_CLI_PORT"     short:"P"`
+	Kind     string        `default:"xair"        help:"The kind of the X-Air device." env:"XAIR_CLI_KIND"     short:"K" enum:"xair,x32"`
+	Timeout  time.Duration `default:"100ms"       help:"Timeout for OSC operations."   env:"XAIR_CLI_TIMEOUT"  short:"T"`
+	Loglevel string        `default:"warn"        help:"Log level for the CLI."        env:"XAIR_CLI_LOGLEVEL" short:"L" enum:"debug,info,warn,error,fatal"`
 }
 
 // CLI is the main struct for the command-line interface.
@@ -48,11 +49,12 @@ type CLI struct {
 
 	Completion kongcompletion.Completion `help:"Generate shell completion scripts." cmd:"" aliases:"c"`
 
-	Raw     RawCmd          `help:"Send raw OSC messages to the mixer."   cmd:"" group:"Raw"`
-	Main    MainCmdGroup    `help:"Control the Main L/R output"           cmd:"" group:"Main"`
-	Strip   StripCmdGroup   `help:"Control the strips."                   cmd:"" group:"Strip"`
-	Bus     BusCmdGroup     `help:"Control the buses."                    cmd:"" group:"Bus"`
-	Headamp HeadampCmdGroup `help:"Control input gain and phantom power." cmd:"" group:"Headamp"`
+	Raw      RawCmd           `help:"Send raw OSC messages to the mixer."   cmd:"" group:"Raw"`
+	Main     MainCmdGroup     `help:"Control the Main L/R output"           cmd:"" group:"Main"`
+	Strip    StripCmdGroup    `help:"Control the strips."                   cmd:"" group:"Strip"`
+	Bus      BusCmdGroup      `help:"Control the buses."                    cmd:"" group:"Bus"`
+	Headamp  HeadampCmdGroup  `help:"Control input gain and phantom power." cmd:"" group:"Headamp"`
+	Snapshot SnapshotCmdGroup `help:"Save and load mixer states."           cmd:"" group:"Snapshot"`
 }
 
 func main() {
@@ -86,6 +88,12 @@ func main() {
 // run is the main entry point for the CLI.
 // It connects to the X-Air device, retrieves mixer info, and then runs the command.
 func run(ctx *kong.Context, config Config) error {
+	loglevel, err := log.ParseLevel(config.Loglevel)
+	if err != nil {
+		return fmt.Errorf("invalid log level: %w", err)
+	}
+	log.SetLevel(loglevel)
+
 	client, err := connect(config)
 	if err != nil {
 		return fmt.Errorf("failed to connect to X-Air device: %w", err)
