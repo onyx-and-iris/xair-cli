@@ -1,29 +1,32 @@
 version: '3'
 
+includes:
+  build-xair: ./Taskfile.build-xair.yml
+  build-x32: ./Taskfile.build-x32.yml
+
 vars:
-  PROGRAM: xair-cli
   SHELL: '{{if eq .OS "Windows_NT"}}powershell{{end}}'
   BIN_DIR: bin
   VERSION:
     sh: 'git describe --tags $(git rev-list --tags --max-count=1)'
 
-  WINDOWS: '{{.BIN_DIR}}/{{.PROGRAM}}_windows_amd64.exe'
-  LINUX: '{{.BIN_DIR}}/{{.PROGRAM}}_linux_amd64'
-  MACOS: '{{.BIN_DIR}}/{{.PROGRAM}}_darwin_amd64'
-
 tasks:
   default:
-    desc: Build the xair-cli project
+    desc: Build the xair-cli and x32-cli projects for all platforms
     cmds:
       - task: build
 
   build:
-    desc: Build the xair-cli project
+    desc: Build the xair-cli and x32-cli projects for all platforms
     deps: [vet]
     cmds:
-      - task: build-windows
-      - task: build-linux
-      - task: build-macos
+      - task: build-xair:windows-amd64
+      - task: build-xair:linux-amd64
+      - task: build-xair:darwin-amd64
+
+      - task: build-x32:windows-amd64
+      - task: build-x32:linux-amd64
+      - task: build-x32:darwin-amd64
 
   vet:
     desc: Vet the code
@@ -35,24 +38,6 @@ tasks:
     desc: Fmt the code
     cmds:
       - go fmt ./...
-
-  build-windows:
-    desc: Build the xair-cli project for Windows
-    cmds:
-      - GOOS=windows GOARCH=amd64 go build -o {{.WINDOWS}} -ldflags="-X main.version={{.VERSION}}"
-    internal: true
-
-  build-linux:
-    desc: Build the xair-cli project for Linux
-    cmds:
-      - GOOS=linux GOARCH=amd64 go build -o {{.LINUX}} -ldflags="-X main.version={{.VERSION}}"
-    internal: true
-
-  build-macos:
-    desc: Build the xair-cli project for macOS
-    cmds:
-      - GOOS=darwin GOARCH=amd64 go build -o {{.MACOS}} -ldflags="-X main.version={{.VERSION}}"
-    internal: true
 
   test:
     desc: Run tests

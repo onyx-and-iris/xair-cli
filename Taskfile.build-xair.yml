@@ -1,0 +1,23 @@
+version: '3'
+
+vars:
+  BIN_XAIR: xair-cli
+
+tasks:
+  windows-amd64:
+    desc: Build the xair-cli project for Windows
+    cmds:
+      - GOOS=windows GOARCH=amd64 go build -o {{.BIN_DIR}}/{{.BIN_XAIR}}_windows_amd64.exe -ldflags="-X main.version={{.VERSION}}" ./cmd/{{.BIN_XAIR}}
+    internal: true
+
+  linux-amd64:
+    desc: Build the xair-cli project for Linux
+    cmds:
+      - GOOS=linux GOARCH=amd64 go build -o {{.BIN_DIR}}/{{.BIN_XAIR}}_linux_amd64 -ldflags="-X main.version={{.VERSION}}" ./cmd/{{.BIN_XAIR}}
+    internal: true
+
+  darwin-amd64:
+    desc: Build the xair-cli project for macOS
+    cmds:
+      - GOOS=darwin GOARCH=amd64 go build -o {{.BIN_DIR}}/{{.BIN_XAIR}}_darwin_amd64 -ldflags="-X main.version={{.VERSION}}" ./cmd/{{.BIN_XAIR}}
+    internal: true
