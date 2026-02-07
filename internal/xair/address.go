@@ -10,7 +10,8 @@ var xairAddressMap = map[string]string{
 
 var x32AddressMap = map[string]string{
 	"main":     "/main/st",
-	"mainmono": "/main/mono",
+	"mainmono": "/main/m",
+	"matrix":   "/mtx/%02d",
 	"strip":    "/ch/%02d",
 	"bus":      "/bus/%02d",
 	"headamp":  "/headamp/%03d",

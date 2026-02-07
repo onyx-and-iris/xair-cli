@@ -24,9 +24,7 @@ func newCompForStrip(c *Client) *Comp {
 	return &Comp{
 		client:      c,
 		baseAddress: c.addressMap["strip"],
-		AddressFunc: func(fmtString string, args ...any) string {
-			return fmt.Sprintf(fmtString, args...)
-		},
+		AddressFunc: fmt.Sprintf,
 	}
 }
 
@@ -35,9 +33,16 @@ func newCompForBus(c *Client) *Comp {
 	return &Comp{
 		client:      c,
 		baseAddress: c.addressMap["bus"],
-		AddressFunc: func(fmtString string, args ...any) string {
-			return fmt.Sprintf(fmtString, args...)
-		},
+		AddressFunc: fmt.Sprintf,
+	}
+}
+
+// Factory function to create Comp instance for Matrix
+func newCompForMatrix(c *Client) *Comp {
+	return &Comp{
+		client:      c,
+		baseAddress: c.addressMap["matrix"],
+		AddressFunc: fmt.Sprintf,
 	}
 }
 

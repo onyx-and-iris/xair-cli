@@ -26,9 +26,7 @@ func newEqForStrip(c *Client) *Eq {
 	return &Eq{
 		client:      c,
 		baseAddress: c.addressMap["strip"],
-		AddressFunc: func(fmtString string, args ...any) string {
-			return fmt.Sprintf(fmtString, args...)
-		},
+		AddressFunc: fmt.Sprintf,
 	}
 }
 
@@ -37,9 +35,16 @@ func newEqForBus(c *Client) *Eq {
 	return &Eq{
 		client:      c,
 		baseAddress: c.addressMap["bus"],
-		AddressFunc: func(fmtString string, args ...any) string {
-			return fmt.Sprintf(fmtString, args...)
-		},
+		AddressFunc: fmt.Sprintf,
+	}
+}
+
+// Factory function to create Eq instance for Matrix
+func newEqForMatrix(c *Client) *Eq {
+	return &Eq{
+		client:      c,
+		baseAddress: c.addressMap["matrix"],
+		AddressFunc: fmt.Sprintf,
 	}
 }
 

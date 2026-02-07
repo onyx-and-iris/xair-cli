@@ -9,6 +9,7 @@ type Main struct {
 	Comp        *Comp
 }
 
+// newMainStereo creates a new Main instance for stereo main output
 func newMainStereo(c *Client) *Main {
 	return &Main{
 		client:      c,
@@ -18,14 +19,13 @@ func newMainStereo(c *Client) *Main {
 	}
 }
 
-/* Still considering the best way to implement main mono support.
+// newMainMono creates a new MainMono instance for mono main output (X32 only)
 func newMainMono(c *Client) *Main {
 	return &Main{
 		baseAddress: c.addressMap["mainmono"],
 		client:      c,
 	}
 }
-*/
 
 // Fader requests the current main L/R fader level
 func (m *Main) Fader() (float64, error) {
