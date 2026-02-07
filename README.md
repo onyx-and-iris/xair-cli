@@ -14,6 +14,7 @@ go install github.com/onyx-and-iris/xair-cli@latest
 - --port/-P: Port of the mixer.
 - --kind/-k: The kind of mixer. May be one of (*xair*, *x32*).
   - Use this flag to connect to an x32 mixer.
+- --timeout/-T: Timeout for OSC operations.
 - --loglevel/-L: The application's logging verbosity.
 
 Pass `--host` and any other configuration as flags on the root commmand:
