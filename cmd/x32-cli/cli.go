@@ -22,22 +22,21 @@ type VersionFlag string
 func (v VersionFlag) Decode(_ *kong.DecodeContext) error { return nil }  // nolint: revive
 func (v VersionFlag) IsBool() bool                       { return true } // nolint: revive
 func (v VersionFlag) BeforeApply(app *kong.Kong, vars kong.Vars) error { // nolint: revive, unparam
-	fmt.Printf("xair-cli version: %s\n", vars["version"])
+	fmt.Printf("x32-cli version: %s\n", vars["version"])
 	app.Exit(0)
 	return nil
 }
 
 type context struct {
-	Client *xair.Client
+	Client *xair.X32Client
 	Out    io.Writer
 }
 
 type Config struct {
-	Host     string        `default:"mixer.local" help:"The host of the X-Air device." env:"XAIR_CLI_HOST"     short:"H"`
-	Port     int           `default:"10024"       help:"The port of the X-Air device." env:"XAIR_CLI_PORT"     short:"P"`
-	Kind     string        `default:"xair"        help:"The kind of the X-Air device." env:"XAIR_CLI_KIND"     short:"K" enum:"xair,x32"`
-	Timeout  time.Duration `default:"100ms"       help:"Timeout for OSC operations."   env:"XAIR_CLI_TIMEOUT"  short:"T"`
-	Loglevel string        `default:"warn"        help:"Log level for the CLI."        env:"XAIR_CLI_LOGLEVEL" short:"L" enum:"debug,info,warn,error,fatal"`
+	Host     string        `default:"mixer.local" help:"The host of the X32 device." env:"X32_CLI_HOST"     short:"H"`
+	Port     int           `default:"10023"       help:"The port of the X32 device." env:"X32_CLI_PORT"     short:"P"`
+	Timeout  time.Duration `default:"100ms"       help:"Timeout for OSC operations." env:"X32_CLI_TIMEOUT"  short:"T"`
+	Loglevel string        `default:"warn"        help:"Log level for the CLI."      env:"X32_CLI_LOGLEVEL" short:"L" enum:"debug,info,warn,error,fatal"`
 }
 
 // CLI is the main struct for the command-line interface.
@@ -45,12 +44,13 @@ type Config struct {
 type CLI struct {
 	Config `embed:"" prefix:"" help:"The configuration for the CLI."`
 
-	Version VersionFlag `help:"Print xair-cli version information and quit" name:"version" short:"v"`
+	Version VersionFlag `help:"Print x32-cli version information and quit" name:"version" short:"v"`
 
 	Completion kongcompletion.Completion `help:"Generate shell completion scripts." cmd:"" aliases:"c"`
 
 	Raw      RawCmd           `help:"Send raw OSC messages to the mixer."   cmd:"" group:"Raw"`
 	Main     MainCmdGroup     `help:"Control the Main L/R output"           cmd:"" group:"Main"`
+	Mainmono MainMonoCmdGroup `help:"Control the Main Mono output"          cmd:"" group:"MainMono"`
 	Strip    StripCmdGroup    `help:"Control the strips."                   cmd:"" group:"Strip"`
 	Bus      BusCmdGroup      `help:"Control the buses."                    cmd:"" group:"Bus"`
 	Headamp  HeadampCmdGroup  `help:"Control input gain and phantom power." cmd:"" group:"Headamp"`
@@ -62,8 +62,8 @@ func main() {
 	kongcompletion.Register(kong.Must(&cli))
 	ctx := kong.Parse(
 		&cli,
-		kong.Name("xair-cli"),
-		kong.Description("A CLI to control Behringer X-Air mixers."),
+		kong.Name("x32-cli"),
+		kong.Description("A CLI to control Behringer X32 mixers."),
 		kong.UsageOnError(),
 		kong.ConfigureHelp(kong.HelpOptions{
 			Compact: true,
@@ -86,7 +86,7 @@ func main() {
 }
 
 // run is the main entry point for the CLI.
-// It connects to the X-Air device, retrieves mixer info, and then runs the command.
+// It connects to the X32 device, retrieves mixer info, and then runs the command.
 func run(ctx *kong.Context, config Config) error {
 	loglevel, err := log.ParseLevel(config.Loglevel)
 	if err != nil {
@@ -96,7 +96,7 @@ func run(ctx *kong.Context, config Config) error {
 
 	client, err := connect(config)
 	if err != nil {
-		return fmt.Errorf("failed to connect to X-Air device: %w", err)
+		return fmt.Errorf("failed to connect to X32 device: %w", err)
 	}
 	defer client.Close()
 
@@ -115,12 +115,12 @@ func run(ctx *kong.Context, config Config) error {
 	return ctx.Run()
 }
 
-// connect creates a new X-Air client based on the provided configuration.
-func connect(config Config) (*xair.Client, error) {
-	client, err := xair.NewClient(
+// connect creates a new X32 client based on the provided configuration.
+func connect(config Config) (*xair.X32Client, error) {
+	client, err := xair.NewX32Client(
 		config.Host,
 		config.Port,
-		xair.WithKind(config.Kind),
+		xair.WithKind("x32"),
 		xair.WithTimeout(config.Timeout),
 	)
 	if err != nil {
