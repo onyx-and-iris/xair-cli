@@ -14,9 +14,9 @@ func newStrip(c *Client) *Strip {
 	return &Strip{
 		client:      c,
 		baseAddress: c.addressMap["strip"],
-		Gate:        newGateForStrip(c),
-		Eq:          newEqForStrip(c),
-		Comp:        newCompForStrip(c),
+		Gate:        newGateForStrip(c, c.addressMap["strip"]),
+		Eq:          newEqForStrip(c, c.addressMap["strip"]),
+		Comp:        newCompForStrip(c, c.addressMap["strip"]),
 	}
 }
 

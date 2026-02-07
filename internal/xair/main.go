@@ -14,8 +14,8 @@ func newMainStereo(c *Client) *Main {
 	return &Main{
 		client:      c,
 		baseAddress: c.addressMap["main"],
-		Eq:          newEqForMain(c),
-		Comp:        newCompForMain(c),
+		Eq:          newEqForMain(c, c.addressMap["main"]),
+		Comp:        newCompForMain(c, c.addressMap["main"]),
 	}
 }
 
@@ -24,6 +24,8 @@ func newMainMono(c *Client) *Main {
 	return &Main{
 		baseAddress: c.addressMap["mainmono"],
 		client:      c,
+		Eq:          newEqForMain(c, c.addressMap["mainmono"]),
+		Comp:        newCompForMain(c, c.addressMap["mainmono"]),
 	}
 }
 

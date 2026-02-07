@@ -13,8 +13,8 @@ func newBus(c *Client) *Bus {
 	return &Bus{
 		client:      c,
 		baseAddress: c.addressMap["bus"],
-		Eq:          newEqForBus(c),
-		Comp:        newCompForBus(c),
+		Eq:          newEqForBus(c, c.addressMap["bus"]),
+		Comp:        newCompForBus(c, c.addressMap["bus"]),
 	}
 }
 

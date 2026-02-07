@@ -8,16 +8,16 @@ type Gate struct {
 }
 
 // Factory function to create Gate instance for Strip
-func newGateForStrip(c *Client) *Gate {
+func newGateForStrip(c *Client, baseAddress string) *Gate {
 	return &Gate{
 		client:      c,
-		baseAddress: c.addressMap["strip"],
+		baseAddress: fmt.Sprintf("%s/gate", baseAddress),
 	}
 }
 
 // On retrieves the on/off status of the Gate for a specific strip (1-based indexing).
 func (g *Gate) On(index int) (bool, error) {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/on"
+	address := fmt.Sprintf(g.baseAddress, index) + "/on"
 	err := g.client.SendMessage(address)
 	if err != nil {
 		return false, err
@@ -36,7 +36,7 @@ func (g *Gate) On(index int) (bool, error) {
 
 // SetOn sets the on/off status of the Gate for a specific strip (1-based indexing).
 func (g *Gate) SetOn(index int, on bool) error {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/on"
+	address := fmt.Sprintf(g.baseAddress, index) + "/on"
 	var value int32
 	if on {
 		value = 1
@@ -46,7 +46,7 @@ func (g *Gate) SetOn(index int, on bool) error {
 
 // Mode retrieves the current mode of the Gate for a specific strip (1-based indexing).
 func (g *Gate) Mode(index int) (string, error) {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/mode"
+	address := fmt.Sprintf(g.baseAddress, index) + "/mode"
 	err := g.client.SendMessage(address)
 	if err != nil {
 		return "", err
@@ -67,7 +67,7 @@ func (g *Gate) Mode(index int) (string, error) {
 
 // SetMode sets the mode of the Gate for a specific strip (1-based indexing).
 func (g *Gate) SetMode(index int, mode string) error {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/mode"
+	address := fmt.Sprintf(g.baseAddress, index) + "/mode"
 	possibleModes := []string{"exp2", "exp3", "exp4", "gate", "duck"}
 
 	return g.client.SendMessage(address, int32(indexOf(possibleModes, mode)))
@@ -75,7 +75,7 @@ func (g *Gate) SetMode(index int, mode string) error {
 
 // Threshold retrieves the threshold value of the Gate for a specific strip (1-based indexing).
 func (g *Gate) Threshold(index int) (float64, error) {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/thr"
+	address := fmt.Sprintf(g.baseAddress, index) + "/thr"
 	err := g.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -94,13 +94,13 @@ func (g *Gate) Threshold(index int) (float64, error) {
 
 // SetThreshold sets the threshold value of the Gate for a specific strip (1-based indexing).
 func (g *Gate) SetThreshold(index int, threshold float64) error {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/thr"
+	address := fmt.Sprintf(g.baseAddress, index) + "/thr"
 	return g.client.SendMessage(address, float32(linSet(-80, 0, threshold)))
 }
 
 // Range retrieves the range value of the Gate for a specific strip (1-based indexing).
 func (g *Gate) Range(index int) (float64, error) {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/range"
+	address := fmt.Sprintf(g.baseAddress, index) + "/range"
 	err := g.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -119,13 +119,13 @@ func (g *Gate) Range(index int) (float64, error) {
 
 // SetRange sets the range value of the Gate for a specific strip (1-based indexing).
 func (g *Gate) SetRange(index int, rangeVal float64) error {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/range"
+	address := fmt.Sprintf(g.baseAddress, index) + "/range"
 	return g.client.SendMessage(address, float32(linSet(3, 60, rangeVal)))
 }
 
 // Attack retrieves the attack time of the Gate for a specific strip (1-based indexing).
 func (g *Gate) Attack(index int) (float64, error) {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/attack"
+	address := fmt.Sprintf(g.baseAddress, index) + "/attack"
 	err := g.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -144,13 +144,13 @@ func (g *Gate) Attack(index int) (float64, error) {
 
 // SetAttack sets the attack time of the Gate for a specific strip (1-based indexing).
 func (g *Gate) SetAttack(index int, attack float64) error {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/attack"
+	address := fmt.Sprintf(g.baseAddress, index) + "/attack"
 	return g.client.SendMessage(address, float32(linSet(0, 120, attack)))
 }
 
 // Hold retrieves the hold time of the Gate for a specific strip (1-based indexing).
 func (g *Gate) Hold(index int) (float64, error) {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/hold"
+	address := fmt.Sprintf(g.baseAddress, index) + "/hold"
 	err := g.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -169,13 +169,13 @@ func (g *Gate) Hold(index int) (float64, error) {
 
 // SetHold sets the hold time of the Gate for a specific strip (1-based indexing).
 func (g *Gate) SetHold(index int, hold float64) error {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/hold"
+	address := fmt.Sprintf(g.baseAddress, index) + "/hold"
 	return g.client.SendMessage(address, float32(logSet(0.02, 2000, hold)))
 }
 
 // Release retrieves the release time of the Gate for a specific strip (1-based indexing).
 func (g *Gate) Release(index int) (float64, error) {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/release"
+	address := fmt.Sprintf(g.baseAddress, index) + "/release"
 	err := g.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -194,6 +194,6 @@ func (g *Gate) Release(index int) (float64, error) {
 
 // SetRelease sets the release time of the Gate for a specific strip (1-based indexing).
 func (g *Gate) SetRelease(index int, release float64) error {
-	address := fmt.Sprintf(g.baseAddress, index) + "/gate/release"
+	address := fmt.Sprintf(g.baseAddress, index) + "/release"
 	return g.client.SendMessage(address, float32(logSet(5, 4000, release)))
 }

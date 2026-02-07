@@ -9,10 +9,10 @@ type Comp struct {
 }
 
 // Factory function to create Comp instance for Main
-func newCompForMain(c *Client) *Comp {
+func newCompForMain(c *Client, baseAddress string) *Comp {
 	return &Comp{
 		client:      c,
-		baseAddress: c.addressMap["main"],
+		baseAddress: fmt.Sprintf("%s/dyn", baseAddress),
 		AddressFunc: func(fmtString string, args ...any) string {
 			return fmtString
 		},
@@ -20,35 +20,35 @@ func newCompForMain(c *Client) *Comp {
 }
 
 // Factory function to create Comp instance for Strip
-func newCompForStrip(c *Client) *Comp {
+func newCompForStrip(c *Client, baseAddress string) *Comp {
 	return &Comp{
 		client:      c,
-		baseAddress: c.addressMap["strip"],
+		baseAddress: fmt.Sprintf("%s/dyn", baseAddress),
 		AddressFunc: fmt.Sprintf,
 	}
 }
 
 // Factory function to create Comp instance for Bus
-func newCompForBus(c *Client) *Comp {
+func newCompForBus(c *Client, baseAddress string) *Comp {
 	return &Comp{
 		client:      c,
-		baseAddress: c.addressMap["bus"],
+		baseAddress: fmt.Sprintf("%s/dyn", baseAddress),
 		AddressFunc: fmt.Sprintf,
 	}
 }
 
 // Factory function to create Comp instance for Matrix
-func newCompForMatrix(c *Client) *Comp {
+func newCompForMatrix(c *Client, baseAddress string) *Comp {
 	return &Comp{
 		client:      c,
-		baseAddress: c.addressMap["matrix"],
+		baseAddress: fmt.Sprintf("%s/dyn", baseAddress),
 		AddressFunc: fmt.Sprintf,
 	}
 }
 
 // On retrieves the on/off status of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) On(index int) (bool, error) {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/on"
+	address := c.AddressFunc(c.baseAddress, index) + "/on"
 	err := c.client.SendMessage(address)
 	if err != nil {
 		return false, err
@@ -67,7 +67,7 @@ func (c *Comp) On(index int) (bool, error) {
 
 // SetOn sets the on/off status of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) SetOn(index int, on bool) error {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/on"
+	address := c.AddressFunc(c.baseAddress, index) + "/on"
 	var value int32
 	if on {
 		value = 1
@@ -77,7 +77,7 @@ func (c *Comp) SetOn(index int, on bool) error {
 
 // Mode retrieves the current mode of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) Mode(index int) (string, error) {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/mode"
+	address := c.AddressFunc(c.baseAddress, index) + "/mode"
 	err := c.client.SendMessage(address)
 	if err != nil {
 		return "", err
@@ -98,14 +98,14 @@ func (c *Comp) Mode(index int) (string, error) {
 
 // SetMode sets the mode of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) SetMode(index int, mode string) error {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/mode"
+	address := c.AddressFunc(c.baseAddress, index) + "/mode"
 	possibleModes := []string{"comp", "exp"}
 	return c.client.SendMessage(address, int32(indexOf(possibleModes, mode)))
 }
 
 // Threshold retrieves the threshold value of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) Threshold(index int) (float64, error) {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/thr"
+	address := c.AddressFunc(c.baseAddress, index) + "/thr"
 	err := c.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -124,13 +124,13 @@ func (c *Comp) Threshold(index int) (float64, error) {
 
 // SetThreshold sets the threshold value of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) SetThreshold(index int, threshold float64) error {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/thr"
+	address := c.AddressFunc(c.baseAddress, index) + "/thr"
 	return c.client.SendMessage(address, float32(linSet(-60, 0, threshold)))
 }
 
 // Ratio retrieves the ratio value of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) Ratio(index int) (float32, error) {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/ratio"
+	address := c.AddressFunc(c.baseAddress, index) + "/ratio"
 	err := c.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -152,7 +152,7 @@ func (c *Comp) Ratio(index int) (float32, error) {
 
 // SetRatio sets the ratio value of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) SetRatio(index int, ratio float64) error {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/ratio"
+	address := c.AddressFunc(c.baseAddress, index) + "/ratio"
 	possibleValues := []float32{1.1, 1.3, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 7.0, 10, 20, 100}
 
 	return c.client.SendMessage(address, int32(indexOf(possibleValues, float32(ratio))))
@@ -160,7 +160,7 @@ func (c *Comp) SetRatio(index int, ratio float64) error {
 
 // Attack retrieves the attack time of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) Attack(index int) (float64, error) {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/attack"
+	address := c.AddressFunc(c.baseAddress, index) + "/attack"
 	err := c.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -179,13 +179,13 @@ func (c *Comp) Attack(index int) (float64, error) {
 
 // SetAttack sets the attack time of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) SetAttack(index int, attack float64) error {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/attack"
+	address := c.AddressFunc(c.baseAddress, index) + "/attack"
 	return c.client.SendMessage(address, float32(linSet(0, 120, attack)))
 }
 
 // Hold retrieves the hold time of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) Hold(index int) (float64, error) {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/hold"
+	address := c.AddressFunc(c.baseAddress, index) + "/hold"
 	err := c.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -204,13 +204,13 @@ func (c *Comp) Hold(index int) (float64, error) {
 
 // SetHold sets the hold time of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) SetHold(index int, hold float64) error {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/hold"
+	address := c.AddressFunc(c.baseAddress, index) + "/hold"
 	return c.client.SendMessage(address, float32(logSet(0.02, 2000, hold)))
 }
 
 // Release retrieves the release time of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) Release(index int) (float64, error) {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/release"
+	address := c.AddressFunc(c.baseAddress, index) + "/release"
 	err := c.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -229,13 +229,13 @@ func (c *Comp) Release(index int) (float64, error) {
 
 // SetRelease sets the release time of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) SetRelease(index int, release float64) error {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/release"
+	address := c.AddressFunc(c.baseAddress, index) + "/release"
 	return c.client.SendMessage(address, float32(logSet(4, 4000, release)))
 }
 
 // Makeup retrieves the makeup gain of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) Makeup(index int) (float64, error) {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/mgain"
+	address := c.AddressFunc(c.baseAddress, index) + "/mgain"
 	err := c.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -254,13 +254,13 @@ func (c *Comp) Makeup(index int) (float64, error) {
 
 // SetMakeup sets the makeup gain of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) SetMakeup(index int, makeup float64) error {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/mgain"
+	address := c.AddressFunc(c.baseAddress, index) + "/mgain"
 	return c.client.SendMessage(address, float32(linSet(0, 24, makeup)))
 }
 
 // Mix retrieves the mix value of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) Mix(index int) (float64, error) {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/mix"
+	address := c.AddressFunc(c.baseAddress, index) + "/mix"
 	err := c.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -279,6 +279,6 @@ func (c *Comp) Mix(index int) (float64, error) {
 
 // SetMix sets the mix value of the Compressor for a specific strip or bus (1-based indexing).
 func (c *Comp) SetMix(index int, mix float64) error {
-	address := c.AddressFunc(c.baseAddress, index) + "/dyn/mix"
+	address := c.AddressFunc(c.baseAddress, index) + "/mix"
 	return c.client.SendMessage(address, float32(linSet(0, 100, mix)))
 }
