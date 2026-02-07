@@ -10,13 +10,14 @@ type Strip struct {
 	Comp        *Comp
 }
 
+// newStrip creates a new Strip instance
 func newStrip(c *Client) *Strip {
 	return &Strip{
 		client:      c,
 		baseAddress: c.addressMap["strip"],
-		Gate:        newGateForStrip(c, c.addressMap["strip"]),
-		Eq:          newEqForStrip(c, c.addressMap["strip"]),
-		Comp:        newCompForStrip(c, c.addressMap["strip"]),
+		Gate:        newGate(c, c.addressMap["strip"]),
+		Eq:          newEq(c, c.addressMap["strip"]),
+		Comp:        newComp(c, c.addressMap["strip"]),
 	}
 }
 

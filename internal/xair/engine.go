@@ -26,7 +26,7 @@ type engine struct {
 	respChan chan *osc.Message
 }
 
-func newEngine(mixerIP string, mixerPort int, kind mixerKind, opts ...Option) (*engine, error) {
+func newEngine(mixerIP string, mixerPort int, kind mixerKind, opts ...EngineOption) (*engine, error) {
 	localAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf(":%d", 0))
 	if err != nil {
 		return nil, fmt.Errorf("failed to resolve local address: %v", err)

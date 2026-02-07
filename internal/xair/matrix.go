@@ -14,8 +14,8 @@ func newMatrix(c *Client) *Matrix {
 	return &Matrix{
 		client:      c,
 		baseAddress: c.addressMap["matrix"],
-		Eq:          newEqForMatrix(c, c.addressMap["matrix"]),
-		Comp:        newCompForMatrix(c, c.addressMap["matrix"]),
+		Eq:          newEq(c, c.addressMap["matrix"]),
+		Comp:        newComp(c, c.addressMap["matrix"]),
 	}
 }
 

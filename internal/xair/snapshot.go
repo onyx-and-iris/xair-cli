@@ -7,6 +7,7 @@ type Snapshot struct {
 	baseAddress string
 }
 
+// newSnapshot creates a new Snapshot instance
 func newSnapshot(c *Client) *Snapshot {
 	return &Snapshot{
 		client:      c,

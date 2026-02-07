@@ -2,48 +2,26 @@ package xair
 
 import "fmt"
 
+// Comp represents the compressor parameters.
 type Comp struct {
 	client      *Client
 	baseAddress string
 	AddressFunc func(fmtString string, args ...any) string
 }
 
-// Factory function to create Comp instance for Main
-func newCompForMain(c *Client, baseAddress string) *Comp {
-	return &Comp{
-		client:      c,
-		baseAddress: fmt.Sprintf("%s/dyn", baseAddress),
-		AddressFunc: func(fmtString string, args ...any) string {
-			return fmtString
-		},
-	}
-}
-
-// Factory function to create Comp instance for Strip
-func newCompForStrip(c *Client, baseAddress string) *Comp {
-	return &Comp{
+// Factory function to create Comp instance with optional configuration
+func newComp(c *Client, baseAddress string, opts ...CompOption) *Comp {
+	comp := &Comp{
 		client:      c,
 		baseAddress: fmt.Sprintf("%s/dyn", baseAddress),
 		AddressFunc: fmt.Sprintf,
 	}
-}
 
-// Factory function to create Comp instance for Bus
-func newCompForBus(c *Client, baseAddress string) *Comp {
-	return &Comp{
-		client:      c,
-		baseAddress: fmt.Sprintf("%s/dyn", baseAddress),
-		AddressFunc: fmt.Sprintf,
+	for _, opt := range opts {
+		opt(comp)
 	}
-}
 
-// Factory function to create Comp instance for Matrix
-func newCompForMatrix(c *Client, baseAddress string) *Comp {
-	return &Comp{
-		client:      c,
-		baseAddress: fmt.Sprintf("%s/dyn", baseAddress),
-		AddressFunc: fmt.Sprintf,
-	}
+	return comp
 }
 
 // On retrieves the on/off status of the Compressor for a specific strip or bus (1-based indexing).

@@ -9,12 +9,13 @@ type Bus struct {
 	Comp        *Comp
 }
 
+// newBus creates a new Bus instance
 func newBus(c *Client) *Bus {
 	return &Bus{
 		client:      c,
 		baseAddress: c.addressMap["bus"],
-		Eq:          newEqForBus(c, c.addressMap["bus"]),
-		Comp:        newCompForBus(c, c.addressMap["bus"]),
+		Eq:          newEq(c, c.addressMap["bus"]),
+		Comp:        newComp(c, c.addressMap["bus"]),
 	}
 }
 

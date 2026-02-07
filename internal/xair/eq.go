@@ -4,48 +4,26 @@ import (
 	"fmt"
 )
 
+// Eq represents the EQ parameters.
 type Eq struct {
 	client      *Client
 	baseAddress string
 	AddressFunc func(fmtString string, args ...any) string
 }
 
-// Factory function to create Eq instance for Main
-func newEqForMain(c *Client, baseAddress string) *Eq {
-	return &Eq{
-		client:      c,
-		baseAddress: fmt.Sprintf("%s/eq", baseAddress),
-		AddressFunc: func(fmtString string, args ...any) string {
-			return fmtString
-		},
-	}
-}
-
-// Factory function to create Eq instance for Strip
-func newEqForStrip(c *Client, baseAddress string) *Eq {
-	return &Eq{
+// Factory function to create Eq instance with optional configuration
+func newEq(c *Client, baseAddress string, opts ...EqOption) *Eq {
+	eq := &Eq{
 		client:      c,
 		baseAddress: fmt.Sprintf("%s/eq", baseAddress),
 		AddressFunc: fmt.Sprintf,
 	}
-}
 
-// Factory function to create Eq instance for Bus
-func newEqForBus(c *Client, baseAddress string) *Eq {
-	return &Eq{
-		client:      c,
-		baseAddress: fmt.Sprintf("%s/eq", baseAddress),
-		AddressFunc: fmt.Sprintf,
+	for _, opt := range opts {
+		opt(eq)
 	}
-}
 
-// Factory function to create Eq instance for Matrix
-func newEqForMatrix(c *Client, baseAddress string) *Eq {
-	return &Eq{
-		client:      c,
-		baseAddress: fmt.Sprintf("%s/eq", baseAddress),
-		AddressFunc: fmt.Sprintf,
-	}
+	return eq
 }
 
 // On retrieves the on/off status of the EQ for a specific strip or bus (1-based indexing).

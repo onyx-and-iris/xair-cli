@@ -11,21 +11,29 @@ type Main struct {
 
 // newMainStereo creates a new Main instance for stereo main output
 func newMainStereo(c *Client) *Main {
+	addressFunc := func(fmtString string, args ...any) string {
+		return fmtString
+	}
+
 	return &Main{
 		client:      c,
 		baseAddress: c.addressMap["main"],
-		Eq:          newEqForMain(c, c.addressMap["main"]),
-		Comp:        newCompForMain(c, c.addressMap["main"]),
+		Eq:          newEq(c, c.addressMap["main"], WithEqAddressFunc(addressFunc)),
+		Comp:        newComp(c, c.addressMap["main"], WithCompAddressFunc(addressFunc)),
 	}
 }
 
 // newMainMono creates a new MainMono instance for mono main output (X32 only)
 func newMainMono(c *Client) *Main {
+	addressFunc := func(fmtString string, args ...any) string {
+		return fmtString
+	}
+
 	return &Main{
 		baseAddress: c.addressMap["mainmono"],
 		client:      c,
-		Eq:          newEqForMain(c, c.addressMap["mainmono"]),
-		Comp:        newCompForMain(c, c.addressMap["mainmono"]),
+		Eq:          newEq(c, c.addressMap["mainmono"], WithEqAddressFunc(addressFunc)),
+		Comp:        newComp(c, c.addressMap["mainmono"], WithCompAddressFunc(addressFunc)),
 	}
 }
 

@@ -13,6 +13,7 @@ type Client struct {
 	*engine
 }
 
+// XAirClient is a client for controlling XAir mixers
 type XAirClient struct {
 	Client
 	Main     *Main
@@ -22,6 +23,7 @@ type XAirClient struct {
 	Snapshot *Snapshot
 }
 
+// X32Client is a client for controlling X32 mixers
 type X32Client struct {
 	Client
 	Main     *Main
@@ -33,8 +35,8 @@ type X32Client struct {
 	Snapshot *Snapshot
 }
 
-// NewX32Client creates a new X32Client instance
-func NewX32Client(mixerIP string, mixerPort int, opts ...Option) (*X32Client, error) {
+// NewX32Client creates a new X32Client instance with optional engine configuration
+func NewX32Client(mixerIP string, mixerPort int, opts ...EngineOption) (*X32Client, error) {
 	e, err := newEngine(mixerIP, mixerPort, kindX32, opts...)
 	if err != nil {
 		return nil, err
@@ -54,8 +56,8 @@ func NewX32Client(mixerIP string, mixerPort int, opts ...Option) (*X32Client, er
 	return c, nil
 }
 
-// NewXAirClient creates a new XAirClient instance
-func NewXAirClient(mixerIP string, mixerPort int, opts ...Option) (*XAirClient, error) {
+// NewXAirClient creates a new XAirClient instance with optional engine configuration
+func NewXAirClient(mixerIP string, mixerPort int, opts ...EngineOption) (*XAirClient, error) {
 	e, err := newEngine(mixerIP, mixerPort, kindXAir, opts...)
 	if err != nil {
 		return nil, err
