@@ -32,11 +32,11 @@ Example .envrc:
 ```bash
 #!/usr/bin/env bash
 
-XAIR_CLI_HOST=mixer.local
-XAIR_CLI_PORT=10024
-XAIR_CLI_KIND=xair
-XAIR_CLI_TIMEOUT=100ms
-XAIR_CLI_LOGLEVEL=warn
+export XAIR_CLI_HOST=mixer.local
+export XAIR_CLI_PORT=10024
+export XAIR_CLI_KIND=xair
+export XAIR_CLI_TIMEOUT=100ms
+export XAIR_CLI_LOGLEVEL=warn
 ```
 
 ### Use
