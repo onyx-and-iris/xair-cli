@@ -7,8 +7,12 @@ type Gate struct {
 	baseAddress string
 }
 
-func newGate(c *Client) *Gate {
-	return &Gate{client: c, baseAddress: c.addressMap["strip"]}
+// Factory function to create Gate instance for Strip
+func newGateForStrip(c *Client) *Gate {
+	return &Gate{
+		client:      c,
+		baseAddress: c.addressMap["strip"],
+	}
 }
 
 // On retrieves the on/off status of the Gate for a specific strip (1-based indexing).

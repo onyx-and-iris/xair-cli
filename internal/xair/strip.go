@@ -3,18 +3,18 @@ package xair
 import "fmt"
 
 type Strip struct {
-	baseAddress string
 	client      *Client
+	baseAddress string
 	Gate        *Gate
 	Eq          *Eq
 	Comp        *Comp
 }
 
-func NewStrip(c *Client) *Strip {
+func newStrip(c *Client) *Strip {
 	return &Strip{
-		baseAddress: c.addressMap["strip"],
 		client:      c,
-		Gate:        newGate(c),
+		baseAddress: c.addressMap["strip"],
+		Gate:        newGateForStrip(c),
 		Eq:          newEqForStrip(c),
 		Comp:        newCompForStrip(c),
 	}

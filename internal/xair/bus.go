@@ -3,16 +3,16 @@ package xair
 import "fmt"
 
 type Bus struct {
-	baseAddress string
 	client      *Client
+	baseAddress string
 	Eq          *Eq
 	Comp        *Comp
 }
 
-func NewBus(c *Client) *Bus {
+func newBus(c *Client) *Bus {
 	return &Bus{
-		baseAddress: c.addressMap["bus"],
 		client:      c,
+		baseAddress: c.addressMap["bus"],
 		Eq:          newEqForBus(c),
 		Comp:        newCompForBus(c),
 	}

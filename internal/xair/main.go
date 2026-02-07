@@ -3,14 +3,18 @@ package xair
 import "fmt"
 
 type Main struct {
-	baseAddress string
 	client      *Client
+	baseAddress string
+	Eq          *Eq
+	Comp        *Comp
 }
 
 func newMainStereo(c *Client) *Main {
 	return &Main{
-		baseAddress: c.addressMap["main"],
 		client:      c,
+		baseAddress: c.addressMap["main"],
+		Eq:          newEqForMain(c),
+		Comp:        newCompForMain(c),
 	}
 }
 

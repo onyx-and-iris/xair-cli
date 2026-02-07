@@ -3,14 +3,14 @@ package xair
 import "fmt"
 
 type Snapshot struct {
-	baseAddress string
 	client      *Client
+	baseAddress string
 }
 
-func NewSnapshot(c *Client) *Snapshot {
+func newSnapshot(c *Client) *Snapshot {
 	return &Snapshot{
-		baseAddress: c.addressMap["snapshot"],
 		client:      c,
+		baseAddress: c.addressMap["snapshot"],
 	}
 }
 

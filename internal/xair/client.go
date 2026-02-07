@@ -58,10 +58,10 @@ func NewClient(mixerIP string, mixerPort int, opts ...Option) (*Client, error) {
 		engine: *e,
 	}
 	c.Main = newMainStereo(c)
-	c.Strip = NewStrip(c)
-	c.Bus = NewBus(c)
-	c.HeadAmp = NewHeadAmp(c)
-	c.Snapshot = NewSnapshot(c)
+	c.Strip = newStrip(c)
+	c.Bus = newBus(c)
+	c.HeadAmp = newHeadAmp(c)
+	c.Snapshot = newSnapshot(c)
 
 	return c, nil
 }
