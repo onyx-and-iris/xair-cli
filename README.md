@@ -61,10 +61,31 @@ Raw
   raw    Send raw OSC messages to the mixer.
 
 Main
-  main mute       Get or set the mute state of the Main L/R output.
-  main fader      Get or set the fader level of the Main L/R output.
-  main fadein     Fade in the Main L/R output over a specified duration.
-  main fadeout    Fade out the Main L/R output over a specified duration.
+  main mute              Get or set the mute state of the Main L/R output.
+  main fader             Get or set the fader level of the Main L/R output.
+  main fadein            Fade in the Main L/R output over a specified duration.
+  main fadeout           Fade out the Main L/R output over a specified duration.
+  main eq on             Get or set the EQ on/off state of the Main L/R output.
+  main eq <band> gain    Get or set the gain of the specified EQ band.
+  main eq <band> freq    Get or set the frequency of the specified EQ band.
+  main eq <band> q       Get or set the Q factor of the specified EQ band.
+  main eq <band> type    Get or set the type of the specified EQ band.
+  main comp on           Get or set the compressor on/off state of the Main L/R
+                         output.
+  main comp mode         Get or set the compressor mode of the Main L/R output.
+  main comp threshold    Get or set the compressor threshold of the Main L/R
+                         output.
+  main comp ratio        Get or set the compressor ratio of the Main L/R output.
+  main comp mix          Get or set the compressor mix level of the Main L/R
+                         output.
+  main comp makeup       Get or set the compressor makeup gain of the Main L/R
+                         output.
+  main comp attack       Get or set the compressor attack time of the Main L/R
+                         output.
+  main comp hold         Get or set the compressor hold time of the Main L/R
+                         output.
+  main comp release      Get or set the compressor release time of the Main L/R
+                         output.
 
 Strip
   strip <index> mute              Get or set the mute state of the strip.
@@ -85,15 +106,21 @@ Strip
   strip <index> eq <band> freq    Get or set the frequency of the EQ band.
   strip <index> eq <band> q       Get or set the Q factor of the EQ band.
   strip <index> eq <band> type    Get or set the type of the EQ band.
-  strip <index> comp on           Get or set the compressor on/off state of the strip.
+  strip <index> comp on           Get or set the compressor on/off state of the
+                                  strip.
   strip <index> comp mode         Get or set the compressor mode of the strip.
-  strip <index> comp threshold    Get or set the compressor threshold of the strip.
+  strip <index> comp threshold    Get or set the compressor threshold of the
+                                  strip.
   strip <index> comp ratio        Get or set the compressor ratio of the strip.
   strip <index> comp mix          Get or set the compressor mix of the strip.
-  strip <index> comp makeup       Get or set the compressor makeup gain of the strip.
-  strip <index> comp attack       Get or set the compressor attack time of the strip.
-  strip <index> comp hold         Get or set the compressor hold time of the strip.
-  strip <index> comp release      Get or set the compressor release time of the strip.
+  strip <index> comp makeup       Get or set the compressor makeup gain of the
+                                  strip.
+  strip <index> comp attack       Get or set the compressor attack time of the
+                                  strip.
+  strip <index> comp hold         Get or set the compressor hold time of the
+                                  strip.
+  strip <index> comp release      Get or set the compressor release time of the
+                                  strip.
 
 Bus
   bus <index> mute              Get or set the mute state of the bus.
@@ -102,20 +129,30 @@ Bus
   bus <index> fadeout           Fade out the bus over a specified duration.
   bus <index> name              Get or set the name of the bus.
   bus <index> eq on             Get or set the EQ on/off state of the bus.
-  bus <index> eq mode           Get or set the EQ mode of the bus (peq, geq or teq).
+  bus <index> eq mode           Get or set the EQ mode of the bus (peq, geq or
+                                teq).
   bus <index> eq <band> gain    Get or set the gain of the EQ band.
   bus <index> eq <band> freq    Get or set the frequency of the EQ band.
   bus <index> eq <band> q       Get or set the Q factor of the EQ band.
-  bus <index> eq <band> type    Get or set the type of the EQ band (lcut, lshv, peq, veq, hshv, hcut).
-  bus <index> comp on           Get or set the compressor on/off state of the bus.
-  bus <index> comp mode         Get or set the compressor mode of the bus (comp, exp).
-  bus <index> comp threshold    Get or set the compressor threshold of the bus (in dB).
+  bus <index> eq <band> type    Get or set the type of the EQ band (lcut, lshv,
+                                peq, veq, hshv, hcut).
+  bus <index> comp on           Get or set the compressor on/off state of the
+                                bus.
+  bus <index> comp mode         Get or set the compressor mode of the bus (comp,
+                                exp).
+  bus <index> comp threshold    Get or set the compressor threshold of the bus
+                                (in dB).
   bus <index> comp ratio        Get or set the compressor ratio of the bus.
-  bus <index> comp mix          Get or set the compressor mix level of the bus (in %).
-  bus <index> comp makeup       Get or set the compressor makeup gain of the bus (in dB).
-  bus <index> comp attack       Get or set the compressor attack time of the bus (in ms).
-  bus <index> comp hold         Get or set the compressor hold time of the bus (in ms).
-  bus <index> comp release      Get or set the compressor release time of the bus (in ms).
+  bus <index> comp mix          Get or set the compressor mix level of the bus
+                                (in %).
+  bus <index> comp makeup       Get or set the compressor makeup gain of the bus
+                                (in dB).
+  bus <index> comp attack       Get or set the compressor attack time of the bus
+                                (in ms).
+  bus <index> comp hold         Get or set the compressor hold time of the bus
+                                (in ms).
+  bus <index> comp release      Get or set the compressor release time of the
+                                bus (in ms).
 
 Headamp
   headamp <index> gain       Get or set the gain of the headamp.
