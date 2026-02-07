@@ -2,8 +2,15 @@
 
 ### Installation
 
+*xair-cli*
+
 ```console
-go install github.com/onyx-and-iris/xair-cli@latest
+go install github.com/onyx-and-iris/xair-cli/cmd/xair-cli@latest
+```
+
+*x32-cli*
+```console
+go install github.com/onyx-and-iris/xair-cli/cmd/x32-cli@latest
 ```
 
 ### Configuration
@@ -12,15 +19,13 @@ go install github.com/onyx-and-iris/xair-cli@latest
 
 - --host/-H: Host of the mixer.
 - --port/-P: Port of the mixer.
-- --kind/-k: The kind of mixer. May be one of (*xair*, *x32*).
-  - Use this flag to connect to an x32 mixer.
 - --timeout/-T: Timeout for OSC operations.
 - --loglevel/-L: The application's logging verbosity.
 
 Pass `--host` and any other configuration as flags on the root commmand:
 
 ```console
-xair-cli --host mixer.local --kind xair --timeout 50ms --help
+xair-cli --host mixer.local --timeout 50ms --help
 ```
 
 #### Environment Variables
@@ -34,7 +39,6 @@ Example .envrc:
 
 export XAIR_CLI_HOST=mixer.local
 export XAIR_CLI_PORT=10024
-export XAIR_CLI_KIND=xair
 export XAIR_CLI_TIMEOUT=100ms
 export XAIR_CLI_LOGLEVEL=warn
 ```
@@ -50,7 +54,6 @@ Flags:
   -h, --help                  Show context-sensitive help.
   -H, --host="mixer.local"    The host of the X-Air device ($XAIR_CLI_HOST).
   -P, --port=10024            The port of the X-Air device ($XAIR_CLI_PORT).
-  -K, --kind="xair"           The kind of the X-Air device ($XAIR_CLI_KIND).
   -T, --timeout=100ms         Timeout for OSC operations ($XAIR_CLI_TIMEOUT).
   -L, --loglevel="warn"       Log level for the CLI ($XAIR_CLI_LOGLEVEL).
   -v, --version               Print xair-cli version information and quit
