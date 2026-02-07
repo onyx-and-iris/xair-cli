@@ -121,7 +121,6 @@ func connect(config Config) (*xair.X32Client, error) {
 	client, err := xair.NewX32Client(
 		config.Host,
 		config.Port,
-		xair.WithKind("x32"),
 		xair.WithTimeout(config.Timeout),
 	)
 	if err != nil {

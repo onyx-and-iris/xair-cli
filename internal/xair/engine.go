@@ -14,7 +14,7 @@ type parser interface {
 }
 
 type engine struct {
-	Kind      MixerKind
+	Kind      mixerKind
 	timeout   time.Duration
 	conn      *net.UDPConn
 	mixerAddr *net.UDPAddr
@@ -24,6 +24,42 @@ type engine struct {
 
 	done     chan bool
 	respChan chan *osc.Message
+}
+
+func newEngine(mixerIP string, mixerPort int, kind mixerKind, opts ...Option) (*engine, error) {
+	localAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf(":%d", 0))
+	if err != nil {
+		return nil, fmt.Errorf("failed to resolve local address: %v", err)
+	}
+
+	conn, err := net.ListenUDP("udp", localAddr)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create UDP connection: %v", err)
+	}
+
+	mixerAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", mixerIP, mixerPort))
+	if err != nil {
+		conn.Close()
+		return nil, fmt.Errorf("failed to resolve mixer address: %v", err)
+	}
+
+	log.Debugf("Local UDP connection: %s	", conn.LocalAddr().String())
+
+	e := &engine{
+		timeout:    100 * time.Millisecond,
+		conn:       conn,
+		mixerAddr:  mixerAddr,
+		parser:     newParser(),
+		addressMap: addressMapFromMixerKind(kind),
+		done:       make(chan bool),
+		respChan:   make(chan *osc.Message, 100),
+	}
+
+	for _, opt := range opts {
+		opt(e)
+	}
+
+	return e, nil
 }
 
 // receiveLoop handles incoming OSC messages

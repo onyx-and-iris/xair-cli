@@ -2,7 +2,6 @@ package xair
 
 import (
 	"fmt"
-	"net"
 	"time"
 
 	"github.com/charmbracelet/log"
@@ -11,7 +10,7 @@ import (
 )
 
 type Client struct {
-	engine
+	*engine
 }
 
 type XAirClient struct {
@@ -34,50 +33,15 @@ type X32Client struct {
 	Snapshot *Snapshot
 }
 
-func createEngine(mixerIP string, mixerPort int, opts ...Option) (*engine, error) {
-	localAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf(":%d", 0))
-	if err != nil {
-		return nil, fmt.Errorf("failed to resolve local address: %v", err)
-	}
-
-	conn, err := net.ListenUDP("udp", localAddr)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create UDP connection: %v", err)
-	}
-
-	mixerAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", mixerIP, mixerPort))
-	if err != nil {
-		conn.Close()
-		return nil, fmt.Errorf("failed to resolve mixer address: %v", err)
-	}
-
-	log.Debugf("Local UDP connection: %s	", conn.LocalAddr().String())
-
-	e := &engine{
-		timeout:   100 * time.Millisecond,
-		conn:      conn,
-		mixerAddr: mixerAddr,
-		parser:    newParser(),
-		done:      make(chan bool),
-		respChan:  make(chan *osc.Message, 100),
-	}
-
-	for _, opt := range opts {
-		opt(e)
-	}
-
-	return e, nil
-}
-
 // NewX32Client creates a new X32Client instance
 func NewX32Client(mixerIP string, mixerPort int, opts ...Option) (*X32Client, error) {
-	e, err := createEngine(mixerIP, mixerPort, opts...)
+	e, err := newEngine(mixerIP, mixerPort, kindX32, opts...)
 	if err != nil {
 		return nil, err
 	}
 
 	c := &X32Client{
-		Client: Client{*e},
+		Client: Client{e},
 	}
 	c.Main = newMainStereo(&c.Client)
 	c.MainMono = newMainMono(&c.Client)
@@ -92,13 +56,13 @@ func NewX32Client(mixerIP string, mixerPort int, opts ...Option) (*X32Client, er
 
 // NewXAirClient creates a new XAirClient instance
 func NewXAirClient(mixerIP string, mixerPort int, opts ...Option) (*XAirClient, error) {
-	e, err := createEngine(mixerIP, mixerPort, opts...)
+	e, err := newEngine(mixerIP, mixerPort, kindXAir, opts...)
 	if err != nil {
 		return nil, err
 	}
 
 	c := &XAirClient{
-		Client: Client{*e},
+		Client: Client{e},
 	}
 	c.Main = newMainStereo(&c.Client)
 	c.Strip = newStrip(&c.Client)

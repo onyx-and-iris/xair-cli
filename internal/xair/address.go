@@ -18,9 +18,9 @@ var x32AddressMap = map[string]string{
 	"snapshot": "/-snap",
 }
 
-func addressMapForMixerKind(kind MixerKind) map[string]string {
+func addressMapFromMixerKind(kind mixerKind) map[string]string {
 	switch kind {
-	case KindX32:
+	case kindX32:
 		return x32AddressMap
 	default:
 		return xairAddressMap

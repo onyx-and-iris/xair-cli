@@ -119,7 +119,6 @@ func connect(config Config) (*xair.XAirClient, error) {
 	client, err := xair.NewXAirClient(
 		config.Host,
 		config.Port,
-		xair.WithKind("xair"),
 		xair.WithTimeout(config.Timeout),
 	)
 	if err != nil {

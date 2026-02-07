@@ -1,8 +1,8 @@
 package xair
 
-type MixerKind string
+type mixerKind string
 
 const (
-	KindXAir MixerKind = "xair"
-	KindX32  MixerKind = "x32"
+	kindXAir mixerKind = "xair"
+	kindX32  mixerKind = "x32"
 )
