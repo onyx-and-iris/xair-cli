@@ -21,7 +21,7 @@ type MainCmdGroup struct {
 
 // MainMuteCmd defines the command for getting or setting the mute state of the Main L/R output, allowing users to specify the desired state as "true"/"on" or "false"/"off".
 type MainMuteCmd struct {
-	Mute *bool `arg:"" help:"The mute state to set. If not provided, the current state will be printed." optional:""`
+	Mute *string `arg:"" help:"The mute state to set. If not provided, the current state will be printed." optional:"" enum:"true,false"`
 }
 
 // Run executes the MainMuteCmd command, either retrieving the current mute state of the Main L/R output or setting it based on the provided argument.
@@ -35,10 +35,10 @@ func (cmd *MainMuteCmd) Run(ctx *context) error {
 		return nil
 	}
 
-	if err := ctx.Client.Main.SetMute(*cmd.Mute); err != nil {
+	if err := ctx.Client.Main.SetMute(*cmd.Mute == "true"); err != nil {
 		return fmt.Errorf("failed to set Main L/R mute state: %w", err)
 	}
-	fmt.Fprintf(ctx.Out, "Main L/R mute state set to: %t\n", *cmd.Mute)
+	fmt.Fprintf(ctx.Out, "Main L/R mute state set to: %s\n", *cmd.Mute)
 	return nil
 }
 
