@@ -51,6 +51,7 @@ type CLI struct {
 	Raw      RawCmd           `help:"Send raw OSC messages to the mixer."   cmd:"" group:"Raw"`
 	Main     MainCmdGroup     `help:"Control the Main L/R output"           cmd:"" group:"Main"`
 	Mainmono MainMonoCmdGroup `help:"Control the Main Mono output"          cmd:"" group:"MainMono"`
+	Matrix   MatrixCmdGroup   `help:"Control the matrix outputs."           cmd:"" group:"Matrix"`
 	Strip    StripCmdGroup    `help:"Control the strips."                   cmd:"" group:"Strip"`
 	Bus      BusCmdGroup      `help:"Control the buses."                    cmd:"" group:"Bus"`
 	Headamp  HeadampCmdGroup  `help:"Control input gain and phantom power." cmd:"" group:"Headamp"`
