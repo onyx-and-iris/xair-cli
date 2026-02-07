@@ -36,3 +36,5 @@ go.work.sum
 # .vscode/
 
 # End of ignr
+
+update_readme.py
