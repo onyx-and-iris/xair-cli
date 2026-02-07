@@ -12,6 +12,10 @@ import (
 
 type Client struct {
 	engine
+}
+
+type XAirClient struct {
+	Client
 	Main     *Main
 	Strip    *Strip
 	Bus      *Bus
@@ -19,8 +23,18 @@ type Client struct {
 	Snapshot *Snapshot
 }
 
-// NewClient creates a new XAirClient instance
-func NewClient(mixerIP string, mixerPort int, opts ...Option) (*Client, error) {
+type X32Client struct {
+	Client
+	Main     *Main
+	MainMono *Main
+	Matrix   *Matrix
+	Strip    *Strip
+	Bus      *Bus
+	HeadAmp  *HeadAmp
+	Snapshot *Snapshot
+}
+
+func createEngine(mixerIP string, mixerPort int, opts ...Option) (*engine, error) {
 	localAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf(":%d", 0))
 	if err != nil {
 		return nil, fmt.Errorf("failed to resolve local address: %v", err)
@@ -40,28 +54,57 @@ func NewClient(mixerIP string, mixerPort int, opts ...Option) (*Client, error) {
 	log.Debugf("Local UDP connection: %s	", conn.LocalAddr().String())
 
 	e := &engine{
-		Kind:       KindXAir,
-		timeout:    100 * time.Millisecond,
-		conn:       conn,
-		mixerAddr:  mixerAddr,
-		parser:     newParser(),
-		addressMap: addressMapForMixerKind(KindXAir),
-		done:       make(chan bool),
-		respChan:   make(chan *osc.Message, 100),
+		timeout:   100 * time.Millisecond,
+		conn:      conn,
+		mixerAddr: mixerAddr,
+		parser:    newParser(),
+		done:      make(chan bool),
+		respChan:  make(chan *osc.Message, 100),
 	}
 
 	for _, opt := range opts {
 		opt(e)
 	}
 
-	c := &Client{
-		engine: *e,
+	return e, nil
+}
+
+// NewX32Client creates a new X32Client instance
+func NewX32Client(mixerIP string, mixerPort int, opts ...Option) (*X32Client, error) {
+	e, err := createEngine(mixerIP, mixerPort, opts...)
+	if err != nil {
+		return nil, err
 	}
-	c.Main = newMainStereo(c)
-	c.Strip = newStrip(c)
-	c.Bus = newBus(c)
-	c.HeadAmp = newHeadAmp(c)
-	c.Snapshot = newSnapshot(c)
+
+	c := &X32Client{
+		Client: Client{*e},
+	}
+	c.Main = newMainStereo(&c.Client)
+	c.MainMono = newMainMono(&c.Client)
+	c.Matrix = newMatrix(&c.Client)
+	c.Strip = newStrip(&c.Client)
+	c.Bus = newBus(&c.Client)
+	c.HeadAmp = newHeadAmp(&c.Client)
+	c.Snapshot = newSnapshot(&c.Client)
+
+	return c, nil
+}
+
+// NewXAirClient creates a new XAirClient instance
+func NewXAirClient(mixerIP string, mixerPort int, opts ...Option) (*XAirClient, error) {
+	e, err := createEngine(mixerIP, mixerPort, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	c := &XAirClient{
+		Client: Client{*e},
+	}
+	c.Main = newMainStereo(&c.Client)
+	c.Strip = newStrip(&c.Client)
+	c.Bus = newBus(&c.Client)
+	c.HeadAmp = newHeadAmp(&c.Client)
+	c.Snapshot = newSnapshot(&c.Client)
 
 	return c, nil
 }
