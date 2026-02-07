@@ -32,7 +32,7 @@ xair-cli --host mixer.local --timeout 50ms --help
 
 Or you may load them from your environment:
 
-Example .envrc:
+Example xair .envrc:
 
 ```bash
 #!/usr/bin/env bash
@@ -41,6 +41,17 @@ export XAIR_CLI_HOST=mixer.local
 export XAIR_CLI_PORT=10024
 export XAIR_CLI_TIMEOUT=100ms
 export XAIR_CLI_LOGLEVEL=warn
+```
+
+Example x32 .envrc:
+
+```bash
+#!/usr/bin/env bash
+
+export X32_CLI_HOST=x32.local
+export X32_CLI_PORT=10023
+export X32_CLI_TIMEOUT=100ms
+export X32_CLI_LOGLEVEL=warn
 ```
 
 ### Use
