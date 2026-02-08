@@ -126,7 +126,7 @@ func (s *Strip) SetColor(strip int, color int32) error {
 	return s.client.SendMessage(address, color)
 }
 
-// Sends requests the sends level for a mixbus.
+// SendLevel requests the sends level for a mixbus.
 func (s *Strip) SendLevel(strip int, bus int) (float64, error) {
 	address := fmt.Sprintf(s.baseAddress, strip) + fmt.Sprintf("/mix/%02d/level", bus)
 	err := s.client.SendMessage(address)
