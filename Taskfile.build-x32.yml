@@ -1,23 +1,22 @@
 version: '3'
 
 vars:
-  BIN_X32: x32-cli
+  WINDOWS: '{{.BIN_DIR}}/{{.PROGRAM}}_windows_amd64.exe'
+  LINUX: '{{.BIN_DIR}}/{{.PROGRAM}}_linux_amd64'
+  MACOS: '{{.BIN_DIR}}/{{.PROGRAM}}_darwin_amd64'
 
 tasks:
   windows-amd64:
     desc: Build the x32-cli project for Windows
     cmds:
-      - GOOS=windows GOARCH=amd64 go build -o {{.BIN_DIR}}/{{.BIN_X32}}_windows_amd64.exe -ldflags="-X main.version={{.VERSION}}" ./cmd/{{.BIN_X32}}
-    internal: true
+      - GOOS=windows GOARCH=amd64 go build -o {{.WINDOWS}} -ldflags="-X main.version={{.VERSION}}" ./cmd/{{.PROGRAM}}
 
   linux-amd64:
     desc: Build the x32-cli project for Linux
     cmds:
-      - GOOS=linux GOARCH=amd64 go build -o {{.BIN_DIR}}/{{.BIN_X32}}_linux_amd64 -ldflags="-X main.version={{.VERSION}}" ./cmd/{{.BIN_X32}}
-    internal: true
+      - GOOS=linux GOARCH=amd64 go build -o {{.LINUX}} -ldflags="-X main.version={{.VERSION}}" ./cmd/{{.PROGRAM}}
 
   darwin-amd64:
     desc: Build the x32-cli project for macOS
     cmds:
-      - GOOS=darwin GOARCH=amd64 go build -o {{.BIN_DIR}}/{{.BIN_X32}}_darwin_amd64 -ldflags="-X main.version={{.VERSION}}" ./cmd/{{.BIN_X32}}
-    internal: true
+      - GOOS=darwin GOARCH=amd64 go build -o {{.MACOS}} -ldflags="-X main.version={{.VERSION}}" ./cmd/{{.PROGRAM}}

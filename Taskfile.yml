@@ -1,8 +1,16 @@
 version: '3'
 
 includes:
-  build-xair: ./Taskfile.build-xair.yml
-  build-x32: ./Taskfile.build-x32.yml
+  build-xair:
+    taskfile: ./Taskfile.build-xair.yml
+    internal: true
+    vars:
+      PROGRAM: xair-cli
+  build-x32:
+    taskfile: ./Taskfile.build-x32.yml
+    internal: true
+    vars:
+      PROGRAM: x32-cli
 
 vars:
   SHELL: '{{if eq .OS "Windows_NT"}}powershell{{end}}'
@@ -20,13 +28,11 @@ tasks:
     desc: Build the xair-cli and x32-cli projects for all platforms
     deps: [vet]
     cmds:
-      - task: build-xair:windows-amd64
-      - task: build-xair:linux-amd64
-      - task: build-xair:darwin-amd64
-
-      - task: build-x32:windows-amd64
-      - task: build-x32:linux-amd64
-      - task: build-x32:darwin-amd64
+      - for:
+          matrix:
+            PROGRAM: ['build-xair', 'build-x32']
+            TARGET: ['windows-amd64', 'linux-amd64', 'darwin-amd64']
+        task: '{{.ITEM.PROGRAM}}:{{.ITEM.TARGET}}'
 
   vet:
     desc: Vet the code
