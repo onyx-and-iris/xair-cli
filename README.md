@@ -54,6 +54,8 @@ export X32_CLI_TIMEOUT=100ms
 export X32_CLI_LOGLEVEL=warn
 ```
 
+---
+
 ### Use
 
 For each command/subcommand in the tree there exists a `--help` flag, use it to print usage information.
@@ -109,6 +111,7 @@ xair-cli raw /ch/01/config/name
 xair-cli snapshot 20 save 'twitch live'
 ```
 
+---
 
 ### License
 
