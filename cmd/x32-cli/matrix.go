@@ -22,7 +22,7 @@ type MatrixCmdGroup struct {
 
 func (cmd *MatrixCmdGroup) Validate() error {
 	if cmd.Index.Index < 1 || cmd.Index.Index > 6 {
-		return fmt.Errorf("invalid Matrix output index: %d. Valid range is 1-6", cmd.Index.Index)
+		return fmt.Errorf("Matrix output index must be between 1 and 6, got %d", cmd.Index.Index)
 	}
 	return nil
 }
@@ -160,7 +160,7 @@ func (cmd *MatrixEqCmdGroup) Validate() error {
 	}
 
 	if cmd.Band.Band < 1 || cmd.Band.Band > 6 {
-		return fmt.Errorf("invalid EQ band number: %d. Valid range is 1-6", cmd.Band.Band)
+		return fmt.Errorf("EQ band number must be between 1 and 6, got %d", cmd.Band.Band)
 	}
 	return nil
 }

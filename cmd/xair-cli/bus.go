@@ -188,7 +188,7 @@ func (cmd *BusEqCmdGroup) Validate() error {
 	}
 
 	if cmd.Band.Band < 1 || cmd.Band.Band > 6 {
-		return fmt.Errorf("EQ band number must be between 1 and 6")
+		return fmt.Errorf("EQ band number must be between 1 and 6, got %d", cmd.Band.Band)
 	}
 	return nil
 }

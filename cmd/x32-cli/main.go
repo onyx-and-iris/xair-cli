@@ -150,7 +150,7 @@ func (cmd *MainEqCmdGroup) Validate() error {
 	}
 
 	if cmd.Band.Band < 1 || cmd.Band.Band > 6 {
-		return fmt.Errorf("invalid EQ band number: %d. Valid range is 1-6", cmd.Band.Band)
+		return fmt.Errorf("EQ band number must be between 1 and 6, got %d", cmd.Band.Band)
 	}
 	return nil
 }

@@ -378,7 +378,7 @@ func (cmd *StripEqCmdGroup) Validate() error {
 	}
 
 	if cmd.Band.Band < 1 || cmd.Band.Band > 4 {
-		return fmt.Errorf("EQ band number must be between 1 and 4")
+		return fmt.Errorf("EQ band number must be between 1 and 4, got %d", cmd.Band.Band)
 	}
 	return nil
 }
