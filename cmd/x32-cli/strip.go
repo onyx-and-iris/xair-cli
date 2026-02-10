@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"time"
-
-	"github.com/alecthomas/kong"
 )
 
 // StripCmdGroup defines the command group for controlling the strips of the mixer, including commands for getting and setting various parameters such as mute state, fader level, send levels, and EQ settings.
@@ -374,7 +372,11 @@ type StripEqCmdGroup struct {
 }
 
 // Validate checks if the provided EQ band number is valid (between 1 and 4) and returns an error if it is not.
-func (cmd *StripEqCmdGroup) Validate(ctx kong.Context) error {
+func (cmd *StripEqCmdGroup) Validate() error {
+	if cmd.Band.Band == 0 {
+		return nil
+	}
+
 	if cmd.Band.Band < 1 || cmd.Band.Band > 4 {
 		return fmt.Errorf("EQ band number must be between 1 and 4")
 	}

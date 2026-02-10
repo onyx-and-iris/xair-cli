@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"time"
-
-	"github.com/alecthomas/kong"
 )
 
 // BusCmdGroup defines the commands related to controlling the buses of the X-Air device.
@@ -183,7 +181,12 @@ type BusEqCmdGroup struct {
 }
 
 // Validate checks that the provided EQ band number is within the valid range (1-6).
-func (cmd *BusEqCmdGroup) Validate(ctx kong.Context) error {
+// Only validates when a band number is actually specified (non-zero).
+func (cmd *BusEqCmdGroup) Validate() error {
+	if cmd.Band.Band == 0 {
+		return nil
+	}
+
 	if cmd.Band.Band < 1 || cmd.Band.Band > 6 {
 		return fmt.Errorf("EQ band number must be between 1 and 6")
 	}

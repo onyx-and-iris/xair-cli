@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"time"
-
-	"github.com/alecthomas/kong"
 )
 
 // MainMonoCmdGroup defines the command group for controlling the Main Mono output, including commands for mute state, fader level, and fade-in/fade-out times.
@@ -146,7 +144,11 @@ type MainMonoEqCmdGroup struct {
 }
 
 // Validate checks if the provided EQ band number is within the valid range (1-6) for the Main Mono output.
-func (cmd *MainMonoEqCmdGroup) Validate(ctx kong.Context) error {
+func (cmd *MainMonoEqCmdGroup) Validate() error {
+	if cmd.Band.Band == 0 {
+		return nil
+	}
+
 	if cmd.Band.Band < 1 || cmd.Band.Band > 6 {
 		return fmt.Errorf("invalid EQ band number: %d. Valid range is 1-6", cmd.Band.Band)
 	}
