@@ -54,6 +54,7 @@ type CLI struct {
 	Bus      BusCmdGroup      `help:"Control the buses."                    cmd:"" group:"Bus"`
 	Headamp  HeadampCmdGroup  `help:"Control input gain and phantom power." cmd:"" group:"Headamp"`
 	Snapshot SnapshotCmdGroup `help:"Save and load mixer states."           cmd:"" group:"Snapshot"`
+	Dca      DCACmdGroup      `help:"Control DCA groups."                   cmd:"" group:"DCA"`
 }
 
 func main() {

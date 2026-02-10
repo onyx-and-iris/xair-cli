@@ -190,5 +190,9 @@ Snapshot
   snapshot <index> load      Load a mixer state from a snapshot.
   snapshot <index> delete    Delete a snapshot.
 
+DCA
+  dca <index> mute    Get or set the mute status of the DCA group.
+  dca <index> name    Get or set the name of the DCA group.
+
 Run "x32-cli <command> --help" for more information on a command.
 ```

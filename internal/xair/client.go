@@ -21,6 +21,7 @@ type XAirClient struct {
 	Bus      *Bus
 	HeadAmp  *HeadAmp
 	Snapshot *Snapshot
+	DCA      *DCA
 }
 
 // X32Client is a client for controlling X32 mixers
@@ -33,6 +34,7 @@ type X32Client struct {
 	Bus      *Bus
 	HeadAmp  *HeadAmp
 	Snapshot *Snapshot
+	DCA      *DCA
 }
 
 // NewX32Client creates a new X32Client instance with optional engine configuration
@@ -52,6 +54,7 @@ func NewX32Client(mixerIP string, mixerPort int, opts ...EngineOption) (*X32Clie
 	c.Bus = newBus(&c.Client)
 	c.HeadAmp = newHeadAmp(&c.Client)
 	c.Snapshot = newSnapshot(&c.Client)
+	c.DCA = newDCA(&c.Client)
 
 	return c, nil
 }
@@ -71,6 +74,7 @@ func NewXAirClient(mixerIP string, mixerPort int, opts ...EngineOption) (*XAirCl
 	c.Bus = newBus(&c.Client)
 	c.HeadAmp = newHeadAmp(&c.Client)
 	c.Snapshot = newSnapshot(&c.Client)
+	c.DCA = newDCA(&c.Client)
 
 	return c, nil
 }
