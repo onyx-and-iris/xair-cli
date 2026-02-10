@@ -135,7 +135,7 @@ func (cmd *MainFadeoutCmd) Run(ctx *context) error {
 type MainEqCmdGroup struct {
 	On   MainEqOnCmd `help:"Get or set the EQ on/off state of the Main L/R output."               cmd:"on"`
 	Band struct {
-		Band int               `arg:"" help:"The EQ band number."`
+		Band *int              `arg:"" help:"The EQ band number." optional:""`
 		Gain MainEqBandGainCmd `help:"Get or set the gain of the specified EQ band." cmd:"gain"`
 		Freq MainEqBandFreqCmd `help:"Get or set the frequency of the specified EQ band." cmd:"freq"`
 		Q    MainEqBandQCmd    `help:"Get or set the Q factor of the specified EQ band." cmd:"q"`
@@ -145,12 +145,12 @@ type MainEqCmdGroup struct {
 
 // Validate checks if the provided EQ band number is within the valid range (1-6) for the Main L/R output.
 func (cmd *MainEqCmdGroup) Validate() error {
-	if cmd.Band.Band == 0 {
+	if cmd.Band.Band == nil {
 		return nil
 	}
 
-	if cmd.Band.Band < 1 || cmd.Band.Band > 6 {
-		return fmt.Errorf("EQ band number must be between 1 and 6, got %d", cmd.Band.Band)
+	if *cmd.Band.Band < 1 || *cmd.Band.Band > 6 {
+		return fmt.Errorf("EQ band number must be between 1 and 6, got %d", *cmd.Band.Band)
 	}
 	return nil
 }
@@ -186,18 +186,18 @@ type MainEqBandGainCmd struct {
 // Run executes the MainEqBandGainCmd command, either retrieving the current gain of a specific EQ band on the Main L/R output or setting it based on the provided argument.
 func (cmd *MainEqBandGainCmd) Run(ctx *context, main *MainCmdGroup, mainEq *MainEqCmdGroup) error {
 	if cmd.Level == nil {
-		resp, err := ctx.Client.Main.Eq.Gain(0, mainEq.Band.Band)
+		resp, err := ctx.Client.Main.Eq.Gain(0, *mainEq.Band.Band)
 		if err != nil {
-			return fmt.Errorf("failed to get Main L/R EQ band %d gain: %w", mainEq.Band.Band, err)
+			return fmt.Errorf("failed to get Main L/R EQ band %d gain: %w", *mainEq.Band.Band, err)
 		}
-		fmt.Fprintf(ctx.Out, "Main L/R EQ band %d gain: %.2f dB\n", mainEq.Band.Band, resp)
+		fmt.Fprintf(ctx.Out, "Main L/R EQ band %d gain: %.2f dB\n", *mainEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Main.Eq.SetGain(0, mainEq.Band.Band, *cmd.Level); err != nil {
-		return fmt.Errorf("failed to set Main L/R EQ band %d gain: %w", mainEq.Band.Band, err)
+	if err := ctx.Client.Main.Eq.SetGain(0, *mainEq.Band.Band, *cmd.Level); err != nil {
+		return fmt.Errorf("failed to set Main L/R EQ band %d gain: %w", *mainEq.Band.Band, err)
 	}
-	fmt.Fprintf(ctx.Out, "Main L/R EQ band %d gain set to: %.2f dB\n", mainEq.Band.Band, *cmd.Level)
+	fmt.Fprintf(ctx.Out, "Main L/R EQ band %d gain set to: %.2f dB\n", *mainEq.Band.Band, *cmd.Level)
 	return nil
 }
 
@@ -209,18 +209,18 @@ type MainEqBandFreqCmd struct {
 // Run executes the MainEqBandFreqCmd command, either retrieving the current frequency of a specific EQ band on the Main L/R output or setting it based on the provided argument.
 func (cmd *MainEqBandFreqCmd) Run(ctx *context, main *MainCmdGroup, mainEq *MainEqCmdGroup) error {
 	if cmd.Frequency == nil {
-		resp, err := ctx.Client.Main.Eq.Frequency(0, mainEq.Band.Band)
+		resp, err := ctx.Client.Main.Eq.Frequency(0, *mainEq.Band.Band)
 		if err != nil {
-			return fmt.Errorf("failed to get Main L/R EQ band %d frequency: %w", mainEq.Band.Band, err)
+			return fmt.Errorf("failed to get Main L/R EQ band %d frequency: %w", *mainEq.Band.Band, err)
 		}
-		fmt.Fprintf(ctx.Out, "Main L/R EQ band %d frequency: %.2f Hz\n", mainEq.Band.Band, resp)
+		fmt.Fprintf(ctx.Out, "Main L/R EQ band %d frequency: %.2f Hz\n", *mainEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Main.Eq.SetFrequency(0, mainEq.Band.Band, *cmd.Frequency); err != nil {
-		return fmt.Errorf("failed to set Main L/R EQ band %d frequency: %w", mainEq.Band.Band, err)
+	if err := ctx.Client.Main.Eq.SetFrequency(0, *mainEq.Band.Band, *cmd.Frequency); err != nil {
+		return fmt.Errorf("failed to set Main L/R EQ band %d frequency: %w", *mainEq.Band.Band, err)
 	}
-	fmt.Fprintf(ctx.Out, "Main L/R EQ band %d frequency set to: %.2f Hz\n", mainEq.Band.Band, *cmd.Frequency)
+	fmt.Fprintf(ctx.Out, "Main L/R EQ band %d frequency set to: %.2f Hz\n", *mainEq.Band.Band, *cmd.Frequency)
 	return nil
 }
 
@@ -232,18 +232,18 @@ type MainEqBandQCmd struct {
 // Run executes the MainEqBandQCmd command, either retrieving the current Q factor of a specific EQ band on the Main L/R output or setting it based on the provided argument.
 func (cmd *MainEqBandQCmd) Run(ctx *context, main *MainCmdGroup, mainEq *MainEqCmdGroup) error {
 	if cmd.Q == nil {
-		resp, err := ctx.Client.Main.Eq.Q(0, mainEq.Band.Band)
+		resp, err := ctx.Client.Main.Eq.Q(0, *mainEq.Band.Band)
 		if err != nil {
-			return fmt.Errorf("failed to get Main L/R EQ band %d Q factor: %w", mainEq.Band.Band, err)
+			return fmt.Errorf("failed to get Main L/R EQ band %d Q factor: %w", *mainEq.Band.Band, err)
 		}
-		fmt.Fprintf(ctx.Out, "Main L/R EQ band %d Q factor: %.2f\n", mainEq.Band.Band, resp)
+		fmt.Fprintf(ctx.Out, "Main L/R EQ band %d Q factor: %.2f\n", *mainEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Main.Eq.SetQ(0, mainEq.Band.Band, *cmd.Q); err != nil {
-		return fmt.Errorf("failed to set Main L/R EQ band %d Q factor: %w", mainEq.Band.Band, err)
+	if err := ctx.Client.Main.Eq.SetQ(0, *mainEq.Band.Band, *cmd.Q); err != nil {
+		return fmt.Errorf("failed to set Main L/R EQ band %d Q factor: %w", *mainEq.Band.Band, err)
 	}
-	fmt.Fprintf(ctx.Out, "Main L/R EQ band %d Q factor set to: %.2f\n", mainEq.Band.Band, *cmd.Q)
+	fmt.Fprintf(ctx.Out, "Main L/R EQ band %d Q factor set to: %.2f\n", *mainEq.Band.Band, *cmd.Q)
 	return nil
 }
 
@@ -255,18 +255,18 @@ type MainEqBandTypeCmd struct {
 // Run executes the MainEqBandTypeCmd command, either retrieving the current type of a specific EQ band on the Main L/R output or setting it based on the provided argument.
 func (cmd *MainEqBandTypeCmd) Run(ctx *context, main *MainCmdGroup, mainEq *MainEqCmdGroup) error {
 	if cmd.Type == nil {
-		resp, err := ctx.Client.Main.Eq.Type(0, mainEq.Band.Band)
+		resp, err := ctx.Client.Main.Eq.Type(0, *mainEq.Band.Band)
 		if err != nil {
-			return fmt.Errorf("failed to get Main L/R EQ band %d type: %w", mainEq.Band.Band, err)
+			return fmt.Errorf("failed to get Main L/R EQ band %d type: %w", *mainEq.Band.Band, err)
 		}
-		fmt.Fprintf(ctx.Out, "Main L/R EQ band %d type: %s\n", mainEq.Band.Band, resp)
+		fmt.Fprintf(ctx.Out, "Main L/R EQ band %d type: %s\n", *mainEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Main.Eq.SetType(0, mainEq.Band.Band, *cmd.Type); err != nil {
-		return fmt.Errorf("failed to set Main L/R EQ band %d type: %w", mainEq.Band.Band, err)
+	if err := ctx.Client.Main.Eq.SetType(0, *mainEq.Band.Band, *cmd.Type); err != nil {
+		return fmt.Errorf("failed to set Main L/R EQ band %d type: %w", *mainEq.Band.Band, err)
 	}
-	fmt.Fprintf(ctx.Out, "Main L/R EQ band %d type set to: %s\n", mainEq.Band.Band, *cmd.Type)
+	fmt.Fprintf(ctx.Out, "Main L/R EQ band %d type set to: %s\n", *mainEq.Band.Band, *cmd.Type)
 	return nil
 }
 

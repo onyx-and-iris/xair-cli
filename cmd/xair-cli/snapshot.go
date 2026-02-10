@@ -5,12 +5,25 @@ import "fmt"
 type SnapshotCmdGroup struct {
 	List  ListCmd `help:"List all snapshots."        cmd:"list"`
 	Index struct {
-		Index  int       `arg:"" help:"The index of the snapshot."`
+		Index  *int      `arg:"" help:"The index of the snapshot." optional:""`
 		Name   NameCmd   `help:"Get or set the name of a snapshot."      cmd:"name"`
 		Save   SaveCmd   `help:"Save the current mixer state to a snapshot." cmd:"save"`
 		Load   LoadCmd   `help:"Load a mixer state from a snapshot."         cmd:"load"`
 		Delete DeleteCmd `help:"Delete a snapshot."                      cmd:"delete"`
 	} `help:"The index of the snapshot."            arg:""`
+}
+
+// Validate checks if the provided snapshot index is within the valid range (1-64) when any of the subcommands that require an index are used.
+func (c *SnapshotCmdGroup) Validate() error {
+	if c.Index.Index == nil {
+		return nil
+	}
+
+	if *c.Index.Index < 1 || *c.Index.Index > 64 {
+		return fmt.Errorf("snapshot index must be between 1 and 64")
+	}
+
+	return nil
 }
 
 type ListCmd struct {
@@ -36,7 +49,7 @@ type NameCmd struct {
 
 func (c *NameCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
 	if c.Name == nil {
-		name, err := ctx.Client.Snapshot.Name(snapshot.Index.Index)
+		name, err := ctx.Client.Snapshot.Name(*snapshot.Index.Index)
 		if err != nil {
 			return err
 		}
@@ -44,7 +57,7 @@ func (c *NameCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
 		return nil
 	}
 
-	return ctx.Client.Snapshot.SetName(snapshot.Index.Index, *c.Name)
+	return ctx.Client.Snapshot.SetName(*snapshot.Index.Index, *c.Name)
 }
 
 type SaveCmd struct {
@@ -57,19 +70,19 @@ func (c *SaveCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
 		return err
 	}
 
-	return ctx.Client.Snapshot.CurrentSave(snapshot.Index.Index)
+	return ctx.Client.Snapshot.CurrentSave(*snapshot.Index.Index)
 }
 
 type LoadCmd struct {
 }
 
 func (c *LoadCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
-	return ctx.Client.Snapshot.CurrentLoad(snapshot.Index.Index)
+	return ctx.Client.Snapshot.CurrentLoad(*snapshot.Index.Index)
 }
 
 type DeleteCmd struct {
 }
 
 func (c *DeleteCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
-	return ctx.Client.Snapshot.CurrentDelete(snapshot.Index.Index)
+	return ctx.Client.Snapshot.CurrentDelete(*snapshot.Index.Index)
 }

@@ -363,7 +363,7 @@ func (cmd *StripGateReleaseCmd) Run(ctx *context, strip *StripCmdGroup) error {
 type StripEqCmdGroup struct {
 	On   StripEqOnCmd `help:"Get or set the EQ on/off state of the strip."              cmd:""`
 	Band struct {
-		Band int                `arg:"" help:"The EQ band number."`
+		Band *int               `arg:"" help:"The EQ band number." optional:""`
 		Gain StripEqBandGainCmd `help:"Get or set the gain of the EQ band." cmd:""`
 		Freq StripEqBandFreqCmd `help:"Get or set the frequency of the EQ band." cmd:""`
 		Q    StripEqBandQCmd    `help:"Get or set the Q factor of the EQ band." cmd:""`
@@ -373,12 +373,12 @@ type StripEqCmdGroup struct {
 
 // Validate checks if the provided EQ band number is valid (between 1 and 4) and returns an error if it is not.
 func (cmd *StripEqCmdGroup) Validate() error {
-	if cmd.Band.Band == 0 {
+	if cmd.Band.Band == nil {
 		return nil
 	}
 
-	if cmd.Band.Band < 1 || cmd.Band.Band > 4 {
-		return fmt.Errorf("EQ band number must be between 1 and 4, got %d", cmd.Band.Band)
+	if *cmd.Band.Band < 1 || *cmd.Band.Band > 4 {
+		return fmt.Errorf("EQ band number must be between 1 and 4, got %d", *cmd.Band.Band)
 	}
 	return nil
 }
@@ -414,18 +414,18 @@ type StripEqBandGainCmd struct {
 // Run executes the StripEqBandGainCmd command, either retrieving the current gain of the specified EQ band on the strip or setting it based on the provided argument.
 func (cmd *StripEqBandGainCmd) Run(ctx *context, strip *StripCmdGroup, stripEq *StripEqCmdGroup) error {
 	if cmd.Gain == nil {
-		resp, err := ctx.Client.Strip.Eq.Gain(strip.Index.Index, stripEq.Band.Band)
+		resp, err := ctx.Client.Strip.Eq.Gain(strip.Index.Index, *stripEq.Band.Band)
 		if err != nil {
 			return fmt.Errorf("failed to get EQ band gain: %w", err)
 		}
-		fmt.Fprintf(ctx.Out, "Strip %d EQ band %d gain: %.2f\n", strip.Index.Index, stripEq.Band.Band, resp)
+		fmt.Fprintf(ctx.Out, "Strip %d EQ band %d gain: %.2f\n", strip.Index.Index, *stripEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Strip.Eq.SetGain(strip.Index.Index, stripEq.Band.Band, *cmd.Gain); err != nil {
+	if err := ctx.Client.Strip.Eq.SetGain(strip.Index.Index, *stripEq.Band.Band, *cmd.Gain); err != nil {
 		return fmt.Errorf("failed to set EQ band gain: %w", err)
 	}
-	fmt.Fprintf(ctx.Out, "Strip %d EQ band %d gain set to: %.2f\n", strip.Index.Index, stripEq.Band.Band, *cmd.Gain)
+	fmt.Fprintf(ctx.Out, "Strip %d EQ band %d gain set to: %.2f\n", strip.Index.Index, *stripEq.Band.Band, *cmd.Gain)
 	return nil
 }
 
@@ -437,22 +437,22 @@ type StripEqBandFreqCmd struct {
 // Run executes the StripEqBandFreqCmd command, either retrieving the current frequency of the specified EQ band on the strip or setting it based on the provided argument.
 func (cmd *StripEqBandFreqCmd) Run(ctx *context, strip *StripCmdGroup, stripEq *StripEqCmdGroup) error {
 	if cmd.Freq == nil {
-		resp, err := ctx.Client.Strip.Eq.Frequency(strip.Index.Index, stripEq.Band.Band)
+		resp, err := ctx.Client.Strip.Eq.Frequency(strip.Index.Index, *stripEq.Band.Band)
 		if err != nil {
 			return fmt.Errorf("failed to get EQ band frequency: %w", err)
 		}
-		fmt.Fprintf(ctx.Out, "Strip %d EQ band %d frequency: %.2f Hz\n", strip.Index.Index, stripEq.Band.Band, resp)
+		fmt.Fprintf(ctx.Out, "Strip %d EQ band %d frequency: %.2f Hz\n", strip.Index.Index, *stripEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Strip.Eq.SetFrequency(strip.Index.Index, stripEq.Band.Band, *cmd.Freq); err != nil {
+	if err := ctx.Client.Strip.Eq.SetFrequency(strip.Index.Index, *stripEq.Band.Band, *cmd.Freq); err != nil {
 		return fmt.Errorf("failed to set EQ band frequency: %w", err)
 	}
 	fmt.Fprintf(
 		ctx.Out,
 		"Strip %d EQ band %d frequency set to: %.2f Hz\n",
 		strip.Index.Index,
-		stripEq.Band.Band,
+		*stripEq.Band.Band,
 		*cmd.Freq,
 	)
 	return nil
@@ -466,18 +466,18 @@ type StripEqBandQCmd struct {
 // Run executes the StripEqBandQCmd command, either retrieving the current Q factor of the specified EQ band on the strip or setting it based on the provided argument.
 func (cmd *StripEqBandQCmd) Run(ctx *context, strip *StripCmdGroup, stripEq *StripEqCmdGroup) error {
 	if cmd.Q == nil {
-		resp, err := ctx.Client.Strip.Eq.Q(strip.Index.Index, stripEq.Band.Band)
+		resp, err := ctx.Client.Strip.Eq.Q(strip.Index.Index, *stripEq.Band.Band)
 		if err != nil {
 			return fmt.Errorf("failed to get EQ band Q factor: %w", err)
 		}
-		fmt.Fprintf(ctx.Out, "Strip %d EQ band %d Q factor: %.2f\n", strip.Index.Index, stripEq.Band.Band, resp)
+		fmt.Fprintf(ctx.Out, "Strip %d EQ band %d Q factor: %.2f\n", strip.Index.Index, *stripEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Strip.Eq.SetQ(strip.Index.Index, stripEq.Band.Band, *cmd.Q); err != nil {
+	if err := ctx.Client.Strip.Eq.SetQ(strip.Index.Index, *stripEq.Band.Band, *cmd.Q); err != nil {
 		return fmt.Errorf("failed to set EQ band Q factor: %w", err)
 	}
-	fmt.Fprintf(ctx.Out, "Strip %d EQ band %d Q factor set to: %.2f\n", strip.Index.Index, stripEq.Band.Band, *cmd.Q)
+	fmt.Fprintf(ctx.Out, "Strip %d EQ band %d Q factor set to: %.2f\n", strip.Index.Index, *stripEq.Band.Band, *cmd.Q)
 	return nil
 }
 
@@ -489,18 +489,18 @@ type StripEqBandTypeCmd struct {
 // Run executes the StripEqBandTypeCmd command, either retrieving the current type of the specified EQ band on the strip or setting it based on the provided argument.
 func (cmd *StripEqBandTypeCmd) Run(ctx *context, strip *StripCmdGroup, stripEq *StripEqCmdGroup) error {
 	if cmd.Type == nil {
-		resp, err := ctx.Client.Strip.Eq.Type(strip.Index.Index, stripEq.Band.Band)
+		resp, err := ctx.Client.Strip.Eq.Type(strip.Index.Index, *stripEq.Band.Band)
 		if err != nil {
 			return fmt.Errorf("failed to get EQ band type: %w", err)
 		}
-		fmt.Fprintf(ctx.Out, "Strip %d EQ band %d type: %s\n", strip.Index.Index, stripEq.Band.Band, resp)
+		fmt.Fprintf(ctx.Out, "Strip %d EQ band %d type: %s\n", strip.Index.Index, *stripEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Strip.Eq.SetType(strip.Index.Index, stripEq.Band.Band, *cmd.Type); err != nil {
+	if err := ctx.Client.Strip.Eq.SetType(strip.Index.Index, *stripEq.Band.Band, *cmd.Type); err != nil {
 		return fmt.Errorf("failed to set EQ band type: %w", err)
 	}
-	fmt.Fprintf(ctx.Out, "Strip %d EQ band %d type set to: %s\n", strip.Index.Index, stripEq.Band.Band, *cmd.Type)
+	fmt.Fprintf(ctx.Out, "Strip %d EQ band %d type set to: %s\n", strip.Index.Index, *stripEq.Band.Band, *cmd.Type)
 	return nil
 }
 

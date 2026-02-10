@@ -172,7 +172,7 @@ type BusEqCmdGroup struct {
 	On   BusEqOnCmd   `help:"Get or set the EQ on/off state of the bus."              cmd:"on"`
 	Mode BusEqModeCmd `help:"Get or set the EQ mode of the bus (peq, geq or teq)."    cmd:"mode"`
 	Band struct {
-		Band int              `arg:"" help:"The EQ band number."`
+		Band *int             `arg:"" help:"The EQ band number." optional:""`
 		Gain BusEqBandGainCmd `help:"Get or set the gain of the EQ band." cmd:"gain"`
 		Freq BusEqBandFreqCmd `help:"Get or set the frequency of the EQ band." cmd:"freq"`
 		Q    BusEqBandQCmd    `help:"Get or set the Q factor of the EQ band." cmd:"q"`
@@ -182,12 +182,12 @@ type BusEqCmdGroup struct {
 
 // Validate checks that the provided EQ band number is within the valid range (1-6).
 func (cmd *BusEqCmdGroup) Validate() error {
-	if cmd.Band.Band == 0 {
+	if cmd.Band.Band == nil {
 		return nil
 	}
 
-	if cmd.Band.Band < 1 || cmd.Band.Band > 6 {
-		return fmt.Errorf("EQ band number must be between 1 and 6, got %d", cmd.Band.Band)
+	if *cmd.Band.Band < 1 || *cmd.Band.Band > 6 {
+		return fmt.Errorf("EQ band number must be between 1 and 6, got %d", *cmd.Band.Band)
 	}
 	return nil
 }
@@ -246,18 +246,18 @@ type BusEqBandGainCmd struct {
 // Run executes the BusEqBandGainCmd command, either retrieving the current gain of the specified EQ band of the bus or setting it based on the provided argument.
 func (cmd *BusEqBandGainCmd) Run(ctx *context, bus *BusCmdGroup, busEq *BusEqCmdGroup) error {
 	if cmd.Gain == nil {
-		resp, err := ctx.Client.Bus.Eq.Gain(bus.Index.Index, busEq.Band.Band)
+		resp, err := ctx.Client.Bus.Eq.Gain(bus.Index.Index, *busEq.Band.Band)
 		if err != nil {
 			return err
 		}
-		fmt.Fprintf(ctx.Out, "Bus %d EQ band %d gain: %.2f dB\n", bus.Index.Index, busEq.Band.Band, resp)
+		fmt.Fprintf(ctx.Out, "Bus %d EQ band %d gain: %.2f dB\n", bus.Index.Index, *busEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Bus.Eq.SetGain(bus.Index.Index, busEq.Band.Band, *cmd.Gain); err != nil {
+	if err := ctx.Client.Bus.Eq.SetGain(bus.Index.Index, *busEq.Band.Band, *cmd.Gain); err != nil {
 		return err
 	}
-	fmt.Fprintf(ctx.Out, "Bus %d EQ band %d gain set to: %.2f dB\n", bus.Index.Index, busEq.Band.Band, *cmd.Gain)
+	fmt.Fprintf(ctx.Out, "Bus %d EQ band %d gain set to: %.2f dB\n", bus.Index.Index, *busEq.Band.Band, *cmd.Gain)
 	return nil
 }
 
@@ -269,18 +269,18 @@ type BusEqBandFreqCmd struct {
 // Run executes the BusEqBandFreqCmd command, either retrieving the current frequency of the specified EQ band of the bus or setting it based on the provided argument.
 func (cmd *BusEqBandFreqCmd) Run(ctx *context, bus *BusCmdGroup, busEq *BusEqCmdGroup) error {
 	if cmd.Freq == nil {
-		resp, err := ctx.Client.Bus.Eq.Frequency(bus.Index.Index, busEq.Band.Band)
+		resp, err := ctx.Client.Bus.Eq.Frequency(bus.Index.Index, *busEq.Band.Band)
 		if err != nil {
 			return err
 		}
-		fmt.Fprintf(ctx.Out, "Bus %d EQ band %d frequency: %.2f Hz\n", bus.Index.Index, busEq.Band.Band, resp)
+		fmt.Fprintf(ctx.Out, "Bus %d EQ band %d frequency: %.2f Hz\n", bus.Index.Index, *busEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Bus.Eq.SetFrequency(bus.Index.Index, busEq.Band.Band, *cmd.Freq); err != nil {
+	if err := ctx.Client.Bus.Eq.SetFrequency(bus.Index.Index, *busEq.Band.Band, *cmd.Freq); err != nil {
 		return err
 	}
-	fmt.Fprintf(ctx.Out, "Bus %d EQ band %d frequency set to: %.2f Hz\n", bus.Index.Index, busEq.Band.Band, *cmd.Freq)
+	fmt.Fprintf(ctx.Out, "Bus %d EQ band %d frequency set to: %.2f Hz\n", bus.Index.Index, *busEq.Band.Band, *cmd.Freq)
 	return nil
 }
 
@@ -292,18 +292,18 @@ type BusEqBandQCmd struct {
 // Run executes the BusEqBandQCmd command, either retrieving the current Q factor of the specified EQ band of the bus or setting it based on the provided argument.
 func (cmd *BusEqBandQCmd) Run(ctx *context, bus *BusCmdGroup, busEq *BusEqCmdGroup) error {
 	if cmd.Q == nil {
-		resp, err := ctx.Client.Bus.Eq.Q(bus.Index.Index, busEq.Band.Band)
+		resp, err := ctx.Client.Bus.Eq.Q(bus.Index.Index, *busEq.Band.Band)
 		if err != nil {
 			return err
 		}
-		fmt.Fprintf(ctx.Out, "Bus %d EQ band %d Q factor: %.2f\n", bus.Index.Index, busEq.Band.Band, resp)
+		fmt.Fprintf(ctx.Out, "Bus %d EQ band %d Q factor: %.2f\n", bus.Index.Index, *busEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Bus.Eq.SetQ(bus.Index.Index, busEq.Band.Band, *cmd.Q); err != nil {
+	if err := ctx.Client.Bus.Eq.SetQ(bus.Index.Index, *busEq.Band.Band, *cmd.Q); err != nil {
 		return err
 	}
-	fmt.Fprintf(ctx.Out, "Bus %d EQ band %d Q factor set to: %.2f\n", bus.Index.Index, busEq.Band.Band, *cmd.Q)
+	fmt.Fprintf(ctx.Out, "Bus %d EQ band %d Q factor set to: %.2f\n", bus.Index.Index, *busEq.Band.Band, *cmd.Q)
 	return nil
 }
 
@@ -315,18 +315,18 @@ type BusEqBandTypeCmd struct {
 // Run executes the BusEqBandTypeCmd command, either retrieving the current type of the specified EQ band of the bus or setting it based on the provided argument.
 func (cmd *BusEqBandTypeCmd) Run(ctx *context, bus *BusCmdGroup, busEq *BusEqCmdGroup) error {
 	if cmd.Type == nil {
-		resp, err := ctx.Client.Bus.Eq.Type(bus.Index.Index, busEq.Band.Band)
+		resp, err := ctx.Client.Bus.Eq.Type(bus.Index.Index, *busEq.Band.Band)
 		if err != nil {
 			return err
 		}
-		fmt.Fprintf(ctx.Out, "Bus %d EQ band %d type: %s\n", bus.Index.Index, busEq.Band.Band, resp)
+		fmt.Fprintf(ctx.Out, "Bus %d EQ band %d type: %s\n", bus.Index.Index, *busEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Bus.Eq.SetType(bus.Index.Index, busEq.Band.Band, *cmd.Type); err != nil {
+	if err := ctx.Client.Bus.Eq.SetType(bus.Index.Index, *busEq.Band.Band, *cmd.Type); err != nil {
 		return err
 	}
-	fmt.Fprintf(ctx.Out, "Bus %d EQ band %d type set to: %s\n", bus.Index.Index, busEq.Band.Band, *cmd.Type)
+	fmt.Fprintf(ctx.Out, "Bus %d EQ band %d type set to: %s\n", bus.Index.Index, *busEq.Band.Band, *cmd.Type)
 	return nil
 }
 
