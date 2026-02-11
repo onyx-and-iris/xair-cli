@@ -126,7 +126,7 @@ func (s *Strip) SetColor(strip int, color int32) error {
 	return s.client.SendMessage(address, color)
 }
 
-// SendLevel requests the sends level for a mixbus.
+// SendLevel requests auxiliary send level for a send destination.
 func (s *Strip) SendLevel(strip int, bus int) (float64, error) {
 	address := fmt.Sprintf(s.baseAddress, strip) + fmt.Sprintf("/mix/%02d/level", bus)
 	err := s.client.SendMessage(address)
@@ -145,7 +145,7 @@ func (s *Strip) SendLevel(strip int, bus int) (float64, error) {
 	return mustDbFrom(float64(val)), nil
 }
 
-// SetSendLevel sets the sends level for a mixbus.
+// SetSendLevel sets the auxiliary send level for a send destination.
 func (s *Strip) SetSendLevel(strip int, bus int, level float64) error {
 	address := fmt.Sprintf(s.baseAddress, strip) + fmt.Sprintf("/mix/%02d/level", bus)
 	return s.client.SendMessage(address, float32(mustDbInto(level)))

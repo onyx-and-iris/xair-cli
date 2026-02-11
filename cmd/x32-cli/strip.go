@@ -140,27 +140,41 @@ func (cmd *StripFadeoutCmd) Run(ctx *context, strip *StripCmdGroup) error {
 	}
 }
 
-// StripSendCmd defines the command for getting or setting the send level for a specific bus on a strip, allowing users to control the level of the signal being sent from the strip to a particular bus.
+// StripSendCmd defines the command for getting or setting the auxiliary send level
+// for a specific send destination (mix bus) on a strip.
 type StripSendCmd struct {
-	BusNum int      `arg:"" help:"The bus number to get or set the send level for."`
-	Level  *float64 `arg:"" help:"The send level to set (in dB)."                   optional:""`
+	SendIndex int      `arg:"" help:"The index of the send destination (mix bus). (1-based indexing)"`
+	Level     *float64 `arg:"" help:"The send level to set (in dB)."                                  optional:""`
 }
 
-// Run executes the StripSendCmd command, either retrieving the current send level for the specified bus on the strip or setting it based on the provided argument.
+// Run executes the StripSendCmd command, either retrieving the current send level for the specified send destination
+// or setting it based on the provided argument.
 func (cmd *StripSendCmd) Run(ctx *context, strip *StripCmdGroup) error {
 	if cmd.Level == nil {
-		resp, err := ctx.Client.Strip.SendLevel(strip.Index.Index, cmd.BusNum)
+		resp, err := ctx.Client.Strip.SendLevel(strip.Index.Index, cmd.SendIndex)
 		if err != nil {
 			return fmt.Errorf("failed to get send level: %w", err)
 		}
-		fmt.Fprintf(ctx.Out, "Strip %d send level for bus %d: %.2f dB\n", strip.Index.Index, cmd.BusNum, resp)
+		fmt.Fprintf(
+			ctx.Out,
+			"Strip %d send %d level: %.2f dB\n",
+			strip.Index.Index,
+			cmd.SendIndex,
+			resp,
+		)
 		return nil
 	}
 
-	if err := ctx.Client.Strip.SetSendLevel(strip.Index.Index, cmd.BusNum, *cmd.Level); err != nil {
+	if err := ctx.Client.Strip.SetSendLevel(strip.Index.Index, cmd.SendIndex, *cmd.Level); err != nil {
 		return fmt.Errorf("failed to set send level: %w", err)
 	}
-	fmt.Fprintf(ctx.Out, "Strip %d send level for bus %d set to: %.2f dB\n", strip.Index.Index, cmd.BusNum, *cmd.Level)
+	fmt.Fprintf(
+		ctx.Out,
+		"Strip %d send %d level set to: %.2f dB\n",
+		strip.Index.Index,
+		cmd.SendIndex,
+		*cmd.Level,
+	)
 	return nil
 }
 
