@@ -6,13 +6,13 @@ import (
 
 // Eq represents the EQ parameters.
 type Eq struct {
-	client      *Client
+	client      *client
 	baseAddress string
 	AddressFunc func(fmtString string, args ...any) string
 }
 
 // Factory function to create Eq instance with optional configuration
-func newEq(c *Client, baseAddress string, opts ...EqOption) *Eq {
+func newEq(c *client, baseAddress string, opts ...EqOption) *Eq {
 	eq := &Eq{
 		client:      c,
 		baseAddress: fmt.Sprintf("%s/eq", baseAddress),

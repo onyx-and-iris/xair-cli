@@ -9,13 +9,9 @@ import (
 	"github.com/hypebeast/go-osc/osc"
 )
 
-type Client struct {
-	*engine
-}
-
 // XAirClient is a client for controlling XAir mixers
 type XAirClient struct {
-	Client
+	client
 	Main     *Main
 	Strip    *Strip
 	Bus      *Bus
@@ -24,9 +20,29 @@ type XAirClient struct {
 	DCA      *DCA
 }
 
+// NewXAirClient creates a new XAirClient instance with optional engine configuration
+func NewXAirClient(mixerIP string, mixerPort int, opts ...EngineOption) (*XAirClient, error) {
+	e, err := newEngine(mixerIP, mixerPort, kindXAir, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	c := &XAirClient{
+		client: client{e},
+	}
+	c.Main = newMainStereo(&c.client)
+	c.Strip = newStrip(&c.client)
+	c.Bus = newBus(&c.client)
+	c.HeadAmp = newHeadAmp(&c.client)
+	c.Snapshot = newSnapshot(&c.client)
+	c.DCA = newDCA(&c.client)
+
+	return c, nil
+}
+
 // X32Client is a client for controlling X32 mixers
 type X32Client struct {
-	Client
+	client
 	Main     *Main
 	MainMono *Main
 	Matrix   *Matrix
@@ -45,48 +61,32 @@ func NewX32Client(mixerIP string, mixerPort int, opts ...EngineOption) (*X32Clie
 	}
 
 	c := &X32Client{
-		Client: Client{e},
+		client: client{e},
 	}
-	c.Main = newMainStereo(&c.Client)
-	c.MainMono = newMainMono(&c.Client)
-	c.Matrix = newMatrix(&c.Client)
-	c.Strip = newStrip(&c.Client)
-	c.Bus = newBus(&c.Client)
-	c.HeadAmp = newHeadAmp(&c.Client)
-	c.Snapshot = newSnapshot(&c.Client)
-	c.DCA = newDCA(&c.Client)
+	c.Main = newMainStereo(&c.client)
+	c.MainMono = newMainMono(&c.client)
+	c.Matrix = newMatrix(&c.client)
+	c.Strip = newStrip(&c.client)
+	c.Bus = newBus(&c.client)
+	c.HeadAmp = newHeadAmp(&c.client)
+	c.Snapshot = newSnapshot(&c.client)
+	c.DCA = newDCA(&c.client)
 
 	return c, nil
 }
 
-// NewXAirClient creates a new XAirClient instance with optional engine configuration
-func NewXAirClient(mixerIP string, mixerPort int, opts ...EngineOption) (*XAirClient, error) {
-	e, err := newEngine(mixerIP, mixerPort, kindXAir, opts...)
-	if err != nil {
-		return nil, err
-	}
-
-	c := &XAirClient{
-		Client: Client{e},
-	}
-	c.Main = newMainStereo(&c.Client)
-	c.Strip = newStrip(&c.Client)
-	c.Bus = newBus(&c.Client)
-	c.HeadAmp = newHeadAmp(&c.Client)
-	c.Snapshot = newSnapshot(&c.Client)
-	c.DCA = newDCA(&c.Client)
-
-	return c, nil
+type client struct {
+	*engine
 }
 
 // Start begins listening for messages in a goroutine
-func (c *Client) StartListening() {
+func (c *client) StartListening() {
 	go c.engine.receiveLoop()
 	log.Debugf("Started listening on %s...", c.engine.conn.LocalAddr().String())
 }
 
 // Close stops the client and closes the connection
-func (c *Client) Close() {
+func (c *client) Close() {
 	close(c.engine.done)
 	if c.engine.conn != nil {
 		c.engine.conn.Close()
@@ -94,12 +94,12 @@ func (c *Client) Close() {
 }
 
 // SendMessage sends an OSC message to the mixer using the unified connection
-func (c *Client) SendMessage(address string, args ...any) error {
+func (c *client) SendMessage(address string, args ...any) error {
 	return c.engine.sendToAddress(c.mixerAddr, address, args...)
 }
 
 // ReceiveMessage receives an OSC message from the mixer
-func (c *Client) ReceiveMessage() (*osc.Message, error) {
+func (c *client) ReceiveMessage() (*osc.Message, error) {
 	t := time.Tick(c.engine.timeout)
 	select {
 	case <-t:
@@ -113,7 +113,7 @@ func (c *Client) ReceiveMessage() (*osc.Message, error) {
 }
 
 // RequestInfo requests mixer information
-func (c *Client) RequestInfo() (InfoResponse, error) {
+func (c *client) RequestInfo() (InfoResponse, error) {
 	var info InfoResponse
 	err := c.SendMessage("/xinfo")
 	if err != nil {
@@ -133,11 +133,11 @@ func (c *Client) RequestInfo() (InfoResponse, error) {
 }
 
 // KeepAlive sends keep-alive message (required for multi-client usage)
-func (c *Client) KeepAlive() error {
+func (c *client) KeepAlive() error {
 	return c.SendMessage("/xremote")
 }
 
 // RequestStatus requests mixer status
-func (c *Client) RequestStatus() error {
+func (c *client) RequestStatus() error {
 	return c.SendMessage("/status")
 }

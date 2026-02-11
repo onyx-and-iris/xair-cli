@@ -4,13 +4,13 @@ import "fmt"
 
 // Gate represents the gate parameters.
 type Gate struct {
-	client      *Client
+	client      *client
 	baseAddress string
 	AddressFunc func(fmtString string, args ...any) string
 }
 
 // Factory function to create Gate instance with optional configuration
-func newGate(c *Client, baseAddress string, opts ...GateOption) *Gate {
+func newGate(c *client, baseAddress string, opts ...GateOption) *Gate {
 	gate := &Gate{
 		client:      c,
 		baseAddress: fmt.Sprintf("%s/gate", baseAddress),

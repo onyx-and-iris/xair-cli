@@ -4,13 +4,13 @@ import "fmt"
 
 // Comp represents the compressor parameters.
 type Comp struct {
-	client      *Client
+	client      *client
 	baseAddress string
 	AddressFunc func(fmtString string, args ...any) string
 }
 
 // Factory function to create Comp instance with optional configuration
-func newComp(c *Client, baseAddress string, opts ...CompOption) *Comp {
+func newComp(c *client, baseAddress string, opts ...CompOption) *Comp {
 	comp := &Comp{
 		client:      c,
 		baseAddress: fmt.Sprintf("%s/dyn", baseAddress),

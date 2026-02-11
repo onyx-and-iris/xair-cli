@@ -3,12 +3,12 @@ package xair
 import "fmt"
 
 type DCA struct {
-	client      *Client
+	client      *client
 	baseAddress string
 }
 
 // newDCA creates a new DCA instance
-func newDCA(c *Client) *DCA {
+func newDCA(c *client) *DCA {
 	return &DCA{
 		client:      c,
 		baseAddress: c.addressMap["dca"],

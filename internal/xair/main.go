@@ -3,14 +3,14 @@ package xair
 import "fmt"
 
 type Main struct {
-	client      *Client
+	client      *client
 	baseAddress string
 	Eq          *Eq
 	Comp        *Comp
 }
 
 // newMainStereo creates a new Main instance for stereo main output
-func newMainStereo(c *Client) *Main {
+func newMainStereo(c *client) *Main {
 	addressFunc := func(fmtString string, args ...any) string {
 		return fmtString
 	}
@@ -24,7 +24,7 @@ func newMainStereo(c *Client) *Main {
 }
 
 // newMainMono creates a new MainMono instance for mono main output (X32 only)
-func newMainMono(c *Client) *Main {
+func newMainMono(c *client) *Main {
 	addressFunc := func(fmtString string, args ...any) string {
 		return fmtString
 	}

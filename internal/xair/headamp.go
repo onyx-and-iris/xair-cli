@@ -3,12 +3,12 @@ package xair
 import "fmt"
 
 type HeadAmp struct {
-	client      *Client
+	client      *client
 	baseAddress string
 }
 
 // newHeadAmp creates a new HeadAmp instance with the provided client.
-func newHeadAmp(c *Client) *HeadAmp {
+func newHeadAmp(c *client) *HeadAmp {
 	return &HeadAmp{
 		client:      c,
 		baseAddress: c.addressMap["headamp"],

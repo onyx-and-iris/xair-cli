@@ -3,14 +3,14 @@ package xair
 import "fmt"
 
 type Matrix struct {
-	client      *Client
+	client      *client
 	baseAddress string
 	Eq          *Eq
 	Comp        *Comp
 }
 
 // newMatrix creates a new Matrix instance
-func newMatrix(c *Client) *Matrix {
+func newMatrix(c *client) *Matrix {
 	return &Matrix{
 		client:      c,
 		baseAddress: c.addressMap["matrix"],

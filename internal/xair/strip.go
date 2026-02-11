@@ -3,7 +3,7 @@ package xair
 import "fmt"
 
 type Strip struct {
-	client      *Client
+	client      *client
 	baseAddress string
 	Gate        *Gate
 	Eq          *Eq
@@ -11,7 +11,7 @@ type Strip struct {
 }
 
 // newStrip creates a new Strip instance
-func newStrip(c *Client) *Strip {
+func newStrip(c *client) *Strip {
 	return &Strip{
 		client:      c,
 		baseAddress: c.addressMap["strip"],
