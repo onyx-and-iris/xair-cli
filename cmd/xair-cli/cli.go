@@ -46,9 +46,10 @@ type CLI struct {
 
 	Version VersionFlag `help:"Print xair-cli version information and quit" name:"version" short:"v"`
 
-	Completion kongcompletion.Completion `help:"Generate shell completion scripts." cmd:"" aliases:"c"`
+	Completion kongcompletion.Completion `help:"Generate shell completion scripts."  cmd:""`
+	Info       InfoCmd                   `help:"Print mixer information."            cmd:""`
+	Raw        RawCmd                    `help:"Send raw OSC messages to the mixer." cmd:""`
 
-	Raw      RawCmd           `help:"Send raw OSC messages to the mixer."   cmd:"" group:"Raw"`
 	Main     MainCmdGroup     `help:"Control the Main L/R output"           cmd:"" group:"Main"`
 	Strip    StripCmdGroup    `help:"Control the strips."                   cmd:"" group:"Strip"`
 	Bus      BusCmdGroup      `help:"Control the buses."                    cmd:"" group:"Bus"`

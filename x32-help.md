@@ -12,10 +12,9 @@ Flags:
   -v, --version               Print x32-cli version information and quit
 
 Commands:
-  completion (c)    Generate shell completion scripts.
-
-Raw
-  raw    Send raw OSC messages to the mixer.
+  completion    Generate shell completion scripts.
+  info          Print mixer information.
+  raw           Send raw OSC messages to the mixer.
 
 Main
   main mute              Get or set the mute state of the Main L/R output.

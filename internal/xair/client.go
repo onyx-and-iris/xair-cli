@@ -28,7 +28,7 @@ func NewXAirClient(mixerIP string, mixerPort int, opts ...EngineOption) (*XAirCl
 	}
 
 	c := &XAirClient{
-		client: client{e},
+		client: client{e, InfoResponse{}},
 	}
 	c.Main = newMainStereo(&c.client)
 	c.Strip = newStrip(&c.client)
@@ -61,7 +61,7 @@ func NewX32Client(mixerIP string, mixerPort int, opts ...EngineOption) (*X32Clie
 	}
 
 	c := &X32Client{
-		client: client{e},
+		client: client{e, InfoResponse{}},
 	}
 	c.Main = newMainStereo(&c.client)
 	c.MainMono = newMainMono(&c.client)
@@ -77,6 +77,7 @@ func NewX32Client(mixerIP string, mixerPort int, opts ...EngineOption) (*X32Clie
 
 type client struct {
 	*engine
+	Info InfoResponse
 }
 
 // Start begins listening for messages in a goroutine
@@ -124,11 +125,22 @@ func (c *client) RequestInfo() (InfoResponse, error) {
 	if err != nil {
 		return info, err
 	}
-	if len(msg.Arguments) >= 3 {
-		info.Host = msg.Arguments[0].(string)
-		info.Name = msg.Arguments[1].(string)
-		info.Model = msg.Arguments[2].(string)
+	if len(msg.Arguments) == 4 {
+		if host, ok := msg.Arguments[0].(string); ok {
+			info.Host = host
+		}
+		if name, ok := msg.Arguments[1].(string); ok {
+			info.Name = name
+		}
+		if model, ok := msg.Arguments[2].(string); ok {
+			info.Model = model
+		}
+		if firmware, ok := msg.Arguments[3].(string); ok {
+			info.Firmware = firmware
+		}
 	}
+	c.Info = info
+
 	return info, nil
 }
 

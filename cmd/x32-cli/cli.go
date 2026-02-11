@@ -46,9 +46,10 @@ type CLI struct {
 
 	Version VersionFlag `help:"Print x32-cli version information and quit" name:"version" short:"v"`
 
-	Completion kongcompletion.Completion `help:"Generate shell completion scripts." cmd:"" aliases:"c"`
+	Completion kongcompletion.Completion `help:"Generate shell completion scripts."  cmd:""`
+	Info       InfoCmd                   `help:"Print mixer information."            cmd:""`
+	Raw        RawCmd                    `help:"Send raw OSC messages to the mixer." cmd:""`
 
-	Raw      RawCmd           `help:"Send raw OSC messages to the mixer."   cmd:"" group:"Raw"`
 	Main     MainCmdGroup     `help:"Control the Main L/R output"           cmd:"" group:"Main"`
 	Mainmono MainMonoCmdGroup `help:"Control the Main Mono output"          cmd:"" group:"MainMono"`
 	Matrix   MatrixCmdGroup   `help:"Control the matrix outputs."           cmd:"" group:"Matrix"`
