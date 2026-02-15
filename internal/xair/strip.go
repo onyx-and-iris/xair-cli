@@ -11,7 +11,7 @@ type Strip struct {
 	Comp        *Comp
 }
 
-// newStrip creates a new Strip instance
+// newStrip creates a new Strip instance.
 func newStrip(c *client) *Strip {
 	return &Strip{
 		client:      c,
@@ -77,7 +77,7 @@ func (s *Strip) SetFader(strip int, level float64) error {
 	return s.client.SendMessage(address, float32(mustDbInto(level)))
 }
 
-// Name requests the name for a specific strip
+// Name requests the name for a specific strip.
 func (s *Strip) Name(strip int) (string, error) {
 	address := fmt.Sprintf(s.baseAddress, strip) + "/config/name"
 	err := s.client.SendMessage(address)
@@ -96,13 +96,13 @@ func (s *Strip) Name(strip int) (string, error) {
 	return val, nil
 }
 
-// SetName sets the name for a specific strip
+// SetName sets the name for a specific strip.
 func (s *Strip) SetName(strip int, name string) error {
 	address := fmt.Sprintf(s.baseAddress, strip) + "/config/name"
 	return s.client.SendMessage(address, name)
 }
 
-// Colour requests the colour for a specific strip
+// Colour requests the colour for a specific strip.
 func (s *Strip) Colour(strip int) (int32, error) {
 	address := fmt.Sprintf(s.baseAddress, strip) + "/config/colour"
 	err := s.client.SendMessage(address)
@@ -121,7 +121,7 @@ func (s *Strip) Colour(strip int) (int32, error) {
 	return val, nil
 }
 
-// SetColor sets the colour for a specific strip (0-15)
+// SetColor sets the colour for a specific strip (0-15).
 func (s *Strip) SetColor(strip int, colour int32) error {
 	address := fmt.Sprintf(s.baseAddress, strip) + "/config/colour"
 	return s.client.SendMessage(address, colour)

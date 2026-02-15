@@ -8,7 +8,7 @@ type DCA struct {
 	baseAddress string
 }
 
-// newDCA creates a new DCA instance
+// newDCA creates a new DCA instance.
 func newDCA(c *client) *DCA {
 	return &DCA{
 		client:      c,
@@ -16,7 +16,7 @@ func newDCA(c *client) *DCA {
 	}
 }
 
-// Mute requests the current mute status for a DCA group
+// Mute requests the current mute status for a DCA group.
 func (d *DCA) Mute(group int) (bool, error) {
 	address := fmt.Sprintf(d.baseAddress, group) + "/on"
 	err := d.client.SendMessage(address)
@@ -35,7 +35,7 @@ func (d *DCA) Mute(group int) (bool, error) {
 	return val == 0, nil
 }
 
-// SetMute sets the mute status for a specific DCA group (1-based indexing)
+// SetMute sets the mute status for a specific DCA group (1-based indexing).
 func (d *DCA) SetMute(group int, muted bool) error {
 	address := fmt.Sprintf(d.baseAddress, group) + "/on"
 	var value int32
@@ -45,7 +45,7 @@ func (d *DCA) SetMute(group int, muted bool) error {
 	return d.client.SendMessage(address, value)
 }
 
-// Name requests the current name for a DCA group
+// Name requests the current name for a DCA group.
 func (d *DCA) Name(group int) (string, error) {
 	address := fmt.Sprintf(d.baseAddress, group) + "/config/name"
 	err := d.client.SendMessage(address)
@@ -64,13 +64,13 @@ func (d *DCA) Name(group int) (string, error) {
 	return name, nil
 }
 
-// SetName sets the name for a specific DCA group (1-based indexing)
+// SetName sets the name for a specific DCA group (1-based indexing).
 func (d *DCA) SetName(group int, name string) error {
 	address := fmt.Sprintf(d.baseAddress, group) + "/config/name"
 	return d.client.SendMessage(address, name)
 }
 
-// Colour requests the current colour for a DCA group
+// Colour requests the current colour for a DCA group.
 func (d *DCA) Colour(group int) (int32, error) {
 	address := fmt.Sprintf(d.baseAddress, group) + "/config/colour"
 	err := d.client.SendMessage(address)
@@ -89,7 +89,7 @@ func (d *DCA) Colour(group int) (int32, error) {
 	return colour, nil
 }
 
-// SetColor sets the colour for a specific DCA group (1-based indexing)
+// SetColor sets the colour for a specific DCA group (1-based indexing).
 func (d *DCA) SetColor(group int, colour int32) error {
 	address := fmt.Sprintf(d.baseAddress, group) + "/config/colour"
 	return d.client.SendMessage(address, colour)
