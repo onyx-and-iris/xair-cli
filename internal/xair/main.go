@@ -9,7 +9,7 @@ type Main struct {
 	Comp        *Comp
 }
 
-// newMainStereo creates a new Main instance for stereo main output
+// newMainStereo creates a new Main instance for stereo main output.
 func newMainStereo(c *client) *Main {
 	addressFunc := func(fmtString string, args ...any) string {
 		return fmtString
@@ -23,7 +23,7 @@ func newMainStereo(c *client) *Main {
 	}
 }
 
-// newMainMono creates a new MainMono instance for mono main output (X32 only)
+// newMainMono creates a new MainMono instance for mono main output (X32 only).
 func newMainMono(c *client) *Main {
 	addressFunc := func(fmtString string, args ...any) string {
 		return fmtString
@@ -37,7 +37,7 @@ func newMainMono(c *client) *Main {
 	}
 }
 
-// Fader requests the current main L/R fader level
+// Fader requests the current main L/R fader level.
 func (m *Main) Fader() (float64, error) {
 	address := m.baseAddress + "/mix/fader"
 	err := m.client.SendMessage(address)
@@ -56,13 +56,13 @@ func (m *Main) Fader() (float64, error) {
 	return mustDbFrom(float64(val)), nil
 }
 
-// SetFader sets the main L/R fader level
+// SetFader sets the main L/R fader level.
 func (m *Main) SetFader(level float64) error {
 	address := m.baseAddress + "/mix/fader"
 	return m.client.SendMessage(address, float32(mustDbInto(level)))
 }
 
-// Mute requests the current main L/R mute status
+// Mute requests the current main L/R mute status.
 func (m *Main) Mute() (bool, error) {
 	address := m.baseAddress + "/mix/on"
 	err := m.client.SendMessage(address)
@@ -81,7 +81,7 @@ func (m *Main) Mute() (bool, error) {
 	return val == 0, nil
 }
 
-// SetMute sets the main L/R mute status
+// SetMute sets the main L/R mute status.
 func (m *Main) SetMute(muted bool) error {
 	address := m.baseAddress + "/mix/on"
 	var value int32

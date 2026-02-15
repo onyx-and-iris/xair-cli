@@ -5,11 +5,10 @@ import (
 	"time"
 
 	"github.com/charmbracelet/log"
-
 	"github.com/hypebeast/go-osc/osc"
 )
 
-// XAirClient is a client for controlling XAir mixers
+// XAirClient is a client for controlling XAir mixers.
 type XAirClient struct {
 	client
 	Main     *Main
@@ -20,7 +19,7 @@ type XAirClient struct {
 	DCA      *DCA
 }
 
-// NewXAirClient creates a new XAirClient instance with optional engine configuration
+// NewXAirClient creates a new XAirClient instance with optional engine configuration.
 func NewXAirClient(mixerIP string, mixerPort int, opts ...EngineOption) (*XAirClient, error) {
 	e, err := newEngine(mixerIP, mixerPort, kindXAir, opts...)
 	if err != nil {
@@ -40,7 +39,7 @@ func NewXAirClient(mixerIP string, mixerPort int, opts ...EngineOption) (*XAirCl
 	return c, nil
 }
 
-// X32Client is a client for controlling X32 mixers
+// X32Client is a client for controlling X32 mixers.
 type X32Client struct {
 	client
 	Main     *Main
@@ -53,7 +52,7 @@ type X32Client struct {
 	DCA      *DCA
 }
 
-// NewX32Client creates a new X32Client instance with optional engine configuration
+// NewX32Client creates a new X32Client instance with optional engine configuration.
 func NewX32Client(mixerIP string, mixerPort int, opts ...EngineOption) (*X32Client, error) {
 	e, err := newEngine(mixerIP, mixerPort, kindX32, opts...)
 	if err != nil {
@@ -80,28 +79,28 @@ type client struct {
 	Info InfoResponse
 }
 
-// Start begins listening for messages in a goroutine
+// Start begins listening for messages in a goroutine.
 func (c *client) StartListening() {
-	go c.engine.receiveLoop()
+	go c.receiveLoop()
 	log.Debugf("Started listening on %s...", c.engine.conn.LocalAddr().String())
 }
 
-// Close stops the client and closes the connection
+// Close stops the client and closes the connection.
 func (c *client) Close() {
-	close(c.engine.done)
-	if c.engine.conn != nil {
-		c.engine.conn.Close()
+	close(c.done)
+	if c.conn != nil {
+		c.conn.Close()
 	}
 }
 
-// SendMessage sends an OSC message to the mixer using the unified connection
+// SendMessage sends an OSC message to the mixer using the unified connection.
 func (c *client) SendMessage(address string, args ...any) error {
-	return c.engine.sendToAddress(c.mixerAddr, address, args...)
+	return c.sendToAddress(c.mixerAddr, address, args...)
 }
 
-// ReceiveMessage receives an OSC message from the mixer
+// ReceiveMessage receives an OSC message from the mixer.
 func (c *client) ReceiveMessage() (*osc.Message, error) {
-	t := time.Tick(c.engine.timeout)
+	t := time.Tick(c.timeout)
 	select {
 	case <-t:
 		return nil, fmt.Errorf("timeout waiting for response")
@@ -113,7 +112,7 @@ func (c *client) ReceiveMessage() (*osc.Message, error) {
 	}
 }
 
-// RequestInfo requests mixer information
+// RequestInfo requests mixer information.
 func (c *client) RequestInfo() (InfoResponse, error) {
 	var info InfoResponse
 	err := c.SendMessage("/xinfo")
@@ -144,12 +143,12 @@ func (c *client) RequestInfo() (InfoResponse, error) {
 	return info, nil
 }
 
-// KeepAlive sends keep-alive message (required for multi-client usage)
+// KeepAlive sends keep-alive message (required for multi-client usage).
 func (c *client) KeepAlive() error {
 	return c.SendMessage("/xremote")
 }
 
-// RequestStatus requests mixer status
+// RequestStatus requests mixer status.
 func (c *client) RequestStatus() error {
 	return c.SendMessage("/status")
 }

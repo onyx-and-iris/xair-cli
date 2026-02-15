@@ -9,7 +9,7 @@ type Bus struct {
 	Comp        *Comp
 }
 
-// newBus creates a new Bus instance
+// newBus creates a new Bus instance.
 func newBus(c *client) *Bus {
 	return &Bus{
 		client:      c,
@@ -19,7 +19,7 @@ func newBus(c *client) *Bus {
 	}
 }
 
-// Mute requests the current mute status for a bus
+// Mute requests the current mute status for a bus.
 func (b *Bus) Mute(bus int) (bool, error) {
 	address := fmt.Sprintf(b.baseAddress, bus) + "/mix/on"
 	err := b.client.SendMessage(address)
@@ -38,7 +38,7 @@ func (b *Bus) Mute(bus int) (bool, error) {
 	return val == 0, nil
 }
 
-// SetMute sets the mute status for a specific bus (1-based indexing)
+// SetMute sets the mute status for a specific bus (1-based indexing).
 func (b *Bus) SetMute(bus int, muted bool) error {
 	address := fmt.Sprintf(b.baseAddress, bus) + "/mix/on"
 	var value int32
@@ -48,7 +48,7 @@ func (b *Bus) SetMute(bus int, muted bool) error {
 	return b.client.SendMessage(address, value)
 }
 
-// Fader requests the current fader level for a bus
+// Fader requests the current fader level for a bus.
 func (b *Bus) Fader(bus int) (float64, error) {
 	address := fmt.Sprintf(b.baseAddress, bus) + "/mix/fader"
 	err := b.client.SendMessage(address)
@@ -68,18 +68,18 @@ func (b *Bus) Fader(bus int) (float64, error) {
 	return mustDbFrom(float64(val)), nil
 }
 
-// SetFader sets the fader level for a specific bus (1-based indexing)
+// SetFader sets the fader level for a specific bus (1-based indexing).
 func (b *Bus) SetFader(bus int, level float64) error {
 	address := fmt.Sprintf(b.baseAddress, bus) + "/mix/fader"
 	return b.client.SendMessage(address, float32(mustDbInto(level)))
 }
 
-// Name requests the name for a specific bus
+// Name requests the name for a specific bus.
 func (b *Bus) Name(bus int) (string, error) {
 	address := fmt.Sprintf(b.baseAddress, bus) + "/config/name"
 	err := b.client.SendMessage(address)
 	if err != nil {
-		return "", fmt.Errorf("failed to send bus name request: %v", err)
+		return "", fmt.Errorf("failed to send bus name request: %w", err)
 	}
 
 	msg, err := b.client.ReceiveMessage()
@@ -93,7 +93,7 @@ func (b *Bus) Name(bus int) (string, error) {
 	return val, nil
 }
 
-// SetName sets the name for a specific bus
+// SetName sets the name for a specific bus.
 func (b *Bus) SetName(bus int, name string) error {
 	address := fmt.Sprintf(b.baseAddress, bus) + "/config/name"
 	return b.client.SendMessage(address, name)

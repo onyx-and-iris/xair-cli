@@ -81,7 +81,7 @@ func (s *Strip) Name(strip int) (string, error) {
 	address := fmt.Sprintf(s.baseAddress, strip) + "/config/name"
 	err := s.client.SendMessage(address)
 	if err != nil {
-		return "", fmt.Errorf("failed to send strip name request: %v", err)
+		return "", fmt.Errorf("failed to send strip name request: %w", err)
 	}
 
 	msg, err := s.client.ReceiveMessage()
@@ -101,12 +101,12 @@ func (s *Strip) SetName(strip int, name string) error {
 	return s.client.SendMessage(address, name)
 }
 
-// Color requests the color for a specific strip
-func (s *Strip) Color(strip int) (int32, error) {
-	address := fmt.Sprintf(s.baseAddress, strip) + "/config/color"
+// Colour requests the colour for a specific strip
+func (s *Strip) Colour(strip int) (int32, error) {
+	address := fmt.Sprintf(s.baseAddress, strip) + "/config/colour"
 	err := s.client.SendMessage(address)
 	if err != nil {
-		return 0, fmt.Errorf("failed to send strip color request: %v", err)
+		return 0, fmt.Errorf("failed to send strip colour request: %w", err)
 	}
 
 	msg, err := s.client.ReceiveMessage()
@@ -115,23 +115,23 @@ func (s *Strip) Color(strip int) (int32, error) {
 	}
 	val, ok := msg.Arguments[0].(int32)
 	if !ok {
-		return 0, fmt.Errorf("unexpected argument type for strip color value")
+		return 0, fmt.Errorf("unexpected argument type for strip colour value")
 	}
 	return val, nil
 }
 
-// SetColor sets the color for a specific strip (0-15)
-func (s *Strip) SetColor(strip int, color int32) error {
-	address := fmt.Sprintf(s.baseAddress, strip) + "/config/color"
-	return s.client.SendMessage(address, color)
+// SetColor sets the colour for a specific strip (0-15)
+func (s *Strip) SetColor(strip int, colour int32) error {
+	address := fmt.Sprintf(s.baseAddress, strip) + "/config/colour"
+	return s.client.SendMessage(address, colour)
 }
 
 // SendLevel requests auxiliary send level for a send destination.
-func (s *Strip) SendLevel(strip int, bus int) (float64, error) {
+func (s *Strip) SendLevel(strip, bus int) (float64, error) {
 	address := fmt.Sprintf(s.baseAddress, strip) + fmt.Sprintf("/mix/%02d/level", bus)
 	err := s.client.SendMessage(address)
 	if err != nil {
-		return 0, fmt.Errorf("failed to send strip send level request: %v", err)
+		return 0, fmt.Errorf("failed to send strip send level request: %w", err)
 	}
 
 	msg, err := s.client.ReceiveMessage()
@@ -146,7 +146,7 @@ func (s *Strip) SendLevel(strip int, bus int) (float64, error) {
 }
 
 // SetSendLevel sets the auxiliary send level for a send destination.
-func (s *Strip) SetSendLevel(strip int, bus int, level float64) error {
+func (s *Strip) SetSendLevel(strip, bus int, level float64) error {
 	address := fmt.Sprintf(s.baseAddress, strip) + fmt.Sprintf("/mix/%02d/level", bus)
 	return s.client.SendMessage(address, float32(mustDbInto(level)))
 }

@@ -9,7 +9,7 @@ type Gate struct {
 	AddressFunc func(fmtString string, args ...any) string
 }
 
-// Factory function to create Gate instance with optional configuration
+// Factory function to create Gate instance with optional configuration.
 func newGate(c *client, baseAddress string, opts ...GateOption) *Gate {
 	gate := &Gate{
 		client:      c,

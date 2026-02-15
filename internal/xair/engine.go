@@ -1,6 +1,7 @@
 package xair
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"time"
@@ -26,21 +27,26 @@ type engine struct {
 	respChan chan *osc.Message
 }
 
-func newEngine(mixerIP string, mixerPort int, kind mixerKind, opts ...EngineOption) (*engine, error) {
+func newEngine(
+	mixerIP string,
+	mixerPort int,
+	kind mixerKind,
+	opts ...EngineOption,
+) (*engine, error) {
 	localAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf(":%d", 0))
 	if err != nil {
-		return nil, fmt.Errorf("failed to resolve local address: %v", err)
+		return nil, fmt.Errorf("failed to resolve local address: %w", err)
 	}
 
 	conn, err := net.ListenUDP("udp", localAddr)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create UDP connection: %v", err)
+		return nil, fmt.Errorf("failed to create UDP connection: %w", err)
 	}
 
 	mixerAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", mixerIP, mixerPort))
 	if err != nil {
 		conn.Close()
-		return nil, fmt.Errorf("failed to resolve mixer address: %v", err)
+		return nil, fmt.Errorf("failed to resolve mixer address: %w", err)
 	}
 
 	log.Debugf("Local UDP connection: %s	", conn.LocalAddr().String())
@@ -62,7 +68,7 @@ func newEngine(mixerIP string, mixerPort int, kind mixerKind, opts ...EngineOpti
 	return e, nil
 }
 
-// receiveLoop handles incoming OSC messages
+// receiveLoop handles incoming OSC messages.
 func (e *engine) receiveLoop() {
 	buffer := make([]byte, 4096)
 
@@ -75,7 +81,8 @@ func (e *engine) receiveLoop() {
 			e.conn.SetReadDeadline(time.Now().Add(100 * time.Millisecond))
 			n, _, err := e.conn.ReadFromUDP(buffer)
 			if err != nil {
-				if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
+				var netErr net.Error
+				if errors.As(err, &netErr) {
 					// Timeout is expected, continue loop
 					continue
 				}
@@ -99,7 +106,7 @@ func (e *engine) receiveLoop() {
 	}
 }
 
-// parseOSCMessage parses raw bytes into an OSC message with improved error handling
+// parseOSCMessage parses raw bytes into an OSC message with improved error handling.
 func (e *engine) parseOSCMessage(data []byte) (*osc.Message, error) {
 	msg, err := e.parser.Parse(data)
 	if err != nil {
@@ -109,7 +116,7 @@ func (e *engine) parseOSCMessage(data []byte) (*osc.Message, error) {
 	return msg, nil
 }
 
-// sendToAddress sends an OSC message to a specific address (enables replying to different ports)
+// sendToAddress sends an OSC message to a specific address (enables replying to different ports).
 func (e *engine) sendToAddress(addr *net.UDPAddr, oscAddress string, args ...any) error {
 	msg := osc.NewMessage(oscAddress)
 	for _, arg := range args {
@@ -130,7 +137,7 @@ func (e *engine) sendToAddress(addr *net.UDPAddr, oscAddress string, args ...any
 
 	data, err := msg.MarshalBinary()
 	if err != nil {
-		return fmt.Errorf("failed to marshal message: %v", err)
+		return fmt.Errorf("failed to marshal message: %w", err)
 	}
 
 	_, err = e.conn.WriteToUDP(data, addr)

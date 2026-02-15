@@ -26,8 +26,7 @@ func (c *SnapshotCmdGroup) Validate() error {
 	return nil
 }
 
-type ListCmd struct {
-}
+type ListCmd struct{}
 
 func (c *ListCmd) Run(ctx *context) error {
 	for i := range 64 {
@@ -73,15 +72,13 @@ func (c *SaveCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
 	return ctx.Client.Snapshot.CurrentSave(*snapshot.Index.Index)
 }
 
-type LoadCmd struct {
-}
+type LoadCmd struct{}
 
 func (c *LoadCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
 	return ctx.Client.Snapshot.CurrentLoad(*snapshot.Index.Index)
 }
 
-type DeleteCmd struct {
-}
+type DeleteCmd struct{}
 
 func (c *DeleteCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
 	return ctx.Client.Snapshot.CurrentDelete(*snapshot.Index.Index)

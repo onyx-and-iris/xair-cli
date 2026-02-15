@@ -9,7 +9,7 @@ type Comp struct {
 	AddressFunc func(fmtString string, args ...any) string
 }
 
-// Factory function to create Comp instance with optional configuration
+// Factory function to create Comp instance with optional configuration.
 func newComp(c *client, baseAddress string, opts ...CompOption) *Comp {
 	comp := &Comp{
 		client:      c,

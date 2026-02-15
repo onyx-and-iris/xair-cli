@@ -69,9 +69,9 @@ func (d *DCA) SetName(group int, name string) error {
 	return d.client.SendMessage(address, name)
 }
 
-// Color requests the current color for a DCA group
-func (d *DCA) Color(group int) (int32, error) {
-	address := fmt.Sprintf(d.baseAddress, group) + "/config/color"
+// Colour requests the current colour for a DCA group
+func (d *DCA) Colour(group int) (int32, error) {
+	address := fmt.Sprintf(d.baseAddress, group) + "/config/colour"
 	err := d.client.SendMessage(address)
 	if err != nil {
 		return 0, err
@@ -81,15 +81,15 @@ func (d *DCA) Color(group int) (int32, error) {
 	if err != nil {
 		return 0, err
 	}
-	color, ok := msg.Arguments[0].(int32)
+	colour, ok := msg.Arguments[0].(int32)
 	if !ok {
-		return 0, fmt.Errorf("unexpected argument type for DCA color value")
+		return 0, fmt.Errorf("unexpected argument type for DCA colour value")
 	}
-	return color, nil
+	return colour, nil
 }
 
-// SetColor sets the color for a specific DCA group (1-based indexing)
-func (d *DCA) SetColor(group int, color int32) error {
-	address := fmt.Sprintf(d.baseAddress, group) + "/config/color"
-	return d.client.SendMessage(address, color)
+// SetColor sets the colour for a specific DCA group (1-based indexing)
+func (d *DCA) SetColor(group int, colour int32) error {
+	address := fmt.Sprintf(d.baseAddress, group) + "/config/colour"
+	return d.client.SendMessage(address, colour)
 }

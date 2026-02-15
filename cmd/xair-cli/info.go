@@ -2,8 +2,7 @@ package main
 
 import "fmt"
 
-type InfoCmd struct {
-}
+type InfoCmd struct{}
 
 func (c *InfoCmd) Run(ctx *context) error {
 	fmt.Fprintf(

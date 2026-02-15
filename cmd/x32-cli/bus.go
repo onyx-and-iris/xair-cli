@@ -101,7 +101,12 @@ func (cmd *BusFadeinCmd) Run(ctx *context, bus *BusCmdGroup) error {
 		time.Sleep(stepDuration)
 	}
 
-	fmt.Fprintf(ctx.Out, "Bus %d fade-in complete. Final level: %.2f dB\n", bus.Index.Index, cmd.Target)
+	fmt.Fprintf(
+		ctx.Out,
+		"Bus %d fade-in complete. Final level: %.2f dB\n",
+		bus.Index.Index,
+		cmd.Target,
+	)
 	return nil
 }
 
@@ -140,7 +145,12 @@ func (cmd *BusFadeoutCmd) Run(ctx *context, bus *BusCmdGroup) error {
 		time.Sleep(stepDuration)
 	}
 
-	fmt.Fprintf(ctx.Out, "Bus %d fade-out complete. Final level: %.2f dB\n", bus.Index.Index, cmd.Target)
+	fmt.Fprintf(
+		ctx.Out,
+		"Bus %d fade-out complete. Final level: %.2f dB\n",
+		bus.Index.Index,
+		cmd.Target,
+	)
 	return nil
 }
 
@@ -250,14 +260,26 @@ func (cmd *BusEqBandGainCmd) Run(ctx *context, bus *BusCmdGroup, busEq *BusEqCmd
 		if err != nil {
 			return err
 		}
-		fmt.Fprintf(ctx.Out, "Bus %d EQ band %d gain: %.2f dB\n", bus.Index.Index, *busEq.Band.Band, resp)
+		fmt.Fprintf(
+			ctx.Out,
+			"Bus %d EQ band %d gain: %.2f dB\n",
+			bus.Index.Index,
+			*busEq.Band.Band,
+			resp,
+		)
 		return nil
 	}
 
 	if err := ctx.Client.Bus.Eq.SetGain(bus.Index.Index, *busEq.Band.Band, *cmd.Gain); err != nil {
 		return err
 	}
-	fmt.Fprintf(ctx.Out, "Bus %d EQ band %d gain set to: %.2f dB\n", bus.Index.Index, *busEq.Band.Band, *cmd.Gain)
+	fmt.Fprintf(
+		ctx.Out,
+		"Bus %d EQ band %d gain set to: %.2f dB\n",
+		bus.Index.Index,
+		*busEq.Band.Band,
+		*cmd.Gain,
+	)
 	return nil
 }
 
@@ -273,14 +295,30 @@ func (cmd *BusEqBandFreqCmd) Run(ctx *context, bus *BusCmdGroup, busEq *BusEqCmd
 		if err != nil {
 			return err
 		}
-		fmt.Fprintf(ctx.Out, "Bus %d EQ band %d frequency: %.2f Hz\n", bus.Index.Index, *busEq.Band.Band, resp)
+		fmt.Fprintf(
+			ctx.Out,
+			"Bus %d EQ band %d frequency: %.2f Hz\n",
+			bus.Index.Index,
+			*busEq.Band.Band,
+			resp,
+		)
 		return nil
 	}
 
-	if err := ctx.Client.Bus.Eq.SetFrequency(bus.Index.Index, *busEq.Band.Band, *cmd.Freq); err != nil {
+	if err := ctx.Client.Bus.Eq.SetFrequency(
+		bus.Index.Index,
+		*busEq.Band.Band,
+		*cmd.Freq,
+	); err != nil {
 		return err
 	}
-	fmt.Fprintf(ctx.Out, "Bus %d EQ band %d frequency set to: %.2f Hz\n", bus.Index.Index, *busEq.Band.Band, *cmd.Freq)
+	fmt.Fprintf(
+		ctx.Out,
+		"Bus %d EQ band %d frequency set to: %.2f Hz\n",
+		bus.Index.Index,
+		*busEq.Band.Band,
+		*cmd.Freq,
+	)
 	return nil
 }
 
@@ -296,14 +334,26 @@ func (cmd *BusEqBandQCmd) Run(ctx *context, bus *BusCmdGroup, busEq *BusEqCmdGro
 		if err != nil {
 			return err
 		}
-		fmt.Fprintf(ctx.Out, "Bus %d EQ band %d Q factor: %.2f\n", bus.Index.Index, *busEq.Band.Band, resp)
+		fmt.Fprintf(
+			ctx.Out,
+			"Bus %d EQ band %d Q factor: %.2f\n",
+			bus.Index.Index,
+			*busEq.Band.Band,
+			resp,
+		)
 		return nil
 	}
 
 	if err := ctx.Client.Bus.Eq.SetQ(bus.Index.Index, *busEq.Band.Band, *cmd.Q); err != nil {
 		return err
 	}
-	fmt.Fprintf(ctx.Out, "Bus %d EQ band %d Q factor set to: %.2f\n", bus.Index.Index, *busEq.Band.Band, *cmd.Q)
+	fmt.Fprintf(
+		ctx.Out,
+		"Bus %d EQ band %d Q factor set to: %.2f\n",
+		bus.Index.Index,
+		*busEq.Band.Band,
+		*cmd.Q,
+	)
 	return nil
 }
 
@@ -319,14 +369,26 @@ func (cmd *BusEqBandTypeCmd) Run(ctx *context, bus *BusCmdGroup, busEq *BusEqCmd
 		if err != nil {
 			return err
 		}
-		fmt.Fprintf(ctx.Out, "Bus %d EQ band %d type: %s\n", bus.Index.Index, *busEq.Band.Band, resp)
+		fmt.Fprintf(
+			ctx.Out,
+			"Bus %d EQ band %d type: %s\n",
+			bus.Index.Index,
+			*busEq.Band.Band,
+			resp,
+		)
 		return nil
 	}
 
 	if err := ctx.Client.Bus.Eq.SetType(bus.Index.Index, *busEq.Band.Band, *cmd.Type); err != nil {
 		return err
 	}
-	fmt.Fprintf(ctx.Out, "Bus %d EQ band %d type set to: %s\n", bus.Index.Index, *busEq.Band.Band, *cmd.Type)
+	fmt.Fprintf(
+		ctx.Out,
+		"Bus %d EQ band %d type set to: %s\n",
+		bus.Index.Index,
+		*busEq.Band.Band,
+		*cmd.Type,
+	)
 	return nil
 }
 
@@ -408,7 +470,12 @@ func (cmd *BusCompThresholdCmd) Run(ctx *context, bus *BusCmdGroup) error {
 	if err := ctx.Client.Bus.Comp.SetThreshold(bus.Index.Index, *cmd.Threshold); err != nil {
 		return err
 	}
-	fmt.Fprintf(ctx.Out, "Bus %d compressor threshold set to: %.2f dB\n", bus.Index.Index, *cmd.Threshold)
+	fmt.Fprintf(
+		ctx.Out,
+		"Bus %d compressor threshold set to: %.2f dB\n",
+		bus.Index.Index,
+		*cmd.Threshold,
+	)
 	return nil
 }
 
@@ -477,7 +544,12 @@ func (cmd *BusCompMakeupCmd) Run(ctx *context, bus *BusCmdGroup) error {
 	if err := ctx.Client.Bus.Comp.SetMakeup(bus.Index.Index, *cmd.Makeup); err != nil {
 		return err
 	}
-	fmt.Fprintf(ctx.Out, "Bus %d compressor makeup gain set to: %.2f dB\n", bus.Index.Index, *cmd.Makeup)
+	fmt.Fprintf(
+		ctx.Out,
+		"Bus %d compressor makeup gain set to: %.2f dB\n",
+		bus.Index.Index,
+		*cmd.Makeup,
+	)
 	return nil
 }
 
@@ -500,7 +572,12 @@ func (cmd *BusCompAttackCmd) Run(ctx *context, bus *BusCmdGroup) error {
 	if err := ctx.Client.Bus.Comp.SetAttack(bus.Index.Index, *cmd.Attack); err != nil {
 		return err
 	}
-	fmt.Fprintf(ctx.Out, "Bus %d compressor attack time set to: %.2f ms\n", bus.Index.Index, *cmd.Attack)
+	fmt.Fprintf(
+		ctx.Out,
+		"Bus %d compressor attack time set to: %.2f ms\n",
+		bus.Index.Index,
+		*cmd.Attack,
+	)
 	return nil
 }
 
@@ -523,7 +600,12 @@ func (cmd *BusCompHoldCmd) Run(ctx *context, bus *BusCmdGroup) error {
 	if err := ctx.Client.Bus.Comp.SetHold(bus.Index.Index, *cmd.Hold); err != nil {
 		return err
 	}
-	fmt.Fprintf(ctx.Out, "Bus %d compressor hold time set to: %.2f ms\n", bus.Index.Index, *cmd.Hold)
+	fmt.Fprintf(
+		ctx.Out,
+		"Bus %d compressor hold time set to: %.2f ms\n",
+		bus.Index.Index,
+		*cmd.Hold,
+	)
 	return nil
 }
 
@@ -546,6 +628,11 @@ func (cmd *BusCompReleaseCmd) Run(ctx *context, bus *BusCmdGroup) error {
 	if err := ctx.Client.Bus.Comp.SetRelease(bus.Index.Index, *cmd.Release); err != nil {
 		return err
 	}
-	fmt.Fprintf(ctx.Out, "Bus %d compressor release time set to: %.2f ms\n", bus.Index.Index, *cmd.Release)
+	fmt.Fprintf(
+		ctx.Out,
+		"Bus %d compressor release time set to: %.2f ms\n",
+		bus.Index.Index,
+		*cmd.Release,
+	)
 	return nil
 }

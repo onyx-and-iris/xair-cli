@@ -38,14 +38,20 @@ func (cmd *HeadampGainCmd) Run(ctx *context, headamp *HeadampCmdGroup) error {
 		return fmt.Errorf("failed to get current headamp gain: %w", err)
 	}
 
-	if err := gradualGainAdjust(ctx, headamp.Index.Index, currentGain, *cmd.Gain, cmd.Duration); err != nil {
+	if err := gradualGainAdjust(
+		ctx,
+		headamp.Index.Index,
+		currentGain,
+		*cmd.Gain,
+		cmd.Duration,
+	); err != nil {
 		return fmt.Errorf("failed to set headamp gain: %w", err)
 	}
 	fmt.Fprintf(ctx.Out, "Headamp %d gain set to: %.2f dB\n", headamp.Index.Index, *cmd.Gain)
 	return nil
 }
 
-// gradualGainAdjust gradually adjusts gain from current to target over specified duration
+// gradualGainAdjust gradually adjusts gain from current to target over specified duration.
 func gradualGainAdjust(
 	ctx *context,
 	index int,
@@ -96,7 +102,7 @@ type HeadampPhantomCmd struct {
 	State *string `help:"The phantom power state of the headamp." arg:"" enum:"true,on,false,off" optional:""`
 }
 
-// Validate checks if the provided phantom power state is valid and normalizes it to "true" or "false".
+// Validate checks if the provided phantom power state is valid and normalises it to "true" or "false".
 func (cmd *HeadampPhantomCmd) Validate() error {
 	if cmd.State != nil {
 		switch *cmd.State {
@@ -122,7 +128,10 @@ func (cmd *HeadampPhantomCmd) Run(ctx *context, headamp *HeadampCmdGroup) error 
 		return nil
 	}
 
-	if err := ctx.Client.HeadAmp.SetPhantomPower(headamp.Index.Index, *cmd.State == "true"); err != nil {
+	if err := ctx.Client.HeadAmp.SetPhantomPower(
+		headamp.Index.Index,
+		*cmd.State == "true",
+	); err != nil {
 		return fmt.Errorf("failed to set headamp phantom power state: %w", err)
 	}
 	fmt.Fprintf(ctx.Out, "Headamp %d phantom power set to: %s\n", headamp.Index.Index, *cmd.State)

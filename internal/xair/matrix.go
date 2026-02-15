@@ -9,7 +9,7 @@ type Matrix struct {
 	Comp        *Comp
 }
 
-// newMatrix creates a new Matrix instance
+// newMatrix creates a new Matrix instance.
 func newMatrix(c *client) *Matrix {
 	return &Matrix{
 		client:      c,
@@ -19,7 +19,7 @@ func newMatrix(c *client) *Matrix {
 	}
 }
 
-// Fader requests the current main L/R fader level
+// Fader requests the current main L/R fader level.
 func (m *Matrix) Fader(index int) (float64, error) {
 	address := fmt.Sprintf(m.baseAddress, index) + "/mix/fader"
 	err := m.client.SendMessage(address)
@@ -38,13 +38,13 @@ func (m *Matrix) Fader(index int) (float64, error) {
 	return mustDbFrom(float64(val)), nil
 }
 
-// SetFader sets the matrix fader level
+// SetFader sets the matrix fader level.
 func (m *Matrix) SetFader(index int, level float64) error {
 	address := fmt.Sprintf(m.baseAddress, index) + "/mix/fader"
 	return m.client.SendMessage(address, float32(mustDbInto(level)))
 }
 
-// Mute requests the current matrix mute status
+// Mute requests the current matrix mute status.
 func (m *Matrix) Mute(index int) (bool, error) {
 	address := fmt.Sprintf(m.baseAddress, index) + "/mix/on"
 	err := m.client.SendMessage(address)
@@ -63,7 +63,7 @@ func (m *Matrix) Mute(index int) (bool, error) {
 	return val == 0, nil
 }
 
-// SetMute sets the matrix mute status
+// SetMute sets the matrix mute status.
 func (m *Matrix) SetMute(index int, muted bool) error {
 	address := fmt.Sprintf(m.baseAddress, index) + "/mix/on"
 	var value int32

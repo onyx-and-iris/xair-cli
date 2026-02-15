@@ -15,7 +15,7 @@ type MatrixCmdGroup struct {
 		Fadein  MatrixFadeinCmd  `help:"Fade in the Matrix output over a specified duration."  cmd:""`
 		Fadeout MatrixFadeoutCmd `help:"Fade out the Matrix output over a specified duration." cmd:""`
 
-		Eq   MatrixEqCmdGroup   `help:"Commands for controlling the equalizer settings of the Matrix output."  cmd:"eq"`
+		Eq   MatrixEqCmdGroup   `help:"Commands for controlling the equaliser settings of the Matrix output."  cmd:"eq"`
 		Comp MatrixCompCmdGroup `help:"Commands for controlling the compressor settings of the Matrix output." cmd:"comp"`
 	} `help:"Commands for controlling individual Matrix outputs." arg:""`
 }
@@ -141,7 +141,7 @@ func (cmd *MatrixFadeoutCmd) Run(ctx *context, matrix *MatrixCmdGroup) error {
 	return nil
 }
 
-// MatrixEqCmdGroup defines the command group for controlling the equalizer settings of the Matrix output, including commands for getting or setting the EQ parameters.
+// MatrixEqCmdGroup defines the command group for controlling the equaliser settings of the Matrix output, including commands for getting or setting the EQ parameters.
 type MatrixEqCmdGroup struct {
 	On   MatrixEqOnCmd `help:"Get or set the EQ on/off state of the Matrix output."               cmd:"on"`
 	Band struct {
@@ -194,7 +194,11 @@ type MatrixEqBandGainCmd struct {
 }
 
 // Run executes the MatrixEqBandGainCmd command, either retrieving the current gain of a specific EQ band on the Matrix output or setting it based on the provided argument.
-func (cmd *MatrixEqBandGainCmd) Run(ctx *context, matrix *MatrixCmdGroup, matrixEq *MatrixEqCmdGroup) error {
+func (cmd *MatrixEqBandGainCmd) Run(
+	ctx *context,
+	matrix *MatrixCmdGroup,
+	matrixEq *MatrixEqCmdGroup,
+) error {
 	if cmd.Level == nil {
 		resp, err := ctx.Client.Matrix.Eq.Gain(matrix.Index.Index, *matrixEq.Band.Band)
 		if err != nil {
@@ -204,10 +208,19 @@ func (cmd *MatrixEqBandGainCmd) Run(ctx *context, matrix *MatrixCmdGroup, matrix
 		return nil
 	}
 
-	if err := ctx.Client.Matrix.Eq.SetGain(matrix.Index.Index, *matrixEq.Band.Band, *cmd.Level); err != nil {
+	if err := ctx.Client.Matrix.Eq.SetGain(
+		matrix.Index.Index,
+		*matrixEq.Band.Band,
+		*cmd.Level,
+	); err != nil {
 		return fmt.Errorf("failed to set Matrix EQ band %d gain: %w", *matrixEq.Band.Band, err)
 	}
-	fmt.Fprintf(ctx.Out, "Matrix EQ band %d gain set to: %.2f dB\n", *matrixEq.Band.Band, *cmd.Level)
+	fmt.Fprintf(
+		ctx.Out,
+		"Matrix EQ band %d gain set to: %.2f dB\n",
+		*matrixEq.Band.Band,
+		*cmd.Level,
+	)
 	return nil
 }
 
@@ -217,20 +230,37 @@ type MatrixEqBandFreqCmd struct {
 }
 
 // Run executes the MatrixEqBandFreqCmd command, either retrieving the current frequency of a specific EQ band on the Matrix output or setting it based on the provided argument.
-func (cmd *MatrixEqBandFreqCmd) Run(ctx *context, matrix *MatrixCmdGroup, matrixEq *MatrixEqCmdGroup) error {
+func (cmd *MatrixEqBandFreqCmd) Run(
+	ctx *context,
+	matrix *MatrixCmdGroup,
+	matrixEq *MatrixEqCmdGroup,
+) error {
 	if cmd.Frequency == nil {
 		resp, err := ctx.Client.Matrix.Eq.Frequency(matrix.Index.Index, *matrixEq.Band.Band)
 		if err != nil {
-			return fmt.Errorf("failed to get Matrix EQ band %d frequency: %w", *matrixEq.Band.Band, err)
+			return fmt.Errorf(
+				"failed to get Matrix EQ band %d frequency: %w",
+				*matrixEq.Band.Band,
+				err,
+			)
 		}
 		fmt.Fprintf(ctx.Out, "Matrix EQ band %d frequency: %.2f Hz\n", *matrixEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Matrix.Eq.SetFrequency(matrix.Index.Index, *matrixEq.Band.Band, *cmd.Frequency); err != nil {
+	if err := ctx.Client.Matrix.Eq.SetFrequency(
+		matrix.Index.Index,
+		*matrixEq.Band.Band,
+		*cmd.Frequency,
+	); err != nil {
 		return fmt.Errorf("failed to set Matrix EQ band %d frequency: %w", *matrixEq.Band.Band, err)
 	}
-	fmt.Fprintf(ctx.Out, "Matrix EQ band %d frequency set to: %.2f Hz\n", *matrixEq.Band.Band, *cmd.Frequency)
+	fmt.Fprintf(
+		ctx.Out,
+		"Matrix EQ band %d frequency set to: %.2f Hz\n",
+		*matrixEq.Band.Band,
+		*cmd.Frequency,
+	)
 	return nil
 }
 
@@ -240,17 +270,29 @@ type MatrixEqBandQCmd struct {
 }
 
 // Run executes the MatrixEqBandQCmd command, either retrieving the current Q factor of a specific EQ band on the Matrix output or setting it based on the provided argument.
-func (cmd *MatrixEqBandQCmd) Run(ctx *context, matrix *MatrixCmdGroup, matrixEq *MatrixEqCmdGroup) error {
+func (cmd *MatrixEqBandQCmd) Run(
+	ctx *context,
+	matrix *MatrixCmdGroup,
+	matrixEq *MatrixEqCmdGroup,
+) error {
 	if cmd.Q == nil {
 		resp, err := ctx.Client.Matrix.Eq.Q(matrix.Index.Index, *matrixEq.Band.Band)
 		if err != nil {
-			return fmt.Errorf("failed to get Matrix EQ band %d Q factor: %w", *matrixEq.Band.Band, err)
+			return fmt.Errorf(
+				"failed to get Matrix EQ band %d Q factor: %w",
+				*matrixEq.Band.Band,
+				err,
+			)
 		}
 		fmt.Fprintf(ctx.Out, "Matrix EQ band %d Q factor: %.2f\n", *matrixEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.Matrix.Eq.SetQ(matrix.Index.Index, *matrixEq.Band.Band, *cmd.Q); err != nil {
+	if err := ctx.Client.Matrix.Eq.SetQ(
+		matrix.Index.Index,
+		*matrixEq.Band.Band,
+		*cmd.Q,
+	); err != nil {
 		return fmt.Errorf("failed to set Matrix EQ band %d Q factor: %w", *matrixEq.Band.Band, err)
 	}
 	fmt.Fprintf(ctx.Out, "Matrix EQ band %d Q factor set to: %.2f\n", *matrixEq.Band.Band, *cmd.Q)
@@ -263,7 +305,11 @@ type MatrixEqBandTypeCmd struct {
 }
 
 // Run executes the MatrixEqBandTypeCmd command, either retrieving the current type of a specific EQ band on the Matrix output or setting it based on the provided argument.
-func (cmd *MatrixEqBandTypeCmd) Run(ctx *context, matrix *MatrixCmdGroup, matrixEq *MatrixEqCmdGroup) error {
+func (cmd *MatrixEqBandTypeCmd) Run(
+	ctx *context,
+	matrix *MatrixCmdGroup,
+	matrixEq *MatrixEqCmdGroup,
+) error {
 	if cmd.Type == nil {
 		resp, err := ctx.Client.Matrix.Eq.Type(matrix.Index.Index, *matrixEq.Band.Band)
 		if err != nil {
@@ -273,7 +319,11 @@ func (cmd *MatrixEqBandTypeCmd) Run(ctx *context, matrix *MatrixCmdGroup, matrix
 		return nil
 	}
 
-	if err := ctx.Client.Matrix.Eq.SetType(matrix.Index.Index, *matrixEq.Band.Band, *cmd.Type); err != nil {
+	if err := ctx.Client.Matrix.Eq.SetType(
+		matrix.Index.Index,
+		*matrixEq.Band.Band,
+		*cmd.Type,
+	); err != nil {
 		return fmt.Errorf("failed to set Matrix EQ band %d type: %w", *matrixEq.Band.Band, err)
 	}
 	fmt.Fprintf(ctx.Out, "Matrix EQ band %d type set to: %s\n", *matrixEq.Band.Band, *cmd.Type)

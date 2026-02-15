@@ -13,7 +13,7 @@ type MainMonoCmdGroup struct {
 	Fadein  MainMonoFadeinCmd  `help:"Fade in the Main Mono output over a specified duration."  cmd:""`
 	Fadeout MainMonoFadeoutCmd `help:"Fade out the Main Mono output over a specified duration." cmd:""`
 
-	Eq   MainMonoEqCmdGroup   `help:"Commands for controlling the equalizer settings of the Main Mono output."  cmd:"eq"`
+	Eq   MainMonoEqCmdGroup   `help:"Commands for controlling the equaliser settings of the Main Mono output."  cmd:"eq"`
 	Comp MainMonoCompCmdGroup `help:"Commands for controlling the compressor settings of the Main Mono output." cmd:"comp"`
 }
 
@@ -131,7 +131,7 @@ func (cmd *MainMonoFadeoutCmd) Run(ctx *context) error {
 	return nil
 }
 
-// MainMonoEqCmdGroup defines the command group for controlling the equalizer settings of the Main Mono output, including commands for getting or setting the EQ parameters.
+// MainMonoEqCmdGroup defines the command group for controlling the equaliser settings of the Main Mono output, including commands for getting or setting the EQ parameters.
 type MainMonoEqCmdGroup struct {
 	On   MainMonoEqOnCmd `help:"Get or set the EQ on/off state of the Main Mono output."               cmd:"on"`
 	Band struct {
@@ -184,7 +184,11 @@ type MainMonoEqBandGainCmd struct {
 }
 
 // Run executes the MainMonoEqBandGainCmd command, either retrieving the current gain of a specific EQ band on the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoEqBandGainCmd) Run(ctx *context, main *MainCmdGroup, mainEq *MainMonoEqCmdGroup) error {
+func (cmd *MainMonoEqBandGainCmd) Run(
+	ctx *context,
+	main *MainCmdGroup,
+	mainEq *MainMonoEqCmdGroup,
+) error {
 	if cmd.Level == nil {
 		resp, err := ctx.Client.MainMono.Eq.Gain(0, *mainEq.Band.Band)
 		if err != nil {
@@ -197,7 +201,12 @@ func (cmd *MainMonoEqBandGainCmd) Run(ctx *context, main *MainCmdGroup, mainEq *
 	if err := ctx.Client.MainMono.Eq.SetGain(0, *mainEq.Band.Band, *cmd.Level); err != nil {
 		return fmt.Errorf("failed to set Main Mono EQ band %d gain: %w", *mainEq.Band.Band, err)
 	}
-	fmt.Fprintf(ctx.Out, "Main Mono EQ band %d gain set to: %.2f dB\n", *mainEq.Band.Band, *cmd.Level)
+	fmt.Fprintf(
+		ctx.Out,
+		"Main Mono EQ band %d gain set to: %.2f dB\n",
+		*mainEq.Band.Band,
+		*cmd.Level,
+	)
 	return nil
 }
 
@@ -207,20 +216,41 @@ type MainMonoEqBandFreqCmd struct {
 }
 
 // Run executes the MainMonoEqBandFreqCmd command, either retrieving the current frequency of a specific EQ band on the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoEqBandFreqCmd) Run(ctx *context, main *MainCmdGroup, mainEq *MainMonoEqCmdGroup) error {
+func (cmd *MainMonoEqBandFreqCmd) Run(
+	ctx *context,
+	main *MainCmdGroup,
+	mainEq *MainMonoEqCmdGroup,
+) error {
 	if cmd.Frequency == nil {
 		resp, err := ctx.Client.MainMono.Eq.Frequency(0, *mainEq.Band.Band)
 		if err != nil {
-			return fmt.Errorf("failed to get Main Mono EQ band %d frequency: %w", *mainEq.Band.Band, err)
+			return fmt.Errorf(
+				"failed to get Main Mono EQ band %d frequency: %w",
+				*mainEq.Band.Band,
+				err,
+			)
 		}
 		fmt.Fprintf(ctx.Out, "Main Mono EQ band %d frequency: %.2f Hz\n", *mainEq.Band.Band, resp)
 		return nil
 	}
 
-	if err := ctx.Client.MainMono.Eq.SetFrequency(0, *mainEq.Band.Band, *cmd.Frequency); err != nil {
-		return fmt.Errorf("failed to set Main Mono EQ band %d frequency: %w", *mainEq.Band.Band, err)
+	if err := ctx.Client.MainMono.Eq.SetFrequency(
+		0,
+		*mainEq.Band.Band,
+		*cmd.Frequency,
+	); err != nil {
+		return fmt.Errorf(
+			"failed to set Main Mono EQ band %d frequency: %w",
+			*mainEq.Band.Band,
+			err,
+		)
 	}
-	fmt.Fprintf(ctx.Out, "Main Mono EQ band %d frequency set to: %.2f Hz\n", *mainEq.Band.Band, *cmd.Frequency)
+	fmt.Fprintf(
+		ctx.Out,
+		"Main Mono EQ band %d frequency set to: %.2f Hz\n",
+		*mainEq.Band.Band,
+		*cmd.Frequency,
+	)
 	return nil
 }
 
@@ -230,11 +260,19 @@ type MainMonoEqBandQCmd struct {
 }
 
 // Run executes the MainMonoEqBandQCmd command, either retrieving the current Q factor of a specific EQ band on the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoEqBandQCmd) Run(ctx *context, main *MainCmdGroup, mainEq *MainMonoEqCmdGroup) error {
+func (cmd *MainMonoEqBandQCmd) Run(
+	ctx *context,
+	main *MainCmdGroup,
+	mainEq *MainMonoEqCmdGroup,
+) error {
 	if cmd.Q == nil {
 		resp, err := ctx.Client.MainMono.Eq.Q(0, *mainEq.Band.Band)
 		if err != nil {
-			return fmt.Errorf("failed to get Main Mono EQ band %d Q factor: %w", *mainEq.Band.Band, err)
+			return fmt.Errorf(
+				"failed to get Main Mono EQ band %d Q factor: %w",
+				*mainEq.Band.Band,
+				err,
+			)
 		}
 		fmt.Fprintf(ctx.Out, "Main Mono EQ band %d Q factor: %.2f\n", *mainEq.Band.Band, resp)
 		return nil
@@ -253,7 +291,11 @@ type MainMonoEqBandTypeCmd struct {
 }
 
 // Run executes the MainMonoEqBandTypeCmd command, either retrieving the current type of a specific EQ band on the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoEqBandTypeCmd) Run(ctx *context, main *MainCmdGroup, mainEq *MainMonoEqCmdGroup) error {
+func (cmd *MainMonoEqBandTypeCmd) Run(
+	ctx *context,
+	main *MainCmdGroup,
+	mainEq *MainMonoEqCmdGroup,
+) error {
 	if cmd.Type == nil {
 		resp, err := ctx.Client.MainMono.Eq.Type(0, *mainEq.Band.Band)
 		if err != nil {

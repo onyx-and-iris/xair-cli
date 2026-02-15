@@ -10,14 +10,13 @@ import (
 	"github.com/hypebeast/go-osc/osc"
 )
 
-type xairParser struct {
-}
+type xairParser struct{}
 
 func newParser() *xairParser {
 	return &xairParser{}
 }
 
-// parseOSCMessage parses raw bytes into an OSC message with improved error handling
+// parseOSCMessage parses raw bytes into an OSC message with improved error handling.
 func (p *xairParser) Parse(data []byte) (*osc.Message, error) {
 	log.Debug("=== PARSING OSC MESSAGE BEGIN ===")
 	defer log.Debug("=== PARSING OSC MESSAGE END ===")
@@ -47,7 +46,7 @@ func (p *xairParser) Parse(data []byte) (*osc.Message, error) {
 	return msg, nil
 }
 
-// validateOSCData performs basic validation on OSC message data
+// validateOSCData performs basic validation on OSC message data.
 func (p *xairParser) validateOSCData(data []byte) error {
 	if len(data) < 4 {
 		return fmt.Errorf("data too short for OSC message")
@@ -58,7 +57,7 @@ func (p *xairParser) validateOSCData(data []byte) error {
 	return nil
 }
 
-// extractOSCAddress extracts the OSC address from the message data
+// extractOSCAddress extracts the OSC address from the message data.
 func (p *xairParser) extractOSCAddress(data []byte) (address string, nextPos int, err error) {
 	nullPos := bytes.IndexByte(data, 0)
 	if nullPos <= 0 {
@@ -73,8 +72,11 @@ func (p *xairParser) extractOSCAddress(data []byte) (address string, nextPos int
 	return address, nextPos, nil
 }
 
-// extractOSCTypeTags extracts and validates OSC type tags
-func (p *xairParser) extractOSCTypeTags(data []byte, start int) (typeTags string, nextPos int, err error) {
+// extractOSCTypeTags extracts and validates OSC type tags.
+func (p *xairParser) extractOSCTypeTags(
+	data []byte,
+	start int,
+) (typeTags string, nextPos int, err error) {
 	if start >= len(data) {
 		return "", start, nil // No type tags available
 	}
@@ -97,8 +99,13 @@ func (p *xairParser) extractOSCTypeTags(data []byte, start int) (typeTags string
 	return typeTags, nextPos, nil
 }
 
-// parseOSCArguments parses OSC arguments based on type tags
-func (p *xairParser) parseOSCArguments(data []byte, argsStart int, typeTags string, msg *osc.Message) error {
+// parseOSCArguments parses OSC arguments based on type tags.
+func (p *xairParser) parseOSCArguments(
+	data []byte,
+	argsStart int,
+	typeTags string,
+	msg *osc.Message,
+) error {
 	argData := data[argsStart:]
 	argNum := 0
 
@@ -138,7 +145,7 @@ func (p *xairParser) parseOSCArguments(data []byte, argsStart int, typeTags stri
 	return nil
 }
 
-// parseStringArgument parses a string argument from OSC data
+// parseStringArgument parses a string argument from OSC data.
 func (p *xairParser) parseStringArgument(data []byte, msg *osc.Message, argNum int) (int, error) {
 	nullPos := bytes.IndexByte(data, 0)
 	if nullPos < 0 {
@@ -153,7 +160,7 @@ func (p *xairParser) parseStringArgument(data []byte, msg *osc.Message, argNum i
 	return ((nullPos + 4) / 4) * 4, nil
 }
 
-// parseInt32Argument parses an int32 argument from OSC data
+// parseInt32Argument parses an int32 argument from OSC data.
 func (p *xairParser) parseInt32Argument(data []byte, msg *osc.Message, argNum int) (int, error) {
 	if len(data) < 4 {
 		return 0, fmt.Errorf("insufficient data for int32")
@@ -166,7 +173,7 @@ func (p *xairParser) parseInt32Argument(data []byte, msg *osc.Message, argNum in
 	return 4, nil
 }
 
-// parseFloat32Argument parses a float32 argument from OSC data
+// parseFloat32Argument parses a float32 argument from OSC data.
 func (p *xairParser) parseFloat32Argument(data []byte, msg *osc.Message, argNum int) (int, error) {
 	if len(data) < 4 {
 		return 0, fmt.Errorf("insufficient data for float32")
@@ -179,7 +186,7 @@ func (p *xairParser) parseFloat32Argument(data []byte, msg *osc.Message, argNum 
 	return 4, nil
 }
 
-// parseBlobArgument parses a blob argument from OSC data
+// parseBlobArgument parses a blob argument from OSC data.
 func (p *xairParser) parseBlobArgument(data []byte, msg *osc.Message, argNum int) (int, error) {
 	if len(data) < 4 {
 		return 0, fmt.Errorf("insufficient data for blob size")
@@ -203,7 +210,7 @@ func (p *xairParser) parseBlobArgument(data []byte, msg *osc.Message, argNum int
 	return ((4 + int(size) + 3) / 4) * 4, nil
 }
 
-// skipUnknownArgument skips an unknown argument type
+// skipUnknownArgument skips an unknown argument type.
 func (p *xairParser) skipUnknownArgument(data []byte) int {
 	// Skip unknown types by moving 4 bytes if available
 	if len(data) >= 4 {

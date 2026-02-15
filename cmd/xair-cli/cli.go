@@ -11,6 +11,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/log"
 	kongcompletion "github.com/jotaen/kong-completion"
+
 	"github.com/onyx-and-iris/xair-cli/internal/xair"
 )
 

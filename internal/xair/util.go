@@ -2,19 +2,19 @@ package xair
 
 import "math"
 
-func linGet(min float64, max float64, value float64) float64 {
+func linGet(min, max, value float64) float64 {
 	return min + (max-min)*value
 }
 
-func linSet(min float64, max float64, value float64) float64 {
+func linSet(min, max, value float64) float64 {
 	return (value - min) / (max - min)
 }
 
-func logGet(min float64, max float64, value float64) float64 {
+func logGet(min, max, value float64) float64 {
 	return min * math.Exp(math.Log(max/min)*value)
 }
 
-func logSet(min float64, max float64, value float64) float64 {
+func logSet(min, max, value float64) float64 {
 	return math.Log(value/min) / math.Log(max/min)
 }
 
