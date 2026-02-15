@@ -4,7 +4,7 @@ import "fmt"
 
 type InfoCmd struct{}
 
-func (c *InfoCmd) Run(ctx *context) error {
+func (cmd *InfoCmd) Run(ctx *context) error { // nolint: unparam
 	fmt.Fprintf(
 		ctx.Out,
 		"Host: %s | Name: %s | Model: %s | Firmware: %s\n",

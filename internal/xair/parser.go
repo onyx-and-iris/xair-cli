@@ -76,7 +76,7 @@ func (p *xairParser) extractOSCAddress(data []byte) (address string, nextPos int
 func (p *xairParser) extractOSCTypeTags(
 	data []byte,
 	start int,
-) (typeTags string, nextPos int, err error) {
+) (typeTags string, nextPos int, err error) { // nolint: unparam
 	if start >= len(data) {
 		return "", start, nil // No type tags available
 	}
@@ -105,7 +105,7 @@ func (p *xairParser) parseOSCArguments(
 	argsStart int,
 	typeTags string,
 	msg *osc.Message,
-) error {
+) error { // nolint: unparam
 	argData := data[argsStart:]
 	argNum := 0
 

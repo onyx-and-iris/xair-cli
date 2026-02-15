@@ -52,7 +52,7 @@ func mustDbFrom(level float64) float64 {
 	}
 }
 
-func toFixed(num float64, precision int) float64 {
+func toFixed(num float64, precision int) float64 { // nolint: unparam
 	output := math.Pow(10, float64(precision))
 	return float64(math.Round(num*output)) / output
 }

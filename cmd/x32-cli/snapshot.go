@@ -14,12 +14,12 @@ type SnapshotCmdGroup struct {
 }
 
 // Validate checks if the provided snapshot index is within the valid range (1-64) when any of the subcommands that require an index are used.
-func (c *SnapshotCmdGroup) Validate() error {
-	if c.Index.Index == nil {
+func (cmd *SnapshotCmdGroup) Validate() error {
+	if cmd.Index.Index == nil {
 		return nil
 	}
 
-	if *c.Index.Index < 1 || *c.Index.Index > 64 {
+	if *cmd.Index.Index < 1 || *cmd.Index.Index > 64 {
 		return fmt.Errorf("snapshot index must be between 1 and 64")
 	}
 
@@ -28,11 +28,11 @@ func (c *SnapshotCmdGroup) Validate() error {
 
 type ListCmd struct{}
 
-func (c *ListCmd) Run(ctx *context) error {
+func (cmd *ListCmd) Run(ctx *context) error {
 	for i := range 64 {
 		name, err := ctx.Client.Snapshot.Name(i + 1)
 		if err != nil {
-			break
+			return fmt.Errorf("failed to get name for snapshot %d: %w", i+1, err)
 		}
 		if name == "" {
 			continue
@@ -46,8 +46,8 @@ type NameCmd struct {
 	Name *string `arg:"" help:"The name of the snapshot." optional:""`
 }
 
-func (c *NameCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
-	if c.Name == nil {
+func (cmd *NameCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
+	if cmd.Name == nil {
 		name, err := ctx.Client.Snapshot.Name(*snapshot.Index.Index)
 		if err != nil {
 			return err
@@ -56,15 +56,15 @@ func (c *NameCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
 		return nil
 	}
 
-	return ctx.Client.Snapshot.SetName(*snapshot.Index.Index, *c.Name)
+	return ctx.Client.Snapshot.SetName(*snapshot.Index.Index, *cmd.Name)
 }
 
 type SaveCmd struct {
 	Name string `arg:"" help:"The name of the snapshot."`
 }
 
-func (c *SaveCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
-	err := ctx.Client.Snapshot.CurrentName(c.Name)
+func (cmd *SaveCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
+	err := ctx.Client.Snapshot.CurrentName(cmd.Name)
 	if err != nil {
 		return err
 	}
@@ -74,12 +74,12 @@ func (c *SaveCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
 
 type LoadCmd struct{}
 
-func (c *LoadCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
+func (cmd *LoadCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
 	return ctx.Client.Snapshot.CurrentLoad(*snapshot.Index.Index)
 }
 
 type DeleteCmd struct{}
 
-func (c *DeleteCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
+func (cmd *DeleteCmd) Run(ctx *context, snapshot *SnapshotCmdGroup) error {
 	return ctx.Client.Snapshot.CurrentDelete(*snapshot.Index.Index)
 }

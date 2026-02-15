@@ -32,7 +32,7 @@ func (c *ListCmd) Run(ctx *context) error {
 	for i := range 64 {
 		name, err := ctx.Client.Snapshot.Name(i + 1)
 		if err != nil {
-			break
+			return fmt.Errorf("failed to get name for snapshot %d: %w", i+1, err)
 		}
 		if name == "" {
 			continue
