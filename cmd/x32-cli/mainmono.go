@@ -161,7 +161,7 @@ type MainMonoEqOnCmd struct {
 }
 
 // Run executes the MainMonoEqOnCmd command, either retrieving the current EQ on/off state of the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoEqOnCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainMonoEqOnCmd) Run(ctx *context) error {
 	if cmd.Enable == nil {
 		resp, err := ctx.Client.MainMono.Eq.On(0)
 		if err != nil {
@@ -186,7 +186,6 @@ type MainMonoEqBandGainCmd struct {
 // Run executes the MainMonoEqBandGainCmd command, either retrieving the current gain of a specific EQ band on the Main Mono output or setting it based on the provided argument.
 func (cmd *MainMonoEqBandGainCmd) Run(
 	ctx *context,
-	main *MainCmdGroup,
 	mainEq *MainMonoEqCmdGroup,
 ) error {
 	if cmd.Level == nil {
@@ -218,7 +217,6 @@ type MainMonoEqBandFreqCmd struct {
 // Run executes the MainMonoEqBandFreqCmd command, either retrieving the current frequency of a specific EQ band on the Main Mono output or setting it based on the provided argument.
 func (cmd *MainMonoEqBandFreqCmd) Run(
 	ctx *context,
-	main *MainCmdGroup,
 	mainEq *MainMonoEqCmdGroup,
 ) error {
 	if cmd.Frequency == nil {
@@ -262,7 +260,6 @@ type MainMonoEqBandQCmd struct {
 // Run executes the MainMonoEqBandQCmd command, either retrieving the current Q factor of a specific EQ band on the Main Mono output or setting it based on the provided argument.
 func (cmd *MainMonoEqBandQCmd) Run(
 	ctx *context,
-	main *MainCmdGroup,
 	mainEq *MainMonoEqCmdGroup,
 ) error {
 	if cmd.Q == nil {
@@ -293,7 +290,6 @@ type MainMonoEqBandTypeCmd struct {
 // Run executes the MainMonoEqBandTypeCmd command, either retrieving the current type of a specific EQ band on the Main Mono output or setting it based on the provided argument.
 func (cmd *MainMonoEqBandTypeCmd) Run(
 	ctx *context,
-	main *MainCmdGroup,
 	mainEq *MainMonoEqCmdGroup,
 ) error {
 	if cmd.Type == nil {
@@ -331,7 +327,7 @@ type MainMonoCompOnCmd struct {
 }
 
 // Run executes the MainMonoCompOnCmd command, either retrieving the current compressor on/off state of the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoCompOnCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainMonoCompOnCmd) Run(ctx *context) error {
 	if cmd.Enable == nil {
 		resp, err := ctx.Client.MainMono.Comp.On(0)
 		if err != nil {
@@ -354,7 +350,7 @@ type MainMonoCompModeCmd struct {
 }
 
 // Run executes the MainMonoCompModeCmd command, either retrieving the current compressor mode of the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoCompModeCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainMonoCompModeCmd) Run(ctx *context) error {
 	if cmd.Mode == nil {
 		resp, err := ctx.Client.MainMono.Comp.Mode(0)
 		if err != nil {
@@ -377,7 +373,7 @@ type MainMonoCompThresholdCmd struct {
 }
 
 // Run executes the MainMonoCompThresholdCmd command, either retrieving the current compressor threshold of the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoCompThresholdCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainMonoCompThresholdCmd) Run(ctx *context) error {
 	if cmd.Threshold == nil {
 		resp, err := ctx.Client.MainMono.Comp.Threshold(0)
 		if err != nil {
@@ -400,7 +396,7 @@ type MainMonoCompRatioCmd struct {
 }
 
 // Run executes the MainMonoCompRatioCmd command, either retrieving the current compressor ratio of the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoCompRatioCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainMonoCompRatioCmd) Run(ctx *context) error {
 	if cmd.Ratio == nil {
 		resp, err := ctx.Client.MainMono.Comp.Ratio(0)
 		if err != nil {
@@ -423,7 +419,7 @@ type MainMonoCompMixCmd struct {
 }
 
 // Run executes the MainMonoCompMixCmd command, either retrieving the current compressor mix level of the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoCompMixCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainMonoCompMixCmd) Run(ctx *context) error {
 	if cmd.Mix == nil {
 		resp, err := ctx.Client.MainMono.Comp.Mix(0)
 		if err != nil {
@@ -446,7 +442,7 @@ type MainMonoCompMakeupCmd struct {
 }
 
 // Run executes the MainMonoCompMakeupCmd command, either retrieving the current compressor makeup gain of the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoCompMakeupCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainMonoCompMakeupCmd) Run(ctx *context) error {
 	if cmd.Makeup == nil {
 		resp, err := ctx.Client.MainMono.Comp.Makeup(0)
 		if err != nil {
@@ -469,7 +465,7 @@ type MainMonoCompAttackCmd struct {
 }
 
 // Run executes the MainMonoCompAttackCmd command, either retrieving the current compressor attack time of the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoCompAttackCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainMonoCompAttackCmd) Run(ctx *context) error {
 	if cmd.Attack == nil {
 		resp, err := ctx.Client.MainMono.Comp.Attack(0)
 		if err != nil {
@@ -492,7 +488,7 @@ type MainMonoCompHoldCmd struct {
 }
 
 // Run executes the MainMonoCompHoldCmd command, either retrieving the current compressor hold time of the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoCompHoldCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainMonoCompHoldCmd) Run(ctx *context) error {
 	if cmd.Hold == nil {
 		resp, err := ctx.Client.MainMono.Comp.Hold(0)
 		if err != nil {
@@ -515,7 +511,7 @@ type MainMonoCompReleaseCmd struct {
 }
 
 // Run executes the MainMonoCompReleaseCmd command, either retrieving the current compressor release time of the Main Mono output or setting it based on the provided argument.
-func (cmd *MainMonoCompReleaseCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainMonoCompReleaseCmd) Run(ctx *context) error {
 	if cmd.Release == nil {
 		resp, err := ctx.Client.MainMono.Comp.Release(0)
 		if err != nil {

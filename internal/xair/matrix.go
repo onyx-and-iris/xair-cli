@@ -2,6 +2,7 @@ package xair
 
 import "fmt"
 
+// Matrix represents the matrix parameters of the mixer.
 type Matrix struct {
 	client      *client
 	baseAddress string

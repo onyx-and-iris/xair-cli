@@ -2,6 +2,7 @@ package xair
 
 import "fmt"
 
+// Strip represents an input channel strip on the mixer.
 type Strip struct {
 	client      *client
 	baseAddress string
@@ -43,7 +44,7 @@ func (s *Strip) Mute(index int) (bool, error) {
 // SetMute sets the mute status of the specified strip (1-based indexing).
 func (s *Strip) SetMute(strip int, muted bool) error {
 	address := fmt.Sprintf(s.baseAddress, strip) + "/mix/on"
-	var value int32 = 0
+	var value int32
 	if !muted {
 		value = 1
 	}

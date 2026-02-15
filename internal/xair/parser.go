@@ -16,7 +16,7 @@ func newParser() *xairParser {
 	return &xairParser{}
 }
 
-// parseOSCMessage parses raw bytes into an OSC message with improved error handling.
+// Parse parses raw bytes into an OSC message with improved error handling.
 func (p *xairParser) Parse(data []byte) (*osc.Message, error) {
 	log.Debug("=== PARSING OSC MESSAGE BEGIN ===")
 	defer log.Debug("=== PARSING OSC MESSAGE END ===")

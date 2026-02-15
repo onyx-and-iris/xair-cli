@@ -1,3 +1,4 @@
+// Package main implements the command-line interface for controlling an X32 digital mixer.
 package main
 
 import (
@@ -161,7 +162,7 @@ type MainEqOnCmd struct {
 }
 
 // Run executes the MainEqOnCmd command, either retrieving the current EQ on/off state of the Main L/R output or setting it based on the provided argument.
-func (cmd *MainEqOnCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainEqOnCmd) Run(ctx *context) error {
 	if cmd.Enable == nil {
 		resp, err := ctx.Client.Main.Eq.On(0)
 		if err != nil {
@@ -184,7 +185,7 @@ type MainEqBandGainCmd struct {
 }
 
 // Run executes the MainEqBandGainCmd command, either retrieving the current gain of a specific EQ band on the Main L/R output or setting it based on the provided argument.
-func (cmd *MainEqBandGainCmd) Run(ctx *context, main *MainCmdGroup, mainEq *MainEqCmdGroup) error {
+func (cmd *MainEqBandGainCmd) Run(ctx *context, mainEq *MainEqCmdGroup) error {
 	if cmd.Level == nil {
 		resp, err := ctx.Client.Main.Eq.Gain(0, *mainEq.Band.Band)
 		if err != nil {
@@ -212,7 +213,7 @@ type MainEqBandFreqCmd struct {
 }
 
 // Run executes the MainEqBandFreqCmd command, either retrieving the current frequency of a specific EQ band on the Main L/R output or setting it based on the provided argument.
-func (cmd *MainEqBandFreqCmd) Run(ctx *context, main *MainCmdGroup, mainEq *MainEqCmdGroup) error {
+func (cmd *MainEqBandFreqCmd) Run(ctx *context, mainEq *MainEqCmdGroup) error {
 	if cmd.Frequency == nil {
 		resp, err := ctx.Client.Main.Eq.Frequency(0, *mainEq.Band.Band)
 		if err != nil {
@@ -244,7 +245,7 @@ type MainEqBandQCmd struct {
 }
 
 // Run executes the MainEqBandQCmd command, either retrieving the current Q factor of a specific EQ band on the Main L/R output or setting it based on the provided argument.
-func (cmd *MainEqBandQCmd) Run(ctx *context, main *MainCmdGroup, mainEq *MainEqCmdGroup) error {
+func (cmd *MainEqBandQCmd) Run(ctx *context, mainEq *MainEqCmdGroup) error {
 	if cmd.Q == nil {
 		resp, err := ctx.Client.Main.Eq.Q(0, *mainEq.Band.Band)
 		if err != nil {
@@ -271,7 +272,7 @@ type MainEqBandTypeCmd struct {
 }
 
 // Run executes the MainEqBandTypeCmd command, either retrieving the current type of a specific EQ band on the Main L/R output or setting it based on the provided argument.
-func (cmd *MainEqBandTypeCmd) Run(ctx *context, main *MainCmdGroup, mainEq *MainEqCmdGroup) error {
+func (cmd *MainEqBandTypeCmd) Run(ctx *context, mainEq *MainEqCmdGroup) error {
 	if cmd.Type == nil {
 		resp, err := ctx.Client.Main.Eq.Type(0, *mainEq.Band.Band)
 		if err != nil {
@@ -307,7 +308,7 @@ type MainCompOnCmd struct {
 }
 
 // Run executes the MainCompOnCmd command, either retrieving the current compressor on/off state of the Main L/R output or setting it based on the provided argument.
-func (cmd *MainCompOnCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainCompOnCmd) Run(ctx *context) error {
 	if cmd.Enable == nil {
 		resp, err := ctx.Client.Main.Comp.On(0)
 		if err != nil {
@@ -330,7 +331,7 @@ type MainCompModeCmd struct {
 }
 
 // Run executes the MainCompModeCmd command, either retrieving the current compressor mode of the Main L/R output or setting it based on the provided argument.
-func (cmd *MainCompModeCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainCompModeCmd) Run(ctx *context) error {
 	if cmd.Mode == nil {
 		resp, err := ctx.Client.Main.Comp.Mode(0)
 		if err != nil {
@@ -353,7 +354,7 @@ type MainCompThresholdCmd struct {
 }
 
 // Run executes the MainCompThresholdCmd command, either retrieving the current compressor threshold of the Main L/R output or setting it based on the provided argument.
-func (cmd *MainCompThresholdCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainCompThresholdCmd) Run(ctx *context) error {
 	if cmd.Threshold == nil {
 		resp, err := ctx.Client.Main.Comp.Threshold(0)
 		if err != nil {
@@ -376,7 +377,7 @@ type MainCompRatioCmd struct {
 }
 
 // Run executes the MainCompRatioCmd command, either retrieving the current compressor ratio of the Main L/R output or setting it based on the provided argument.
-func (cmd *MainCompRatioCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainCompRatioCmd) Run(ctx *context) error {
 	if cmd.Ratio == nil {
 		resp, err := ctx.Client.Main.Comp.Ratio(0)
 		if err != nil {
@@ -399,7 +400,7 @@ type MainCompMixCmd struct {
 }
 
 // Run executes the MainCompMixCmd command, either retrieving the current compressor mix level of the Main L/R output or setting it based on the provided argument.
-func (cmd *MainCompMixCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainCompMixCmd) Run(ctx *context) error {
 	if cmd.Mix == nil {
 		resp, err := ctx.Client.Main.Comp.Mix(0)
 		if err != nil {
@@ -422,7 +423,7 @@ type MainCompMakeupCmd struct {
 }
 
 // Run executes the MainCompMakeupCmd command, either retrieving the current compressor makeup gain of the Main L/R output or setting it based on the provided argument.
-func (cmd *MainCompMakeupCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainCompMakeupCmd) Run(ctx *context) error {
 	if cmd.Makeup == nil {
 		resp, err := ctx.Client.Main.Comp.Makeup(0)
 		if err != nil {
@@ -445,7 +446,7 @@ type MainCompAttackCmd struct {
 }
 
 // Run executes the MainCompAttackCmd command, either retrieving the current compressor attack time of the Main L/R output or setting it based on the provided argument.
-func (cmd *MainCompAttackCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainCompAttackCmd) Run(ctx *context) error {
 	if cmd.Attack == nil {
 		resp, err := ctx.Client.Main.Comp.Attack(0)
 		if err != nil {
@@ -468,7 +469,7 @@ type MainCompHoldCmd struct {
 }
 
 // Run executes the MainCompHoldCmd command, either retrieving the current compressor hold time of the Main L/R output or setting it based on the provided argument.
-func (cmd *MainCompHoldCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainCompHoldCmd) Run(ctx *context) error {
 	if cmd.Hold == nil {
 		resp, err := ctx.Client.Main.Comp.Hold(0)
 		if err != nil {
@@ -491,7 +492,7 @@ type MainCompReleaseCmd struct {
 }
 
 // Run executes the MainCompReleaseCmd command, either retrieving the current compressor release time of the Main L/R output or setting it based on the provided argument.
-func (cmd *MainCompReleaseCmd) Run(ctx *context, main *MainCmdGroup) error {
+func (cmd *MainCompReleaseCmd) Run(ctx *context) error {
 	if cmd.Release == nil {
 		resp, err := ctx.Client.Main.Comp.Release(0)
 		if err != nil {

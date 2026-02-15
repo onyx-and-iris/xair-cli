@@ -2,20 +2,20 @@ package xair
 
 import "math"
 
-func linGet(min, max, value float64) float64 {
-	return min + (max-min)*value
+func linGet(minVal, maxVal, value float64) float64 {
+	return minVal + (maxVal-minVal)*value
 }
 
-func linSet(min, max, value float64) float64 {
-	return (value - min) / (max - min)
+func linSet(minVal, maxVal, value float64) float64 {
+	return (value - minVal) / (maxVal - minVal)
 }
 
-func logGet(min, max, value float64) float64 {
-	return min * math.Exp(math.Log(max/min)*value)
+func logGet(minVal, maxVal, value float64) float64 {
+	return minVal * math.Exp(math.Log(maxVal/minVal)*value)
 }
 
-func logSet(min, max, value float64) float64 {
-	return math.Log(value/min) / math.Log(max/min)
+func logSet(minVal, maxVal, value float64) float64 {
+	return math.Log(value/minVal) / math.Log(maxVal/minVal)
 }
 
 func mustDbInto(db float64) float64 {

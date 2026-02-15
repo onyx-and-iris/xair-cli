@@ -1,3 +1,4 @@
+// Package xair provides a client for controlling XAir and X32 mixers using OSC messages.
 package xair
 
 import (
@@ -9,7 +10,7 @@ import (
 )
 
 // XAirClient is a client for controlling XAir mixers.
-type XAirClient struct {
+type XAirClient struct { // nolint: revive
 	client
 	Main     *Main
 	Strip    *Strip
@@ -40,7 +41,7 @@ func NewXAirClient(mixerIP string, mixerPort int, opts ...EngineOption) (*XAirCl
 }
 
 // X32Client is a client for controlling X32 mixers.
-type X32Client struct {
+type X32Client struct { // nolint: revive
 	client
 	Main     *Main
 	MainMono *Main
@@ -79,7 +80,7 @@ type client struct {
 	Info InfoResponse
 }
 
-// Start begins listening for messages in a goroutine.
+// StartListening begins listening for messages in a goroutine.
 func (c *client) StartListening() {
 	go c.receiveLoop()
 	log.Debugf("Started listening on %s...", c.engine.conn.LocalAddr().String())

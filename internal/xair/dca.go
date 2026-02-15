@@ -2,6 +2,7 @@ package xair
 
 import "fmt"
 
+// DCA represents the DCA group parameters of the mixer.
 type DCA struct {
 	client      *client
 	baseAddress string

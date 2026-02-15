@@ -2,6 +2,7 @@ package xair
 
 import "fmt"
 
+// Snapshot represents a snapshot of the mixer's state, allowing for saving and recalling settings.
 type Snapshot struct {
 	client      *client
 	baseAddress string

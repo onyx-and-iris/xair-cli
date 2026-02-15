@@ -6,8 +6,7 @@ run:
   go: '1.24'
 
 linters:
-  disable:
-    [dupl, errcheck, goconst, godot, revive, staticcheck, unparam, predeclared]
+  disable: [dupl, errcheck, goconst, godot, staticcheck, unparam, predeclared]
   enable:
     # Default enabled linters
     - errcheck # Check for unchecked errors

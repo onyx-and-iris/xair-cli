@@ -2,6 +2,7 @@ package xair
 
 import "fmt"
 
+// Main represents the main output parameters of the mixer.
 type Main struct {
 	client      *client
 	baseAddress string
@@ -11,7 +12,7 @@ type Main struct {
 
 // newMainStereo creates a new Main instance for stereo main output.
 func newMainStereo(c *client) *Main {
-	addressFunc := func(fmtString string, args ...any) string {
+	addressFunc := func(fmtString string, _ ...any) string {
 		return fmtString
 	}
 
@@ -25,7 +26,7 @@ func newMainStereo(c *client) *Main {
 
 // newMainMono creates a new MainMono instance for mono main output (X32 only).
 func newMainMono(c *client) *Main {
-	addressFunc := func(fmtString string, args ...any) string {
+	addressFunc := func(fmtString string, _ ...any) string {
 		return fmtString
 	}
 

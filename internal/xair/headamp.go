@@ -2,6 +2,7 @@ package xair
 
 import "fmt"
 
+// HeadAmp represents the headphone amplifier parameters of the mixer.
 type HeadAmp struct {
 	client      *client
 	baseAddress string

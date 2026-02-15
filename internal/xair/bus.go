@@ -2,6 +2,7 @@ package xair
 
 import "fmt"
 
+// Bus represents the bus parameters of the mixer.
 type Bus struct {
 	client      *client
 	baseAddress string

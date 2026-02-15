@@ -55,6 +55,7 @@ func (e *Eq) SetOn(index int, on bool) error {
 	return e.client.SendMessage(address, value)
 }
 
+// Mode retrieves the EQ mode for a specific strip or bus (1-based indexing).
 func (e *Eq) Mode(index int) (string, error) {
 	address := e.AddressFunc(e.baseAddress, index) + "/mode"
 	err := e.client.SendMessage(address)
@@ -75,6 +76,7 @@ func (e *Eq) Mode(index int) (string, error) {
 	return possibleModes[val], nil
 }
 
+// SetMode sets the EQ mode for a specific strip or bus (1-based indexing).
 func (e *Eq) SetMode(index int, mode string) error {
 	address := e.AddressFunc(e.baseAddress, index) + "/mode"
 	possibleModes := []string{"peq", "geq", "teq"}

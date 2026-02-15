@@ -2,6 +2,7 @@ package xair
 
 import "time"
 
+// EngineOption defines a functional option for configuring the engine.
 type EngineOption func(*engine)
 
 // WithTimeout sets the timeout duration for OSC message responses.
@@ -11,6 +12,7 @@ func WithTimeout(timeout time.Duration) EngineOption {
 	}
 }
 
+// CompOption defines a functional option for configuring Comp parameters.
 type CompOption func(*Comp)
 
 // WithCompAddressFunc allows customization of the OSC address formatting for Comp parameters.
@@ -20,6 +22,7 @@ func WithCompAddressFunc(f func(fmtString string, args ...any) string) CompOptio
 	}
 }
 
+// EqOption defines a functional option for configuring Eq parameters.
 type EqOption func(*Eq)
 
 // WithEqAddressFunc allows customization of the OSC address formatting for Eq parameters.
@@ -29,6 +32,7 @@ func WithEqAddressFunc(f func(fmtString string, args ...any) string) EqOption {
 	}
 }
 
+// GateOption defines a functional option for configuring Gate parameters.
 type GateOption func(*Gate)
 
 // WithGateAddressFunc allows customization of the OSC address formatting for Gate parameters.
