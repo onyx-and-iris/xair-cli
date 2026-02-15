@@ -87,11 +87,14 @@ func (c *client) StartListening() {
 }
 
 // Close stops the client and closes the connection.
-func (c *client) Close() {
+func (c *client) Close() error {
 	close(c.done)
 	if c.conn != nil {
-		c.conn.Close()
+		if err := c.conn.Close(); err != nil {
+			return fmt.Errorf("failed to close connection: %w", err)
+		}
 	}
+	return nil
 }
 
 // SendMessage sends an OSC message to the mixer using the unified connection.

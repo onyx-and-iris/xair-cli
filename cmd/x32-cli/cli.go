@@ -107,7 +107,11 @@ func run(ctx *kong.Context, config Config) error {
 	if err != nil {
 		return fmt.Errorf("failed to connect to X32 device: %w", err)
 	}
-	defer client.Close()
+	defer func() {
+		if err := client.Close(); err != nil {
+			log.Errorf("failed to close client connection: %v", err)
+		}
+	}()
 
 	client.StartListening()
 	resp, err := client.RequestInfo()
@@ -132,7 +136,7 @@ func connect(config Config) (*xair.X32Client, error) {
 		xair.WithTimeout(config.Timeout),
 	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create X32 client: %w", err)
 	}
 
 	return client, nil

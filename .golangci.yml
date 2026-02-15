@@ -6,7 +6,7 @@ run:
   go: '1.24'
 
 linters:
-  disable: [dupl, errcheck]
+  disable: [dupl]
   enable:
     # Default enabled linters
     - errcheck # Check for unchecked errors
@@ -38,6 +38,12 @@ linters:
     errcheck:
       check-type-assertions: true
       check-blank: true
+      exclude-functions:
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - fmt.Printf
+        - fmt.Println
+        - fmt.Errorf
 
     revive:
       severity: warning

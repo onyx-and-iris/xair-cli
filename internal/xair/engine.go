@@ -45,7 +45,9 @@ func newEngine(
 
 	mixerAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", mixerIP, mixerPort))
 	if err != nil {
-		conn.Close()
+		if err := conn.Close(); err != nil {
+			log.Errorf("failed to close UDP connection: %v", err)
+		}
 		return nil, fmt.Errorf("failed to resolve mixer address: %w", err)
 	}
 
@@ -78,7 +80,10 @@ func (e *engine) receiveLoop() {
 			return
 		default:
 			// Set a short read deadline to prevent blocking indefinitely
-			e.conn.SetReadDeadline(time.Now().Add(100 * time.Millisecond))
+			if err := e.conn.SetReadDeadline(time.Now().Add(100 * time.Millisecond)); err != nil {
+				log.Errorf("Failed to set read deadline: %v", err)
+				continue
+			}
 			n, _, err := e.conn.ReadFromUDP(buffer)
 			if err != nil {
 				var netErr net.Error
