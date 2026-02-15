@@ -33,7 +33,7 @@ func (cmd *MainMonoMuteCmd) Run(ctx *context) error {
 		return nil
 	}
 
-	if err := ctx.Client.MainMono.SetMute(*cmd.Mute == "true"); err != nil {
+	if err := ctx.Client.MainMono.SetMute(*cmd.Mute == trueStr); err != nil {
 		return fmt.Errorf("failed to set Main Mono mute state: %w", err)
 	}
 	fmt.Fprintf(ctx.Out, "Main Mono mute state set to: %s\n", *cmd.Mute)
@@ -171,10 +171,10 @@ func (cmd *MainMonoEqOnCmd) Run(ctx *context) error {
 		return nil
 	}
 
-	if err := ctx.Client.MainMono.Eq.SetOn(0, *cmd.Enable == "true"); err != nil {
+	if err := ctx.Client.MainMono.Eq.SetOn(0, *cmd.Enable == trueStr); err != nil {
 		return fmt.Errorf("failed to set Main Mono EQ on/off state: %w", err)
 	}
-	fmt.Fprintf(ctx.Out, "Main Mono EQ on/off state set to: %t\n", *cmd.Enable == "true")
+	fmt.Fprintf(ctx.Out, "Main Mono EQ on/off state set to: %t\n", *cmd.Enable == trueStr)
 	return nil
 }
 
@@ -337,10 +337,10 @@ func (cmd *MainMonoCompOnCmd) Run(ctx *context) error {
 		return nil
 	}
 
-	if err := ctx.Client.MainMono.Comp.SetOn(0, *cmd.Enable == "true"); err != nil {
+	if err := ctx.Client.MainMono.Comp.SetOn(0, *cmd.Enable == trueStr); err != nil {
 		return fmt.Errorf("failed to set Main Mono compressor on/off state: %w", err)
 	}
-	fmt.Fprintf(ctx.Out, "Main Mono compressor on/off state set to: %t\n", *cmd.Enable == "true")
+	fmt.Fprintf(ctx.Out, "Main Mono compressor on/off state set to: %t\n", *cmd.Enable == trueStr)
 	return nil
 }
 

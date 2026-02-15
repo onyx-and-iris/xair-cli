@@ -34,7 +34,7 @@ func (cmd *MainMuteCmd) Run(ctx *context) error {
 		return nil
 	}
 
-	if err := ctx.Client.Main.SetMute(*cmd.Mute == "true"); err != nil {
+	if err := ctx.Client.Main.SetMute(*cmd.Mute == trueStr); err != nil {
 		return fmt.Errorf("failed to set Main L/R mute state: %w", err)
 	}
 	fmt.Fprintf(ctx.Out, "Main L/R mute state set to: %s\n", *cmd.Mute)
@@ -172,10 +172,10 @@ func (cmd *MainEqOnCmd) Run(ctx *context) error {
 		return nil
 	}
 
-	if err := ctx.Client.Main.Eq.SetOn(0, *cmd.Enable == "true"); err != nil {
+	if err := ctx.Client.Main.Eq.SetOn(0, *cmd.Enable == trueStr); err != nil {
 		return fmt.Errorf("failed to set Main L/R EQ on/off state: %w", err)
 	}
-	fmt.Fprintf(ctx.Out, "Main L/R EQ on/off state set to: %t\n", *cmd.Enable == "true")
+	fmt.Fprintf(ctx.Out, "Main L/R EQ on/off state set to: %t\n", *cmd.Enable == trueStr)
 	return nil
 }
 
@@ -318,10 +318,10 @@ func (cmd *MainCompOnCmd) Run(ctx *context) error {
 		return nil
 	}
 
-	if err := ctx.Client.Main.Comp.SetOn(0, *cmd.Enable == "true"); err != nil {
+	if err := ctx.Client.Main.Comp.SetOn(0, *cmd.Enable == trueStr); err != nil {
 		return fmt.Errorf("failed to set Main L/R compressor on/off state: %w", err)
 	}
-	fmt.Fprintf(ctx.Out, "Main L/R compressor on/off state set to: %t\n", *cmd.Enable == "true")
+	fmt.Fprintf(ctx.Out, "Main L/R compressor on/off state set to: %t\n", *cmd.Enable == trueStr)
 	return nil
 }
 

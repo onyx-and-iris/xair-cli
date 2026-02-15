@@ -36,7 +36,7 @@ func (cmd *BusMuteCmd) Run(ctx *context, bus *BusCmdGroup) error {
 		return nil
 	}
 
-	if err := ctx.Client.Bus.SetMute(bus.Index.Index, *cmd.State == "true"); err != nil {
+	if err := ctx.Client.Bus.SetMute(bus.Index.Index, *cmd.State == trueStr); err != nil {
 		return err
 	}
 	fmt.Fprintf(ctx.Out, "Bus %d mute state set to: %s\n", bus.Index.Index, *cmd.State)
@@ -218,7 +218,7 @@ func (cmd *BusEqOnCmd) Run(ctx *context, bus *BusCmdGroup) error {
 		return nil
 	}
 
-	if err := ctx.Client.Bus.Eq.SetOn(bus.Index.Index, *cmd.State == "true"); err != nil {
+	if err := ctx.Client.Bus.Eq.SetOn(bus.Index.Index, *cmd.State == trueStr); err != nil {
 		return err
 	}
 	fmt.Fprintf(ctx.Out, "Bus %d EQ on state set to: %s\n", bus.Index.Index, *cmd.State)
@@ -421,7 +421,7 @@ func (cmd *BusCompOnCmd) Run(ctx *context, bus *BusCmdGroup) error {
 		return nil
 	}
 
-	if err := ctx.Client.Bus.Comp.SetOn(bus.Index.Index, *cmd.State == "true"); err != nil {
+	if err := ctx.Client.Bus.Comp.SetOn(bus.Index.Index, *cmd.State == trueStr); err != nil {
 		return err
 	}
 	fmt.Fprintf(ctx.Out, "Bus %d compressor on state set to: %s\n", bus.Index.Index, *cmd.State)

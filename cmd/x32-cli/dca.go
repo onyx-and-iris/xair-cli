@@ -36,7 +36,7 @@ func (cmd *DCAMuteCmd) Run(ctx *context, dca *DCACmdGroup) error {
 		return nil
 	}
 
-	if err := ctx.Client.DCA.SetMute(dca.Index.Index, *cmd.State == "true"); err != nil {
+	if err := ctx.Client.DCA.SetMute(dca.Index.Index, *cmd.State == trueStr); err != nil {
 		return fmt.Errorf("failed to set DCA mute status: %w", err)
 	}
 	return nil

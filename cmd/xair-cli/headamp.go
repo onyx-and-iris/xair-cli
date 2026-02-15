@@ -106,10 +106,10 @@ type HeadampPhantomCmd struct {
 func (cmd *HeadampPhantomCmd) Validate() error {
 	if cmd.State != nil {
 		switch *cmd.State {
-		case "true", "on":
-			*cmd.State = "true"
-		case "false", "off":
-			*cmd.State = "false"
+		case trueStr, "on":
+			*cmd.State = trueStr
+		case falseStr, "off":
+			*cmd.State = falseStr
 		default:
 			return fmt.Errorf("invalid phantom power state: %s", *cmd.State)
 		}
@@ -130,7 +130,7 @@ func (cmd *HeadampPhantomCmd) Run(ctx *context, headamp *HeadampCmdGroup) error 
 
 	if err := ctx.Client.HeadAmp.SetPhantomPower(
 		headamp.Index.Index,
-		*cmd.State == "true",
+		*cmd.State == trueStr,
 	); err != nil {
 		return fmt.Errorf("failed to set headamp phantom power state: %w", err)
 	}

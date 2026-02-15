@@ -43,7 +43,7 @@ func (cmd *MatrixMuteCmd) Run(ctx *context, matrix *MatrixCmdGroup) error {
 		return nil
 	}
 
-	if err := ctx.Client.Matrix.SetMute(matrix.Index.Index, *cmd.Mute == "true"); err != nil {
+	if err := ctx.Client.Matrix.SetMute(matrix.Index.Index, *cmd.Mute == trueStr); err != nil {
 		return fmt.Errorf("failed to set Matrix mute state: %w", err)
 	}
 	fmt.Fprintf(ctx.Out, "Matrix mute state set to: %s\n", *cmd.Mute)
@@ -181,10 +181,10 @@ func (cmd *MatrixEqOnCmd) Run(ctx *context, matrix *MatrixCmdGroup) error {
 		return nil
 	}
 
-	if err := ctx.Client.Matrix.Eq.SetOn(matrix.Index.Index, *cmd.Enable == "true"); err != nil {
+	if err := ctx.Client.Matrix.Eq.SetOn(matrix.Index.Index, *cmd.Enable == trueStr); err != nil {
 		return fmt.Errorf("failed to set Matrix EQ on/off state: %w", err)
 	}
-	fmt.Fprintf(ctx.Out, "Matrix EQ on/off state set to: %t\n", *cmd.Enable == "true")
+	fmt.Fprintf(ctx.Out, "Matrix EQ on/off state set to: %t\n", *cmd.Enable == trueStr)
 	return nil
 }
 
@@ -359,10 +359,10 @@ func (cmd *MatrixCompOnCmd) Run(ctx *context, matrix *MatrixCmdGroup) error {
 		return nil
 	}
 
-	if err := ctx.Client.Matrix.Comp.SetOn(matrix.Index.Index, *cmd.Enable == "true"); err != nil {
+	if err := ctx.Client.Matrix.Comp.SetOn(matrix.Index.Index, *cmd.Enable == trueStr); err != nil {
 		return fmt.Errorf("failed to set Matrix compressor on/off state: %w", err)
 	}
-	fmt.Fprintf(ctx.Out, "Matrix compressor on/off state set to: %t\n", *cmd.Enable == "true")
+	fmt.Fprintf(ctx.Out, "Matrix compressor on/off state set to: %t\n", *cmd.Enable == trueStr)
 	return nil
 }
 

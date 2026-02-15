@@ -15,6 +15,11 @@ import (
 	"github.com/onyx-and-iris/xair-cli/internal/xair"
 )
 
+const (
+	trueStr  = "true"
+	falseStr = "false"
+)
+
 var version string // Version of the CLI, set at build time.
 
 // VersionFlag is a custom flag type that prints the version and exits.

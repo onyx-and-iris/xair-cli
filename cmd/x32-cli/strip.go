@@ -38,7 +38,7 @@ func (cmd *StripMuteCmd) Run(ctx *context, strip *StripCmdGroup) error {
 		return nil
 	}
 
-	if err := ctx.Client.Strip.SetMute(strip.Index.Index, *cmd.State == "true"); err != nil {
+	if err := ctx.Client.Strip.SetMute(strip.Index.Index, *cmd.State == trueStr); err != nil {
 		return fmt.Errorf("failed to set mute state: %w", err)
 	}
 	fmt.Fprintf(ctx.Out, "Strip %d mute state set to: %s\n", strip.Index.Index, *cmd.State)
@@ -242,7 +242,7 @@ func (cmd *StripGateOnCmd) Run(ctx *context, strip *StripCmdGroup) error {
 		return nil
 	}
 
-	if err := ctx.Client.Strip.Gate.SetOn(strip.Index.Index, *cmd.Enable == "true"); err != nil {
+	if err := ctx.Client.Strip.Gate.SetOn(strip.Index.Index, *cmd.Enable == trueStr); err != nil {
 		return fmt.Errorf("failed to set gate state: %w", err)
 	}
 	fmt.Fprintf(ctx.Out, "Strip %d gate state set to: %s\n", strip.Index.Index, *cmd.Enable)
@@ -442,7 +442,7 @@ func (cmd *StripEqOnCmd) Run(ctx *context, strip *StripCmdGroup) error {
 		return nil
 	}
 
-	if err := ctx.Client.Strip.Eq.SetOn(strip.Index.Index, *cmd.Enable == "true"); err != nil {
+	if err := ctx.Client.Strip.Eq.SetOn(strip.Index.Index, *cmd.Enable == trueStr); err != nil {
 		return fmt.Errorf("failed to set EQ state: %w", err)
 	}
 	fmt.Fprintf(ctx.Out, "Strip %d EQ state set to: %s\n", strip.Index.Index, *cmd.Enable)
@@ -646,7 +646,7 @@ func (cmd *StripCompOnCmd) Run(ctx *context, strip *StripCmdGroup) error {
 		return nil
 	}
 
-	if err := ctx.Client.Strip.Comp.SetOn(strip.Index.Index, *cmd.Enable == "true"); err != nil {
+	if err := ctx.Client.Strip.Comp.SetOn(strip.Index.Index, *cmd.Enable == trueStr); err != nil {
 		return fmt.Errorf("failed to set compressor state: %w", err)
 	}
 	fmt.Fprintf(ctx.Out, "Strip %d compressor state set to: %s\n", strip.Index.Index, *cmd.Enable)
