@@ -12,11 +12,11 @@ includes:
     vars:
       PROGRAM: x32-cli
   man-xair:
-    taskfile: ./Taskfile.man-xair.yml
+    taskfile: ./Taskfile.man.yml
     vars:
       PROGRAM: xair-cli
   man-x32:
-    taskfile: ./Taskfile.man-x32.yml
+    taskfile: ./Taskfile.man.yml
     vars:
       PROGRAM: x32-cli
 
