@@ -62,3 +62,8 @@ tasks:
     desc: Clean the build artifacts
     cmds:
       - '{{.SHELL}} rm -r {{.BIN_DIR}}'
+
+  update-readme:
+    desc: Update the README.md file with the latest help output from the commands
+    cmds:
+      - go generate ./tools

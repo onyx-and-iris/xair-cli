@@ -3,6 +3,6 @@ repos:
     hooks:
       - id: update-readme
         name: update-readme
-        entry: python update_readme.py
-        language: python
+        entry: go generate ./tools
+        language: system
         pass_filenames: false

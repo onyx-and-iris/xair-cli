@@ -60,8 +60,8 @@ export X32_CLI_LOGLEVEL=warn
 
 For each command/subcommand in the tree there exists a `--help` flag, use it to print usage information.
 
-- [xair-cli](./xair-help.md)
-- [x32-cli](./x32-help.md)
+- [xair-cli](./tools/xair-help.md)
+- [x32-cli](./tools/x32-help.md)
 
 ### Examples
 

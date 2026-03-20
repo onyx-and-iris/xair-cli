@@ -127,4 +127,5 @@ DCA
   dca <index> name    Get or set the name of the DCA group.
 
 Run "xair-cli <command> --help" for more information on a command.
+
 ```
