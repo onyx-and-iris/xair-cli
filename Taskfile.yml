@@ -2,12 +2,12 @@ version: '3'
 
 includes:
   build-xair:
-    taskfile: ./Taskfile.build-xair.yml
+    taskfile: ./Taskfile.build.yml
     internal: true
     vars:
       PROGRAM: xair-cli
   build-x32:
-    taskfile: ./Taskfile.build-x32.yml
+    taskfile: ./Taskfile.build.yml
     internal: true
     vars:
       PROGRAM: x32-cli

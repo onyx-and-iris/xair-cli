@@ -7,16 +7,16 @@ vars:
 
 tasks:
   windows-amd64:
-    desc: Build the x32-cli project for Windows
+    desc: Build the project for Windows
     cmds:
       - GOOS=windows GOARCH=amd64 go build -o {{.WINDOWS}} -ldflags="-X main.version={{.VERSION}}" ./cmd/{{.PROGRAM}}
 
   linux-amd64:
-    desc: Build the x32-cli project for Linux
+    desc: Build the project for Linux
     cmds:
       - GOOS=linux GOARCH=amd64 go build -o {{.LINUX}} -ldflags="-X main.version={{.VERSION}}" ./cmd/{{.PROGRAM}}
 
   darwin-amd64:
-    desc: Build the x32-cli project for macOS
+    desc: Build the project for macOS
     cmds:
       - GOOS=darwin GOARCH=amd64 go build -o {{.MACOS}} -ldflags="-X main.version={{.VERSION}}" ./cmd/{{.PROGRAM}}
