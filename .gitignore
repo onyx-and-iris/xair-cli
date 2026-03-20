@@ -38,4 +38,8 @@ go.work.sum
 
 # End of ignr
 
+# Man pages
+xair-cli.1
+x32-cli.1
+
 update_readme.py

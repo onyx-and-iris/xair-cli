@@ -4,6 +4,7 @@ go 1.25.0
 
 require (
 	github.com/alecthomas/kong v1.14.0
+	github.com/alecthomas/mango-kong v0.1.0
 	github.com/charmbracelet/log v1.0.0
 	github.com/hypebeast/go-osc v0.0.0-20220308234300-cec5a8a1e5f5
 	github.com/jotaen/kong-completion v0.0.12
@@ -24,6 +25,8 @@ require (
 	github.com/lucasb-eyer/go-colorful v1.3.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.21 // indirect
+	github.com/muesli/mango v0.1.1-0.20220205060214-77e2058169ab // indirect
+	github.com/muesli/roff v0.1.0 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/posener/complete v1.2.3 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect

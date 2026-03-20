@@ -11,6 +11,14 @@ includes:
     internal: true
     vars:
       PROGRAM: x32-cli
+  man-xair:
+    taskfile: ./Taskfile.man-xair.yml
+    vars:
+      PROGRAM: xair-cli
+  man-x32:
+    taskfile: ./Taskfile.man-x32.yml
+    vars:
+      PROGRAM: x32-cli
 
 vars:
   SHELL: '{{if eq .OS "Windows_NT"}}powershell{{end}}'

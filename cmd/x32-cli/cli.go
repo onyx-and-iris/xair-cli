@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/alecthomas/kong"
+	mangokong "github.com/alecthomas/mango-kong"
 	"github.com/charmbracelet/log"
 	kongcompletion "github.com/jotaen/kong-completion"
 
@@ -50,7 +51,8 @@ type Config struct {
 type CLI struct {
 	Config `embed:"" prefix:"" help:"The configuration for the CLI."`
 
-	Version VersionFlag `help:"Print x32-cli version information and quit" name:"version" short:"v"`
+	Man     mangokong.ManFlag `help:"Print man page."`
+	Version VersionFlag       `help:"Print x32-cli version information and quit" name:"version" short:"v"`
 
 	Completion kongcompletion.Completion `help:"Generate shell completion scripts."  cmd:""`
 	Info       InfoCmd                   `help:"Print mixer information."            cmd:""`

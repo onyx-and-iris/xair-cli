@@ -9,6 +9,7 @@ Flags:
   -P, --port=10024            The port of the X-Air device ($XAIR_CLI_PORT).
   -T, --timeout=100ms         Timeout for OSC operations ($XAIR_CLI_TIMEOUT).
   -L, --loglevel="warn"       Log level for the CLI ($XAIR_CLI_LOGLEVEL).
+      --man                   Print man page.
   -v, --version               Print xair-cli version information and quit
 
 Commands:
