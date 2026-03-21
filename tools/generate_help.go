@@ -3,6 +3,7 @@
 package main
 
 import (
+	"log"
 	"os"
 	"os/exec"
 )
@@ -12,20 +13,25 @@ func main() {
 		cmd string
 		out string
 	}{
-		{"../cmd/xair-cli/", "xair-help.md"},
-		{"../cmd/x32-cli/", "x32-help.md"},
+		{"./cmd/xair-cli/", "xair-help.md"},
+		{"./cmd/x32-cli/", "x32-help.md"},
 	}
 
 	for _, cli := range clis {
-		helpCmd := exec.Command("go", "run", cli.cmd, "--help")
+		cmdArgs := []string{"run", cli.cmd, "--help"}
+		helpCmd := exec.Command("go", cmdArgs...)
+		helpCmd.Dir = ".."
 		out, err := helpCmd.Output()
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 
 		// Wrap output in markdown console code block
 		wrapped := append([]byte("```console\n"), out...)
 		wrapped = append(wrapped, []byte("\n```\n")...)
-		os.WriteFile(cli.out, wrapped, 0o644)
+
+		if err := os.WriteFile(cli.out, wrapped, 0o644); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
