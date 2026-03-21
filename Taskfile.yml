@@ -63,7 +63,7 @@ tasks:
     cmds:
       - '{{.SHELL}} rm -r {{.BIN_DIR}}'
 
-  update-readme:
-    desc: Update the README.md file with the latest help output from the commands
+  generate:
+    desc: Run code generation
     cmds:
-      - go generate ./tools
+      - go generate ./...

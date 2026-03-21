@@ -3,6 +3,6 @@ repos:
     hooks:
       - id: update-readme
         name: update-readme
-        entry: go generate ./tools
+        entry: task generate
         language: system
         pass_filenames: false
