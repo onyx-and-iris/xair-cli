@@ -25,7 +25,7 @@ require (
 	github.com/lucasb-eyer/go-colorful v1.3.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.21 // indirect
-	github.com/muesli/mango v0.1.1-0.20220205060214-77e2058169ab // indirect
+	github.com/muesli/mango v0.2.0 // indirect
 	github.com/muesli/roff v0.1.0 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/posener/complete v1.2.3 // indirect
