@@ -1,5 +1,15 @@
 # xair-cli
 
+---
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Use](#use)
+- [Shell Completion](#shell-completion)
+- [License](#license)
+
 ### Installation
 
 *xair-cli*
@@ -110,6 +120,34 @@ xair-cli raw /ch/01/config/name
 ```console
 xair-cli snapshot 20 save 'twitch live'
 ```
+
+---
+
+## Shell Completion
+
+-   completion:
+
+    *optional*
+    -   args: Shell
+        - If no shell is passed completion will attempt to detect the current login shell.
+
+*xair-cli*
+
+```console
+xair-cli completion
+
+xair-cli completion bash
+```
+
+*x32-cli*
+
+```console
+x32-cli completion
+
+x32-cli completion bash
+```
+
+Currently supported shells: *bash* *zsh* *fish*.
 
 ---
 
