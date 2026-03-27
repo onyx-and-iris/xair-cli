@@ -40,10 +40,10 @@ type context struct {
 }
 
 type Config struct {
-	Host     string        `default:"mixer.local" help:"The host of the X-Air device." env:"XAIR_CLI_HOST"     short:"H"`
-	Port     int           `default:"10024"       help:"The port of the X-Air device." env:"XAIR_CLI_PORT"     short:"P"`
-	Timeout  time.Duration `default:"100ms"       help:"Timeout for OSC operations."   env:"XAIR_CLI_TIMEOUT"  short:"T"`
-	Loglevel string        `default:"warn"        help:"Log level for the CLI."        env:"XAIR_CLI_LOGLEVEL" short:"L" enum:"debug,info,warn,error,fatal"`
+	Host     string        `flag:"" default:"mixer.local" help:"The host of the X-Air device." env:"XAIR_CLI_HOST"     short:"H"`
+	Port     int           `flag:"" default:"10024"       help:"The port of the X-Air device." env:"XAIR_CLI_PORT"     short:"P"`
+	Timeout  time.Duration `flag:"" default:"100ms"       help:"Timeout for OSC operations."   env:"XAIR_CLI_TIMEOUT"  short:"T"`
+	Loglevel string        `flag:"" default:"warn"        help:"Log level for the CLI."        env:"XAIR_CLI_LOGLEVEL" short:"L" enum:"debug,info,warn,error,fatal"`
 }
 
 // CLI is the main struct for the command-line interface.
