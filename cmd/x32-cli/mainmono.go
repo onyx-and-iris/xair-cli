@@ -7,14 +7,14 @@ import (
 
 // MainMonoCmdGroup defines the command group for controlling the Main Mono output, including commands for mute state, fader level, and fade-in/fade-out times.
 type MainMonoCmdGroup struct {
-	Mute MainMonoMuteCmd `help:"Get or set the mute state of the Main Mono output." cmd:""`
+	Mute MainMonoMuteCmd `cmd:"" help:"Get or set the mute state of the Main Mono output."`
 
-	Fader   MainMonoFaderCmd   `help:"Get or set the fader level of the Main Mono output."      cmd:""`
-	Fadein  MainMonoFadeinCmd  `help:"Fade in the Main Mono output over a specified duration."  cmd:""`
-	Fadeout MainMonoFadeoutCmd `help:"Fade out the Main Mono output over a specified duration." cmd:""`
+	Fader   MainMonoFaderCmd   `cmd:"" help:"Get or set the fader level of the Main Mono output."`
+	Fadein  MainMonoFadeinCmd  `cmd:"" help:"Fade in the Main Mono output over a specified duration."`
+	Fadeout MainMonoFadeoutCmd `cmd:"" help:"Fade out the Main Mono output over a specified duration."`
 
-	Eq   MainMonoEqCmdGroup   `help:"Commands for controlling the equaliser settings of the Main Mono output."  cmd:"eq"`
-	Comp MainMonoCompCmdGroup `help:"Commands for controlling the compressor settings of the Main Mono output." cmd:"comp"`
+	Eq   MainMonoEqCmdGroup   `cmd:"" help:"Commands for controlling the equaliser settings of the Main Mono output."`
+	Comp MainMonoCompCmdGroup `cmd:"" help:"Commands for controlling the compressor settings of the Main Mono output."`
 }
 
 // MainMonoMuteCmd defines the command for getting or setting the mute state of the Main Mono output, allowing users to specify the desired state as "true"/"on" or "false"/"off".
@@ -136,10 +136,10 @@ type MainMonoEqCmdGroup struct {
 	On   MainMonoEqOnCmd `help:"Get or set the EQ on/off state of the Main Mono output."               cmd:"on"`
 	Band struct {
 		Band *int                  `arg:"" help:"The EQ band number." optional:""`
-		Gain MainMonoEqBandGainCmd `help:"Get or set the gain of the specified EQ band." cmd:"gain"`
-		Freq MainMonoEqBandFreqCmd `help:"Get or set the frequency of the specified EQ band." cmd:"freq"`
-		Q    MainMonoEqBandQCmd    `help:"Get or set the Q factor of the specified EQ band." cmd:"q"`
-		Type MainMonoEqBandTypeCmd `help:"Get or set the type of the specified EQ band." cmd:"type"`
+		Gain MainMonoEqBandGainCmd `cmd:"" help:"Get or set the gain of the specified EQ band."`
+		Freq MainMonoEqBandFreqCmd `cmd:"" help:"Get or set the frequency of the specified EQ band."`
+		Q    MainMonoEqBandQCmd    `cmd:"" help:"Get or set the Q factor of the specified EQ band."`
+		Type MainMonoEqBandTypeCmd `cmd:"" help:"Get or set the type of the specified EQ band."`
 	} `help:"Commands for controlling individual EQ bands of the Main Mono output."          arg:""`
 }
 
@@ -310,15 +310,15 @@ func (cmd *MainMonoEqBandTypeCmd) Run(
 
 // MainMonoCompCmdGroup defines the command group for controlling the compressor settings of the Main Mono output, including commands for getting or setting the compressor parameters.
 type MainMonoCompCmdGroup struct {
-	On        MainMonoCompOnCmd        `help:"Get or set the compressor on/off state of the Main Mono output." cmd:"on"`
-	Mode      MainMonoCompModeCmd      `help:"Get or set the compressor mode of the Main Mono output."         cmd:"mode"`
-	Threshold MainMonoCompThresholdCmd `help:"Get or set the compressor threshold of the Main Mono output."    cmd:"threshold"`
-	Ratio     MainMonoCompRatioCmd     `help:"Get or set the compressor ratio of the Main Mono output."        cmd:"ratio"`
-	Mix       MainMonoCompMixCmd       `help:"Get or set the compressor mix level of the Main Mono output."    cmd:"mix"`
-	Makeup    MainMonoCompMakeupCmd    `help:"Get or set the compressor makeup gain of the Main Mono output."  cmd:"makeup"`
-	Attack    MainMonoCompAttackCmd    `help:"Get or set the compressor attack time of the Main Mono output."  cmd:"attack"`
-	Hold      MainMonoCompHoldCmd      `help:"Get or set the compressor hold time of the Main Mono output."    cmd:"hold"`
-	Release   MainMonoCompReleaseCmd   `help:"Get or set the compressor release time of the Main Mono output." cmd:"release"`
+	On        MainMonoCompOnCmd        `cmd:"" help:"Get or set the compressor on/off state of the Main Mono output."`
+	Mode      MainMonoCompModeCmd      `cmd:"" help:"Get or set the compressor mode of the Main Mono output."`
+	Threshold MainMonoCompThresholdCmd `cmd:"" help:"Get or set the compressor threshold of the Main Mono output."`
+	Ratio     MainMonoCompRatioCmd     `cmd:"" help:"Get or set the compressor ratio of the Main Mono output."`
+	Mix       MainMonoCompMixCmd       `cmd:"" help:"Get or set the compressor mix level of the Main Mono output."`
+	Makeup    MainMonoCompMakeupCmd    `cmd:"" help:"Get or set the compressor makeup gain of the Main Mono output."`
+	Attack    MainMonoCompAttackCmd    `cmd:"" help:"Get or set the compressor attack time of the Main Mono output."`
+	Hold      MainMonoCompHoldCmd      `cmd:"" help:"Get or set the compressor hold time of the Main Mono output."`
+	Release   MainMonoCompReleaseCmd   `cmd:"" help:"Get or set the compressor release time of the Main Mono output."`
 }
 
 // MainMonoCompOnCmd defines the command for getting or setting the compressor on/off state of the Main Mono output, allowing users to specify the desired state as "true"/"on" or "false"/"off".

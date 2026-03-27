@@ -9,14 +9,14 @@ import (
 type BusCmdGroup struct {
 	Index struct {
 		Index   int           `arg:"" help:"The index of the bus. (1-based indexing)"`
-		Mute    BusMuteCmd    `       help:"Get or set the mute state of the bus." cmd:""`
-		Fader   BusFaderCmd   `     help:"Get or set the fader level of the bus." cmd:""`
-		Fadein  BusFadeinCmd  `      help:"Fade in the bus over a specified duration." cmd:""`
-		Fadeout BusFadeoutCmd `     help:"Fade out the bus over a specified duration." cmd:""`
-		Name    BusNameCmd    `       help:"Get or set the name of the bus." cmd:""`
+		Mute    BusMuteCmd    `cmd:""       help:"Get or set the mute state of the bus."`
+		Fader   BusFaderCmd   `cmd:"" help:"Get or set the fader level of the bus."`
+		Fadein  BusFadeinCmd  `cmd:"" help:"Fade in the bus over a specified duration."`
+		Fadeout BusFadeoutCmd `cmd:"" help:"Fade out the bus over a specified duration."`
+		Name    BusNameCmd    `cmd:"" help:"Get or set the name of the bus."`
 
-		Eq   BusEqCmdGroup   `       help:"Commands related to the bus EQ." cmd:"eq"`
-		Comp BusCompCmdGroup `     help:"Commands related to the bus compressor." cmd:"comp"`
+		Eq   BusEqCmdGroup   `cmd:"" help:"Commands related to the bus EQ."`
+		Comp BusCompCmdGroup `cmd:"" help:"Commands related to the bus compressor."`
 	} `arg:"" help:"Control a specific bus by index."`
 }
 
@@ -179,15 +179,15 @@ func (cmd *BusNameCmd) Run(ctx *context, bus *BusCmdGroup) error {
 
 // BusEqCmdGroup defines the commands related to controlling the EQ of a bus.
 type BusEqCmdGroup struct {
-	On   BusEqOnCmd   `help:"Get or set the EQ on/off state of the bus."              cmd:"on"`
-	Mode BusEqModeCmd `help:"Get or set the EQ mode of the bus (peq, geq or teq)."    cmd:"mode"`
+	On   BusEqOnCmd   `cmd:"" help:"Get or set the EQ on/off state of the bus."`
+	Mode BusEqModeCmd `cmd:"" help:"Get or set the EQ mode of the bus (peq, geq or teq)."`
 	Band struct {
 		Band *int             `arg:"" help:"The EQ band number." optional:""`
-		Gain BusEqBandGainCmd `help:"Get or set the gain of the EQ band." cmd:"gain"`
-		Freq BusEqBandFreqCmd `help:"Get or set the frequency of the EQ band." cmd:"freq"`
-		Q    BusEqBandQCmd    `help:"Get or set the Q factor of the EQ band." cmd:"q"`
-		Type BusEqBandTypeCmd `help:"Get or set the type of the EQ band (lcut, lshv, peq, veq, hshv, hcut)." cmd:"type"`
-	} `help:"Commands for controlling a specific EQ band of the bus."            arg:""`
+		Gain BusEqBandGainCmd `cmd:"" help:"Get or set the gain of the EQ band."`
+		Freq BusEqBandFreqCmd `cmd:"" help:"Get or set the frequency of the EQ band."`
+		Q    BusEqBandQCmd    `cmd:"" help:"Get or set the Q factor of the EQ band."`
+		Type BusEqBandTypeCmd `cmd:"" help:"Get or set the type of the EQ band (lcut, lshv, peq, veq, hshv, hcut)."`
+	} `       help:"Commands for controlling a specific EQ band of the bus." arg:""`
 }
 
 // Validate checks that the provided EQ band number is within the valid range (1-6).
@@ -394,15 +394,15 @@ func (cmd *BusEqBandTypeCmd) Run(ctx *context, bus *BusCmdGroup, busEq *BusEqCmd
 
 // BusCompCmdGroup defines the commands related to controlling the compressor of a bus.
 type BusCompCmdGroup struct {
-	On        BusCompOnCmd        `help:"Get or set the compressor on/off state of the bus."         cmd:"on"`
-	Mode      BusCompModeCmd      `help:"Get or set the compressor mode of the bus (comp, exp)."     cmd:"mode"`
-	Threshold BusCompThresholdCmd `help:"Get or set the compressor threshold of the bus (in dB)."    cmd:"threshold"`
-	Ratio     BusCompRatioCmd     `help:"Get or set the compressor ratio of the bus."                cmd:"ratio"`
-	Mix       BusCompMixCmd       `help:"Get or set the compressor mix level of the bus (in %)."     cmd:"mix"`
-	Makeup    BusCompMakeupCmd    `help:"Get or set the compressor makeup gain of the bus (in dB)."  cmd:"makeup"`
-	Attack    BusCompAttackCmd    `help:"Get or set the compressor attack time of the bus (in ms)."  cmd:"attack"`
-	Hold      BusCompHoldCmd      `help:"Get or set the compressor hold time of the bus (in ms)."    cmd:"hold"`
-	Release   BusCompReleaseCmd   `help:"Get or set the compressor release time of the bus (in ms)." cmd:"release"`
+	On        BusCompOnCmd        `cmd:"" help:"Get or set the compressor on/off state of the bus."`
+	Mode      BusCompModeCmd      `cmd:"" help:"Get or set the compressor mode of the bus (comp, exp)."`
+	Threshold BusCompThresholdCmd `cmd:"" help:"Get or set the compressor threshold of the bus (in dB)."`
+	Ratio     BusCompRatioCmd     `cmd:"" help:"Get or set the compressor ratio of the bus."`
+	Mix       BusCompMixCmd       `cmd:"" help:"Get or set the compressor mix level of the bus (in %)."`
+	Makeup    BusCompMakeupCmd    `cmd:"" help:"Get or set the compressor makeup gain of the bus (in dB)."`
+	Attack    BusCompAttackCmd    `cmd:"" help:"Get or set the compressor attack time of the bus (in ms)."`
+	Hold      BusCompHoldCmd      `cmd:"" help:"Get or set the compressor hold time of the bus (in ms)."`
+	Release   BusCompReleaseCmd   `cmd:"" help:"Get or set the compressor release time of the bus (in ms)."`
 }
 
 // BusCompOnCmd defines the command for getting or setting the compressor on/off state of a bus.

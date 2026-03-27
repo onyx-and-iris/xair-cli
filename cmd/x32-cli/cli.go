@@ -54,18 +54,18 @@ type CLI struct {
 	Man     mangokong.ManFlag `help:"Print man page."`
 	Version VersionFlag       `help:"Print x32-cli version information and quit" name:"version" short:"v"`
 
-	Completion kongcompletion.Completion `help:"Generate shell completion scripts."  cmd:""`
-	Info       InfoCmd                   `help:"Print mixer information."            cmd:""`
-	Raw        RawCmd                    `help:"Send raw OSC messages to the mixer." cmd:""`
+	Completion kongcompletion.Completion `cmd:"" help:"Generate shell completion scripts."`
+	Info       InfoCmd                   `cmd:"" help:"Print mixer information."`
+	Raw        RawCmd                    `cmd:"" help:"Send raw OSC messages to the mixer."`
 
-	Main     MainCmdGroup     `help:"Control the Main L/R output"           cmd:"" group:"Main"`
-	Mainmono MainMonoCmdGroup `help:"Control the Main Mono output"          cmd:"" group:"MainMono"`
-	Matrix   MatrixCmdGroup   `help:"Control the matrix outputs."           cmd:"" group:"Matrix"`
-	Strip    StripCmdGroup    `help:"Control the strips."                   cmd:"" group:"Strip"`
-	Bus      BusCmdGroup      `help:"Control the buses."                    cmd:"" group:"Bus"`
-	Headamp  HeadampCmdGroup  `help:"Control input gain and phantom power." cmd:"" group:"Headamp"`
-	Snapshot SnapshotCmdGroup `help:"Save and load mixer states."           cmd:"" group:"Snapshot"`
-	Dca      DCACmdGroup      `help:"Control DCA groups."                   cmd:"" group:"DCA"`
+	Main     MainCmdGroup     `cmd:"" help:"Control the Main L/R output"           group:"Main"`
+	Mainmono MainMonoCmdGroup `cmd:"" help:"Control the Main Mono output"          group:"MainMono"`
+	Matrix   MatrixCmdGroup   `cmd:"" help:"Control the matrix outputs."           group:"Matrix"`
+	Strip    StripCmdGroup    `cmd:"" help:"Control the strips."                   group:"Strip"`
+	Bus      BusCmdGroup      `cmd:"" help:"Control the buses."                    group:"Bus"`
+	Headamp  HeadampCmdGroup  `cmd:"" help:"Control input gain and phantom power." group:"Headamp"`
+	Snapshot SnapshotCmdGroup `cmd:"" help:"Save and load mixer states."           group:"Snapshot"`
+	Dca      DCACmdGroup      `cmd:"" help:"Control DCA groups."                   group:"DCA"`
 }
 
 func main() {

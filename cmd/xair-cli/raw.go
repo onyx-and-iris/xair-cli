@@ -8,8 +8,8 @@ import (
 
 // RawCmd represents the command to send raw OSC messages to the mixer.
 type RawCmd struct {
-	Address string   `help:"The OSC address to send the message to."      arg:""`
-	Args    []string `help:"The arguments to include in the OSC message." arg:"" optional:""`
+	Address string   `arg:"" help:"The OSC address to send the message to."`
+	Args    []string `arg:"" help:"The arguments to include in the OSC message." optional:""`
 }
 
 // Run executes the RawCmd by sending the specified OSC message to the mixer and optionally waiting for a response.

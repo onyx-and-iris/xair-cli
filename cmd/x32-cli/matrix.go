@@ -9,15 +9,15 @@ import (
 type MatrixCmdGroup struct {
 	Index struct {
 		Index int           `arg:"" help:"The index of the Matrix output (1-6)."`
-		Mute  MatrixMuteCmd `help:"Get or set the mute state of the Matrix output." cmd:""`
+		Mute  MatrixMuteCmd `cmd:"" help:"Get or set the mute state of the Matrix output."`
 
-		Fader   MatrixFaderCmd   `help:"Get or set the fader level of the Matrix output."      cmd:""`
-		Fadein  MatrixFadeinCmd  `help:"Fade in the Matrix output over a specified duration."  cmd:""`
-		Fadeout MatrixFadeoutCmd `help:"Fade out the Matrix output over a specified duration." cmd:""`
+		Fader   MatrixFaderCmd   `cmd:"" help:"Get or set the fader level of the Matrix output."`
+		Fadein  MatrixFadeinCmd  `cmd:"" help:"Fade in the Matrix output over a specified duration."`
+		Fadeout MatrixFadeoutCmd `cmd:"" help:"Fade out the Matrix output over a specified duration."`
 
-		Eq   MatrixEqCmdGroup   `help:"Commands for controlling the equaliser settings of the Matrix output."  cmd:"eq"`
-		Comp MatrixCompCmdGroup `help:"Commands for controlling the compressor settings of the Matrix output." cmd:"comp"`
-	} `help:"Commands for controlling individual Matrix outputs." arg:""`
+		Eq   MatrixEqCmdGroup   `cmd:""   help:"Commands for controlling the equaliser settings of the Matrix output."`
+		Comp MatrixCompCmdGroup `cmd:"" help:"Commands for controlling the compressor settings of the Matrix output."`
+	} `arg:"" help:"Commands for controlling individual Matrix outputs."`
 }
 
 func (cmd *MatrixCmdGroup) Validate() error {
@@ -143,14 +143,14 @@ func (cmd *MatrixFadeoutCmd) Run(ctx *context, matrix *MatrixCmdGroup) error {
 
 // MatrixEqCmdGroup defines the command group for controlling the equaliser settings of the Matrix output, including commands for getting or setting the EQ parameters.
 type MatrixEqCmdGroup struct {
-	On   MatrixEqOnCmd `help:"Get or set the EQ on/off state of the Matrix output."               cmd:"on"`
+	On   MatrixEqOnCmd `cmd:"" help:"Get or set the EQ on/off state of the Matrix output."`
 	Band struct {
 		Band *int                `arg:"" help:"The EQ band number." optional:""`
-		Gain MatrixEqBandGainCmd `help:"Get or set the gain of the specified EQ band." cmd:"gain"`
-		Freq MatrixEqBandFreqCmd `help:"Get or set the frequency of the specified EQ band." cmd:"freq"`
-		Q    MatrixEqBandQCmd    `help:"Get or set the Q factor of the specified EQ band." cmd:"q"`
-		Type MatrixEqBandTypeCmd `help:"Get or set the type of the specified EQ band." cmd:"type"`
-	} `help:"Commands for controlling individual EQ bands of the Matrix output."          arg:""`
+		Gain MatrixEqBandGainCmd `cmd:"" help:"Get or set the gain of the specified EQ band."`
+		Freq MatrixEqBandFreqCmd `cmd:"" help:"Get or set the frequency of the specified EQ band."`
+		Q    MatrixEqBandQCmd    `cmd:"" help:"Get or set the Q factor of the specified EQ band."`
+		Type MatrixEqBandTypeCmd `cmd:"" help:"Get or set the type of the specified EQ band."`
+	} `       help:"Commands for controlling individual EQ bands of the Matrix output." arg:""`
 }
 
 // Validate checks if the provided EQ band number is within the valid range (1-6) for the Matrix output.
@@ -332,15 +332,15 @@ func (cmd *MatrixEqBandTypeCmd) Run(
 
 // MatrixCompCmdGroup defines the command group for controlling the compressor settings of the Matrix output, including commands for getting or setting the compressor parameters.
 type MatrixCompCmdGroup struct {
-	On        MatrixCompOnCmd        `help:"Get or set the compressor on/off state of the Matrix output." cmd:"on"`
-	Mode      MatrixCompModeCmd      `help:"Get or set the compressor mode of the Matrix output."         cmd:"mode"`
-	Threshold MatrixCompThresholdCmd `help:"Get or set the compressor threshold of the Matrix output."    cmd:"threshold"`
-	Ratio     MatrixCompRatioCmd     `help:"Get or set the compressor ratio of the Matrix output."        cmd:"ratio"`
-	Mix       MatrixCompMixCmd       `help:"Get or set the compressor mix level of the Matrix output."    cmd:"mix"`
-	Makeup    MatrixCompMakeupCmd    `help:"Get or set the compressor makeup gain of the Matrix output."  cmd:"makeup"`
-	Attack    MatrixCompAttackCmd    `help:"Get or set the compressor attack time of the Matrix output."  cmd:"attack"`
-	Hold      MatrixCompHoldCmd      `help:"Get or set the compressor hold time of the Matrix output."    cmd:"hold"`
-	Release   MatrixCompReleaseCmd   `help:"Get or set the compressor release time of the Matrix output." cmd:"release"`
+	On        MatrixCompOnCmd        `cmd:"" help:"Get or set the compressor on/off state of the Matrix output."`
+	Mode      MatrixCompModeCmd      `cmd:"" help:"Get or set the compressor mode of the Matrix output."`
+	Threshold MatrixCompThresholdCmd `cmd:"" help:"Get or set the compressor threshold of the Matrix output."`
+	Ratio     MatrixCompRatioCmd     `cmd:"" help:"Get or set the compressor ratio of the Matrix output."`
+	Mix       MatrixCompMixCmd       `cmd:"" help:"Get or set the compressor mix level of the Matrix output."`
+	Makeup    MatrixCompMakeupCmd    `cmd:"" help:"Get or set the compressor makeup gain of the Matrix output."`
+	Attack    MatrixCompAttackCmd    `cmd:"" help:"Get or set the compressor attack time of the Matrix output."`
+	Hold      MatrixCompHoldCmd      `cmd:"" help:"Get or set the compressor hold time of the Matrix output."`
+	Release   MatrixCompReleaseCmd   `cmd:"" help:"Get or set the compressor release time of the Matrix output."`
 }
 
 // MatrixCompOnCmd defines the command for getting or setting the compressor on/off state of the Matrix output, allowing users to specify the desired state as "true"/"on" or "false"/"off".

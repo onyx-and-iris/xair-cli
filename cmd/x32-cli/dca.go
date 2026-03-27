@@ -7,8 +7,8 @@ import (
 type DCACmdGroup struct {
 	Index struct {
 		Index int        `arg:"" help:"The index of the DCA group (1-8)."`
-		Mute  DCAMuteCmd `help:"Get or set the mute status of the DCA group." cmd:""`
-		Name  DCANameCmd `help:"Get or set the name of the DCA group." cmd:""`
+		Mute  DCAMuteCmd `cmd:"" help:"Get or set the mute status of the DCA group."`
+		Name  DCANameCmd `cmd:"" help:"Get or set the name of the DCA group."`
 	} `arg:"" help:"Control a specific DCA group by its index."`
 }
 

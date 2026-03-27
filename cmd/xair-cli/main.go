@@ -8,14 +8,14 @@ import (
 
 // MainCmdGroup defines the command group for controlling the Main L/R output, including commands for mute state, fader level, and fade-in/fade-out times.
 type MainCmdGroup struct {
-	Mute MainMuteCmd `help:"Get or set the mute state of the Main L/R output." cmd:""`
+	Mute MainMuteCmd `cmd:"" help:"Get or set the mute state of the Main L/R output."`
 
-	Fader   MainFaderCmd   `help:"Get or set the fader level of the Main L/R output."      cmd:""`
-	Fadein  MainFadeinCmd  `help:"Fade in the Main L/R output over a specified duration."  cmd:""`
-	Fadeout MainFadeoutCmd `help:"Fade out the Main L/R output over a specified duration." cmd:""`
+	Fader   MainFaderCmd   `cmd:"" help:"Get or set the fader level of the Main L/R output."`
+	Fadein  MainFadeinCmd  `cmd:"" help:"Fade in the Main L/R output over a specified duration."`
+	Fadeout MainFadeoutCmd `cmd:"" help:"Fade out the Main L/R output over a specified duration."`
 
-	Eq   MainEqCmdGroup   `help:"Commands for controlling the equaliser settings of the Main L/R output."  cmd:"eq"`
-	Comp MainCompCmdGroup `help:"Commands for controlling the compressor settings of the Main L/R output." cmd:"comp"`
+	Eq   MainEqCmdGroup   `cmd:"" help:"Commands for controlling the equaliser settings of the Main L/R output."`
+	Comp MainCompCmdGroup `cmd:"" help:"Commands for controlling the compressor settings of the Main L/R output."`
 }
 
 // MainMuteCmd defines the command for getting or setting the mute state of the Main L/R output, allowing users to specify the desired state as "true"/"on" or "false"/"off".
@@ -134,14 +134,14 @@ func (cmd *MainFadeoutCmd) Run(ctx *context) error {
 
 // MainEqCmdGroup defines the command group for controlling the equaliser settings of the Main L/R output, including commands for getting or setting the EQ parameters.
 type MainEqCmdGroup struct {
-	On   MainEqOnCmd `help:"Get or set the EQ on/off state of the Main L/R output."               cmd:"on"`
+	On   MainEqOnCmd `cmd:"" help:"Get or set the EQ on/off state of the Main L/R output."`
 	Band struct {
 		Band *int              `arg:"" help:"The EQ band number." optional:""`
-		Gain MainEqBandGainCmd `help:"Get or set the gain of the specified EQ band." cmd:"gain"`
-		Freq MainEqBandFreqCmd `help:"Get or set the frequency of the specified EQ band." cmd:"freq"`
-		Q    MainEqBandQCmd    `help:"Get or set the Q factor of the specified EQ band." cmd:"q"`
-		Type MainEqBandTypeCmd `help:"Get or set the type of the specified EQ band." cmd:"type"`
-	} `help:"Commands for controlling individual EQ bands of the Main L/R output."          arg:""`
+		Gain MainEqBandGainCmd `cmd:"" help:"Get or set the gain of the specified EQ band."`
+		Freq MainEqBandFreqCmd `cmd:"" help:"Get or set the frequency of the specified EQ band."`
+		Q    MainEqBandQCmd    `cmd:"" help:"Get or set the Q factor of the specified EQ band."`
+		Type MainEqBandTypeCmd `cmd:"" help:"Get or set the type of the specified EQ band."`
+	} `       help:"Commands for controlling individual EQ bands of the Main L/R output." arg:""`
 }
 
 // Validate checks if the provided EQ band number is within the valid range (1-6) for the Main L/R output.
@@ -291,15 +291,15 @@ func (cmd *MainEqBandTypeCmd) Run(ctx *context, mainEq *MainEqCmdGroup) error {
 
 // MainCompCmdGroup defines the command group for controlling the compressor settings of the Main L/R output, including commands for getting or setting the compressor parameters.
 type MainCompCmdGroup struct {
-	On        MainCompOnCmd        `help:"Get or set the compressor on/off state of the Main L/R output." cmd:"on"`
-	Mode      MainCompModeCmd      `help:"Get or set the compressor mode of the Main L/R output."         cmd:"mode"`
-	Threshold MainCompThresholdCmd `help:"Get or set the compressor threshold of the Main L/R output."    cmd:"threshold"`
-	Ratio     MainCompRatioCmd     `help:"Get or set the compressor ratio of the Main L/R output."        cmd:"ratio"`
-	Mix       MainCompMixCmd       `help:"Get or set the compressor mix level of the Main L/R output."    cmd:"mix"`
-	Makeup    MainCompMakeupCmd    `help:"Get or set the compressor makeup gain of the Main L/R output."  cmd:"makeup"`
-	Attack    MainCompAttackCmd    `help:"Get or set the compressor attack time of the Main L/R output."  cmd:"attack"`
-	Hold      MainCompHoldCmd      `help:"Get or set the compressor hold time of the Main L/R output."    cmd:"hold"`
-	Release   MainCompReleaseCmd   `help:"Get or set the compressor release time of the Main L/R output." cmd:"release"`
+	On        MainCompOnCmd        `cmd:"on"        help:"Get or set the compressor on/off state of the Main L/R output."`
+	Mode      MainCompModeCmd      `cmd:"mode"      help:"Get or set the compressor mode of the Main L/R output."`
+	Threshold MainCompThresholdCmd `cmd:"threshold" help:"Get or set the compressor threshold of the Main L/R output."`
+	Ratio     MainCompRatioCmd     `cmd:"ratio"     help:"Get or set the compressor ratio of the Main L/R output."`
+	Mix       MainCompMixCmd       `cmd:"mix"       help:"Get or set the compressor mix level of the Main L/R output."`
+	Makeup    MainCompMakeupCmd    `cmd:"makeup"    help:"Get or set the compressor makeup gain of the Main L/R output."`
+	Attack    MainCompAttackCmd    `cmd:"attack"    help:"Get or set the compressor attack time of the Main L/R output."`
+	Hold      MainCompHoldCmd      `cmd:"hold"      help:"Get or set the compressor hold time of the Main L/R output."`
+	Release   MainCompReleaseCmd   `cmd:"release"   help:"Get or set the compressor release time of the Main L/R output."`
 }
 
 // MainCompOnCmd defines the command for getting or setting the compressor on/off state of the Main L/R output, allowing users to specify the desired state as "true"/"on" or "false"/"off".

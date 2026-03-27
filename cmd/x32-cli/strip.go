@@ -9,16 +9,16 @@ import (
 type StripCmdGroup struct {
 	Index struct {
 		Index   int             `arg:"" help:"The index of the strip. (1-based indexing)"`
-		Mute    StripMuteCmd    `       help:"Get or set the mute state of the strip." cmd:""`
-		Fader   StripFaderCmd   `     help:"Get or set the fader level of the strip." cmd:""`
-		Fadein  StripFadeinCmd  `      help:"Fade in the strip over a specified duration." cmd:""`
-		Fadeout StripFadeoutCmd `     help:"Fade out the strip over a specified duration." cmd:""`
-		Send    StripSendCmd    `      help:"Get or set the send level for a specific bus." cmd:""`
-		Name    StripNameCmd    `      help:"Get or set the name of the strip." cmd:""`
+		Mute    StripMuteCmd    `cmd:""       help:"Get or set the mute state of the strip." `
+		Fader   StripFaderCmd   `cmd:"" help:"Get or set the fader level of the strip."`
+		Fadein  StripFadeinCmd  `cmd:"" help:"Fade in the strip over a specified duration."`
+		Fadeout StripFadeoutCmd `cmd:"" help:"Fade out the strip over a specified duration."`
+		Send    StripSendCmd    `cmd:"" help:"Get or set the send level for a specific bus."`
+		Name    StripNameCmd    `cmd:"" help:"Get or set the name of the strip."`
 
-		Gate StripGateCmdGroup `     help:"Commands related to the strip gate." cmd:"gate"`
-		Eq   StripEqCmdGroup   `       help:"Commands related to the strip EQ." cmd:"eq"`
-		Comp StripCompCmdGroup `      help:"Commands related to the strip compressor." cmd:"comp"`
+		Gate StripGateCmdGroup `cmd:"" help:"Commands related to the strip gate."`
+		Eq   StripEqCmdGroup   `cmd:"" help:"Commands related to the strip EQ."`
+		Comp StripCompCmdGroup `cmd:"" help:"Commands related to the strip compressor."`
 	} `arg:"" help:"Control a specific strip by index."`
 }
 
@@ -217,13 +217,13 @@ func (cmd *StripNameCmd) Run(ctx *context, strip *StripCmdGroup) error {
 
 // StripGateCmdGroup defines the command group for controlling the gate settings of a strip, including commands for getting and setting the gate on/off state, mode, threshold, range, attack time, hold time, and release time.
 type StripGateCmdGroup struct {
-	On        StripGateOnCmd        `help:"Get or set the gate on/off state of the strip." cmd:""`
-	Mode      StripGateModeCmd      `help:"Get or set the gate mode of the strip."         cmd:""`
-	Threshold StripGateThresholdCmd `help:"Get or set the gate threshold of the strip."    cmd:""`
-	Range     StripGateRangeCmd     `help:"Get or set the gate range of the strip."        cmd:""`
-	Attack    StripGateAttackCmd    `help:"Get or set the gate attack time of the strip."  cmd:""`
-	Hold      StripGateHoldCmd      `help:"Get or set the gate hold time of the strip."    cmd:""`
-	Release   StripGateReleaseCmd   `help:"Get or set the gate release time of the strip." cmd:""`
+	On        StripGateOnCmd        `cmd:"" help:"Get or set the gate on/off state of the strip."`
+	Mode      StripGateModeCmd      `cmd:"" help:"Get or set the gate mode of the strip."`
+	Threshold StripGateThresholdCmd `cmd:"" help:"Get or set the gate threshold of the strip."`
+	Range     StripGateRangeCmd     `cmd:"" help:"Get or set the gate range of the strip."`
+	Attack    StripGateAttackCmd    `cmd:"" help:"Get or set the gate attack time of the strip."`
+	Hold      StripGateHoldCmd      `cmd:"" help:"Get or set the gate hold time of the strip."`
+	Release   StripGateReleaseCmd   `cmd:"" help:"Get or set the gate release time of the strip."`
 }
 
 // StripGateOnCmd defines the command for getting or setting the gate on/off state of a strip, allowing users to enable or disable the gate effect on the strip.
@@ -404,14 +404,14 @@ func (cmd *StripGateReleaseCmd) Run(ctx *context, strip *StripCmdGroup) error {
 
 // StripEqCmdGroup defines the command group for controlling the EQ settings of a strip, including commands for getting and setting the EQ on/off state and parameters for each EQ band such as gain, frequency, Q factor, and type.
 type StripEqCmdGroup struct {
-	On   StripEqOnCmd `help:"Get or set the EQ on/off state of the strip."              cmd:""`
+	On   StripEqOnCmd `cmd:"" help:"Get or set the EQ on/off state of the strip."`
 	Band struct {
 		Band *int               `arg:"" help:"The EQ band number." optional:""`
-		Gain StripEqBandGainCmd `help:"Get or set the gain of the EQ band." cmd:""`
-		Freq StripEqBandFreqCmd `help:"Get or set the frequency of the EQ band." cmd:""`
-		Q    StripEqBandQCmd    `help:"Get or set the Q factor of the EQ band." cmd:""`
-		Type StripEqBandTypeCmd `help:"Get or set the type of the EQ band." cmd:""`
-	} `help:"Commands for controlling a specific EQ band of the strip."        arg:""`
+		Gain StripEqBandGainCmd `cmd:"" help:"Get or set the gain of the EQ band."`
+		Freq StripEqBandFreqCmd `cmd:"" help:"Get or set the frequency of the EQ band."`
+		Q    StripEqBandQCmd    `cmd:"" help:"Get or set the Q factor of the EQ band."`
+		Type StripEqBandTypeCmd `cmd:"" help:"Get or set the type of the EQ band."`
+	} `       help:"Commands for controlling a specific EQ band of the strip." arg:""`
 }
 
 // Validate checks if the provided EQ band number is valid (between 1 and 4) and returns an error if it is not.
@@ -619,15 +619,15 @@ func (cmd *StripEqBandTypeCmd) Run(
 
 // StripCompCmdGroup defines the command group for controlling the compressor settings of a strip, including commands for getting and setting the compressor on/off state, mode, threshold, ratio, mix, makeup gain, attack time, hold time, and release time.
 type StripCompCmdGroup struct {
-	On        StripCompOnCmd        `help:"Get or set the compressor on/off state of the strip." cmd:""`
-	Mode      StripCompModeCmd      `help:"Get or set the compressor mode of the strip."         cmd:""`
-	Threshold StripCompThresholdCmd `help:"Get or set the compressor threshold of the strip."    cmd:""`
-	Ratio     StripCompRatioCmd     `help:"Get or set the compressor ratio of the strip."        cmd:""`
-	Mix       StripCompMixCmd       `help:"Get or set the compressor mix of the strip."          cmd:""`
-	Makeup    StripCompMakeupCmd    `help:"Get or set the compressor makeup gain of the strip."  cmd:""`
-	Attack    StripCompAttackCmd    `help:"Get or set the compressor attack time of the strip."  cmd:""`
-	Hold      StripCompHoldCmd      `help:"Get or set the compressor hold time of the strip."    cmd:""`
-	Release   StripCompReleaseCmd   `help:"Get or set the compressor release time of the strip." cmd:""`
+	On        StripCompOnCmd        `cmd:"" help:"Get or set the compressor on/off state of the strip."`
+	Mode      StripCompModeCmd      `cmd:"" help:"Get or set the compressor mode of the strip."`
+	Threshold StripCompThresholdCmd `cmd:"" help:"Get or set the compressor threshold of the strip."`
+	Ratio     StripCompRatioCmd     `cmd:"" help:"Get or set the compressor ratio of the strip."`
+	Mix       StripCompMixCmd       `cmd:"" help:"Get or set the compressor mix of the strip."`
+	Makeup    StripCompMakeupCmd    `cmd:"" help:"Get or set the compressor makeup gain of the strip."`
+	Attack    StripCompAttackCmd    `cmd:"" help:"Get or set the compressor attack time of the strip."`
+	Hold      StripCompHoldCmd      `cmd:"" help:"Get or set the compressor hold time of the strip."`
+	Release   StripCompReleaseCmd   `cmd:"" help:"Get or set the compressor release time of the strip."`
 }
 
 // StripCompOnCmd defines the command for getting or setting the compressor on/off state of a strip, allowing users to enable or disable the compressor effect on the strip.

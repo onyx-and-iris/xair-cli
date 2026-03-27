@@ -3,14 +3,14 @@ package main
 import "fmt"
 
 type SnapshotCmdGroup struct {
-	List  ListCmd `help:"List all snapshots."        cmd:"list"`
+	List  ListCmd `cmd:"" help:"List all snapshots."`
 	Index struct {
 		Index  *int      `arg:"" help:"The index of the snapshot." optional:""`
-		Name   NameCmd   `help:"Get or set the name of a snapshot."      cmd:"name"`
-		Save   SaveCmd   `help:"Save the current mixer state to a snapshot." cmd:"save"`
-		Load   LoadCmd   `help:"Load a mixer state from a snapshot."         cmd:"load"`
-		Delete DeleteCmd `help:"Delete a snapshot."                      cmd:"delete"`
-	} `help:"The index of the snapshot."            arg:""`
+		Name   NameCmd   `cmd:"" help:"Get or set the name of a snapshot."`
+		Save   SaveCmd   `cmd:"" help:"Save the current mixer state to a snapshot."`
+		Load   LoadCmd   `cmd:"" help:"Load a mixer state from a snapshot."`
+		Delete DeleteCmd `cmd:"" help:"Delete a snapshot."`
+	} `       help:"The index of the snapshot." arg:""`
 }
 
 // Validate checks if the provided snapshot index is within the valid range (1-64) when any of the subcommands that require an index are used.

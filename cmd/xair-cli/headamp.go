@@ -11,15 +11,15 @@ import (
 type HeadampCmdGroup struct {
 	Index struct {
 		Index   int               `arg:"" help:"The index of the headamp."`
-		Gain    HeadampGainCmd    `help:"Get or set the gain of the headamp."                cmd:""`
-		Phantom HeadampPhantomCmd `help:"Get or set the phantom power state of the headamp." cmd:""`
+		Gain    HeadampGainCmd    `cmd:"" help:"Get or set the gain of the headamp."`
+		Phantom HeadampPhantomCmd `cmd:"" help:"Get or set the phantom power state of the headamp."`
 	} `arg:"" help:"Control a specific headamp by index."`
 }
 
 // HeadampGainCmd defines the command for getting or setting the gain of a headamp, allowing users to specify the gain in dB and an optional duration for a gradual fade when setting the gain.
 type HeadampGainCmd struct {
-	Duration time.Duration `help:"The duration of the fade in/out when setting the gain." default:"5s"`
-	Gain     *float64      `help:"The gain of the headamp in dB."                                      arg:"" optional:""`
+	Duration time.Duration `flag:"" help:"The duration of the fade in/out when setting the gain." default:"5s"`
+	Gain     *float64      `        help:"The gain of the headamp in dB."                                      arg:"" optional:""`
 }
 
 // Run executes the HeadampGainCmd command, either retrieving the current gain of the headamp or setting it based on the provided argument, with an optional fade duration for smooth transitions.
@@ -99,7 +99,7 @@ func gradualGainAdjust(
 
 // HeadampPhantomCmd defines the command for getting or setting the phantom power state of a headamp, allowing users to specify the desired state as "true"/"on" or "false"/"off".
 type HeadampPhantomCmd struct {
-	State *string `help:"The phantom power state of the headamp." arg:"" enum:"true,on,false,off" optional:""`
+	State *string `arg:"" help:"The phantom power state of the headamp." enum:"true,on,false,off" optional:""`
 }
 
 // Validate checks if the provided phantom power state is valid and normalises it to "true" or "false".
