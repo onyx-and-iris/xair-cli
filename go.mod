@@ -3,7 +3,7 @@ module github.com/onyx-and-iris/xair-cli
 go 1.25.0
 
 require (
-	github.com/alecthomas/kong v1.16.0
+	github.com/alecthomas/kong v1.16.1
 	github.com/alecthomas/mango-kong v0.1.0
 	github.com/charmbracelet/log v1.0.0
 	github.com/hypebeast/go-osc v0.0.0-20220308234300-cec5a8a1e5f5
