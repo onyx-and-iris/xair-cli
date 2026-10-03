@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/charmbracelet/log"
+	"charm.land/log/v2"
 )
 
 // HeadampCmdGroup defines the command group for controlling input gain and phantom power of a headamp, allowing users to specify the index of the headamp they want to control.

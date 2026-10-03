@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/charmbracelet/log"
+	"charm.land/log/v2"
 )
 
 // RawCmd represents the command to send raw OSC messages to the mixer.

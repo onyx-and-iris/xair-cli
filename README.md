@@ -30,7 +30,7 @@ go install github.com/onyx-and-iris/xair-cli/cmd/x32-cli@latest
 - --host/-H: Host of the mixer.
 - --port/-P: Port of the mixer.
 - --timeout/-T: Timeout for OSC operations.
-- --loglevel/-L: The application's logging verbosity.
+- --log-level/-L: The application's logging verbosity.
 
 Pass `--host` and any other configuration as flags on the root commmand:
 
@@ -50,7 +50,7 @@ Example xair .envrc:
 export XAIR_CLI_HOST=mixer.local
 export XAIR_CLI_PORT=10024
 export XAIR_CLI_TIMEOUT=100ms
-export XAIR_CLI_LOGLEVEL=warn
+export XAIR_CLI_LOG_LEVEL=warn
 ```
 
 Example x32 .envrc:
@@ -61,7 +61,7 @@ Example x32 .envrc:
 export X32_CLI_HOST=x32.local
 export X32_CLI_PORT=10023
 export X32_CLI_TIMEOUT=100ms
-export X32_CLI_LOGLEVEL=warn
+export X32_CLI_LOG_LEVEL=warn
 ```
 
 ---

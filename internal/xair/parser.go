@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/charmbracelet/log"
+	"charm.land/log/v2"
 	"github.com/hypebeast/go-osc/osc"
 )
 

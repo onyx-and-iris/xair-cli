@@ -8,7 +8,7 @@ Flags:
   -H, --host="mixer.local"    The host of the X-Air device ($XAIR_CLI_HOST).
   -P, --port=10024            The port of the X-Air device ($XAIR_CLI_PORT).
   -T, --timeout=100ms         Timeout for OSC operations ($XAIR_CLI_TIMEOUT).
-  -L, --loglevel="warn"       Log level for the CLI ($XAIR_CLI_LOGLEVEL).
+  -L, --log-level="warn"      Log level for the CLI ($XAIR_CLI_LOG_LEVEL).
       --man                   Print man page.
   -v, --version               Print xair-cli version information and quit
 

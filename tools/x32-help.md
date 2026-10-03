@@ -8,7 +8,7 @@ Flags:
   -H, --host="mixer.local"    The host of the X32 device ($X32_CLI_HOST).
   -P, --port=10023            The port of the X32 device ($X32_CLI_PORT).
   -T, --timeout=100ms         Timeout for OSC operations ($X32_CLI_TIMEOUT).
-  -L, --loglevel="warn"       Log level for the CLI ($X32_CLI_LOGLEVEL).
+  -L, --log-level="warn"      Log level for the CLI ($X32_CLI_LOG_LEVEL).
       --man                   Print man page.
   -v, --version               Print x32-cli version information and quit
 
