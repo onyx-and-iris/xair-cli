@@ -7,7 +7,7 @@ require (
 	github.com/alecthomas/kong v1.16.1
 	github.com/alecthomas/mango-kong v0.1.0
 	github.com/hypebeast/go-osc v0.0.0-20220308234300-cec5a8a1e5f5
-	github.com/jotaen/kong-completion v0.0.14
+	github.com/jotaen/kong-completion v0.0.15
 )
 
 require (
@@ -32,7 +32,7 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/riywo/loginshell v0.0.0-20200815045211-7d26008be1ab // indirect
 	github.com/xo/terminfo v1.2.0 // indirect
-	golang.org/x/exp v0.0.0-20261011100332-faecfb24eb49 // indirect
+	golang.org/x/exp v0.0.0-20261014143641-f0251eb4aa3e // indirect
 	golang.org/x/sync v0.24.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 )
